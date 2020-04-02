@@ -19,7 +19,7 @@ As - Roi - Dame - Valet - 10 -9 - 8 - 7 - 6.
 
 ### Distribution
 
-Le système mélange les cartes et les distribues aux joueurs (9 cartes par joueur)
+Le système mélange les cartes et les distribues aux joueurs (9 cartes par joueur).
 
 ### Détermination de l'atout
 
@@ -45,7 +45,7 @@ Le système va rechercher si un joueur à une annonce dans son jeu, si oui il l'
 | Carré de neufs    | 150    | Ce sont les 4 neufs                                          |
 | Carré de valets   | 200    | Ce sont les 4 valets                                         |
 
-Si les 2 équipes ont des annonces lors du premier tour, seul les points des joueurs de l'équipe ayant la meilleure annonce sont enregistrés
+Si les 2 équipes ont des annonces lors du premier tour, seul les points des joueurs de l'équipe ayant la meilleure annonce sont enregistrés.
 
 ### Décompte des points
 
