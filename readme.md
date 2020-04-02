@@ -17,11 +17,17 @@ Le valet d'atout se nomme le bauer, le 9 d'atout se nomme le nell.
 Dans toutes les autres couleurs c'est l'ordre habituel, soit :
 As - Roi - Dame - Valet - 10 -9 - 8 - 7 - 6.
 
-### Points par carte
-<a id="ptsCartes"></a>
-L'as vaut 11 points, le roi vaut 4 points, la dame vaut 3 points le valet vaut 2 points, le 10 vaut dix points. Le valet d'atout en vaut 20, le 9 d'atout en vaut 14.
+### <a id="points">Points par carte</a>
 
-Les autres cartes ne valent aucun point.
+| Carte     | Atout | Normal |
+| --------- | :---: | :----: |
+| As        |  11   |   11   |
+| Roi       |   4   |   4    |
+| Dame      |   3   |   3    |
+| Valet     |  20   |   2    |
+| 10        |  10   |   10   |
+| 9         |  14   |   0    |
+| 6 - 7 - 8 |   0   |   0    |
 
 ### Distribution
 
@@ -55,7 +61,7 @@ Si les 2 équipes ont des annonces lors du premier tour, seul les points des jou
 
 ### Décompte des points
 
-A la fin de chaque tour, les points que chaque équipe à remportés sont enregistrés selon la [valeurs des cartes](#ptsCartes) remportées.
+A la fin de chaque tour, les points que chaque équipe à remportés sont enregistrés selon la [valeurs des cartes](#points) remportées.
 
 Le dernier pli vaut 5 points supplémentaires.
 
