@@ -17,8 +17,8 @@ Le valet d'atout se nomme le bauer, le 9 d'atout se nomme le nell.
 Dans toutes les autres couleurs c'est l'ordre habituel, soit :
 As - Roi - Dame - Valet - 10 -9 - 8 - 7 - 6.
 
-<a id="ptsCartes">### Points par carte</a>
-
+### Points par carte
+<a id="ptsCartes"></a>
 L'as vaut 11 points, le roi vaut 4 points, la dame vaut 3 points le valet vaut 2 points, le 10 vaut dix points. Le valet d'atout en vaut 20, le 9 d'atout en vaut 14.
 
 Les autres cartes ne valent aucun point.
