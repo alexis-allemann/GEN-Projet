@@ -12,7 +12,7 @@ Ce jeu se joue à 4 joueurs, en 2 équipes de 2, avec un jeu de 36 cartes, allan
 
 Dans la couleur d'atout : Valet - 9 - As - Roi - Dame - 10 - 8 - 7 - 6.
 
-Le valet d'atout se nomme le bauer, le 9 d'atout se nomme le nell.
+> Le valet d'atout se nomme le bauer, le 9 d'atout se nomme le nell.
 
 Dans toutes les autres couleurs c'est l'ordre habituel, soit :
 As - Roi - Dame - Valet - 10 -9 - 8 - 7 - 6.
