@@ -24,9 +24,9 @@ Le système mélange les cartes et les distribues aux joueurs (9 cartes par joue
 ### Détermination de l'atout
 
 Au premier tour, le joueur ayant le 7 de carreau fait atout, et devient le donneur du tour suivant. Aux tours suivants, c'est la personne située après le donneur qui fera atout.
-	
-"Faire atout" signifie "choisir la couleur d'atout". Si le joueur ne peut pas ou ne veut pas choisir, il a la possibilité de "chibrer" et son partenaire doit obligatoirement choisir une couleur d'atout à sa place.
-	
+
+> "Faire atout" signifie "choisir la couleur d'atout". Si le joueur ne peut pas ou ne veut pas choisir, il a la possibilité de "chibrer" et son partenaire doit obligatoirement choisir une couleur d'atout à sa place.
+
 C'est le joueur à qui devait faire atout qui entame (même si c'est son partenaire qui a choisi l'atout).
 
 ### Annonces
