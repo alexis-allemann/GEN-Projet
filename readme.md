@@ -75,8 +75,8 @@ La première équipe à atteindre 1000 points remporte la partie.
 
 :arrow_up_down: Les <u>threads</u> seront utilisés afin de gérer les parties, les actions des joueurs ainsi que la communication au travers du réseau TCP.
 
-:computer: <u>Git</u> sera utilisé afin de pouvoir gérer le code source et le développement d'une manière plus générale. Un repository [GitHub](https://github.com/) en ligne est utilisé comme remote repository.
+:computer: <u>Git</u> sera utilisé afin de pouvoir gérer le code source et le développement d'une manière plus générale. Un repository [GitHub](https://github.com/) en ligne est utilisé comme "remote repository".
 
-:100: Nous utiliserons [Travis](https://travis-ci.com/) relié à GitHub afin de faire le développement des tests unitaire pour suivre une méthodologie de développement TDD (Test Driven Development).
+:100: Nous utiliserons [Travis](https://travis-ci.com/) relié à GitHub afin de faire le développement des tests unitaires pour suivre une méthodologie de développement TDD (Test Driven Development).
 
 :bar_chart: Pour la gestion du projet, nous travaillons en mode Scrum à l'aide de [IceScrum](https://www.icescrum.com/fr/).
