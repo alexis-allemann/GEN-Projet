@@ -1,6 +1,6 @@
 # Réalisation d'un jeu du Chibre (Jass)
 
-Projet réalisé dans le cadres du cours de génie logiciel (GEN) de l'[HEIG-VD](https://heig-vd.ch/).
+Projet réalisé dans le cadre du cours de génie logiciel (GEN) de l'[HEIG-VD](https://heig-vd.ch/).
 
 ## Présentation du jeu
 
