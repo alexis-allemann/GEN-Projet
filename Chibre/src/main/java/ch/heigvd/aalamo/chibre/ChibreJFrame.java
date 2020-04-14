@@ -1,89 +1,69 @@
 /* ---------------------------
-Laboratoire : 04
-Fichier :     BalloonJFrame.java
+Projet de Génie Logiciel (GEN) - HEIG-VD
+Fichier :     ChibreJFrame.java
 Auteur(s) :   Alexis Allemann, Alexandre Mottier
-Date :        26.03.2020 - 01.04.2020
-But : Classe représentant la frame d'un ballon
+Date :        01.04.2020 - 11.06.2020
+But : Classe représentant la fenêtre graphique de l'utilisateur
 Compilateur : javac 11.0.4
 --------------------------- */
 package ch.heigvd.aalamo.chibre;
 
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 public class ChibreJFrame extends JFrame implements UserInterface {
     // Attributs
-    private JButton little, large, lance;
-    private BalloonJPanel balloon;
+    private CardJPanel card;
     private ChibreUser chibreUser;
+    private static final int WINDOW_SIZE = 600;
 
     /**
      * Instanciation d'une interface utilisateur
+     *
      * @param chibreUser la classe user gérant l'interface
      */
     public ChibreJFrame(ChibreUser chibreUser) {
+        // Validation de l'utilisateur reçu
         if (chibreUser == null)
-            throw new IllegalArgumentException("Ballon user nul");
+            throw new IllegalArgumentException("Chibre user nul");
 
+        // Relier l'interface avec l'utilisateur
         this.chibreUser = chibreUser;
         chibreUser.setUserInterface(this);
 
-        setTitle("Balloon");
+        // Titre de la fenêtre
+        setTitle("Chibre");
 
+        // Contenu de la fenêtre
         Container contentPane = getContentPane();
-        JPanel boutons = new JPanel();
-        boutons.setLayout(new GridLayout(1, 3));
-        contentPane.add(boutons, BorderLayout.NORTH);
+        JLabel waitingUsers = new JLabel();
+        waitingUsers.setText("En attente d'autres utilisateurs. Minimum 4 pour débuter la partie.");
+        contentPane.add(waitingUsers);
 
-        little = new JButton("Little");
-        boutons.add(little);
-        little.addActionListener(e -> {
-            if (balloon != null)
-                balloon.changeSize(-10);
-        });
-
-        lance = new JButton("Lance");
-        boutons.add(lance);
-        lance.addActionListener(e -> {
-            if (balloon != null) {
-                contentPane.remove(balloon);
-                chibreUser.send(balloon);
-                this.balloon = null;
-                contentPane.revalidate();
-                contentPane.repaint();
-            }
-        });
-
-        large = new JButton("Large");
-        boutons.add(large);
-        large.addActionListener(e -> {
-            if (balloon != null)
-                balloon.changeSize(+10);
-        });
-
+        // Listeners de l'application
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
                 quit();
             }
         });
 
+        // Affichage de la fenêtre
         setVisible(true);
-        setSize(223,265);
+        setSize(WINDOW_SIZE, WINDOW_SIZE);
     }
 
     /**
-     * Affichage du ballon donné en paramètre
-     * @param balloonJPanel le ballon à afficher
+     * Affichage de la carte reçue en paramètre
+     *
+     * @param cardJPanel la carte à afficher
      */
     @Override
-    public void display(BalloonJPanel balloonJPanel) {
-        this.balloon = balloonJPanel;
+    public void display(CardJPanel cardJPanel) {
+        this.card = cardJPanel;
         Container contentPane = getContentPane();
-        contentPane.add(balloonJPanel, BorderLayout.CENTER);
+        contentPane.add(cardJPanel, BorderLayout.CENTER);
         contentPane.revalidate();
         contentPane.repaint();
         pack();
@@ -94,8 +74,6 @@ public class ChibreJFrame extends JFrame implements UserInterface {
      */
     @Override
     public void quit() {
-        if (balloon != null)
-            chibreUser.send(balloon);
         System.exit(0);
     }
 }

@@ -1,9 +1,9 @@
 /* ---------------------------
-Laboratoire : 04
-Fichier :     BalloonHandler.java
+Projet de Génie Logiciel (GEN) - HEIG-VD
+Fichier :     ChibreHandler.java
 Auteur(s) :   Alexis Allemann, Alexandre Mottier
-Date :        26.03.2020 - 01.04.2020
-But : Classe représentant le handler d'un ballon
+Date :        01.04.2020 - 11.06.2020
+But : Classe représentant un handler
 Compilateur : javac 11.0.4
 --------------------------- */
 package ch.heigvd.aalamo.chibre;
@@ -21,7 +21,7 @@ public class ChibreHandler implements Runnable {
     private Socket socket;
 
     /**
-     * Instanciation d'un handler de ballon
+     * Instanciation d'un handler
      *
      * @param socket       interface réseau
      * @param chibreServer serveur
@@ -36,14 +36,14 @@ public class ChibreHandler implements Runnable {
     }
 
     /**
-     * Méthode du thread qui écoute le réseau pour savoir si un ballon est reçu
+     * Méthode du thread qui écoute le réseau pour savoir si une carte est reçue
      */
     @Override
     public void run() {
-        BalloonJPanel balloonJPanel;
+        CardJPanel cardJPanel;
         try {
-            while ((balloonJPanel = (BalloonJPanel) in.readObject()) != null) {
-                chibreServer.send(balloonJPanel);
+            while ((cardJPanel = (CardJPanel) in.readObject()) != null) {
+                chibreServer.send(cardJPanel);
             }
         } catch (ClassNotFoundException | IOException e) {
             e.printStackTrace();
@@ -57,12 +57,12 @@ public class ChibreHandler implements Runnable {
     }
 
     /**
-     * Envoi d'un ballon sur le réseau
+     * Envoi d'une carte sur le réseau
      *
-     * @param balloonJPanel le ballon
+     * @param cardJPanel la carte
      * @throws IOException s'il y a une erreur de donnée
      */
-    public void send(BalloonJPanel balloonJPanel) throws IOException {
-        out.writeObject(balloonJPanel);
+    public void send(CardJPanel cardJPanel) throws IOException {
+        out.writeObject(cardJPanel);
     }
 }

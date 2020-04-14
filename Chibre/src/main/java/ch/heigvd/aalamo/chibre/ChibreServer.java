@@ -1,9 +1,9 @@
 /* ---------------------------
-Laboratoire : 04
-Fichier :     BalloonServer.java
+Projet de Génie Logiciel (GEN) - HEIG-VD
+Fichier :     ChibreServer.java
 Auteur(s) :   Alexis Allemann, Alexandre Mottier
-Date :        26.03.2020 - 01.04.2020
-But : Classe représentant le serveur de gestion du ballon
+Date :        01.04.2020 - 11.06.2020
+But : Classe représentant le serveur du chibre
 Compilateur : javac 11.0.4
 --------------------------- */
 package ch.heigvd.aalamo.chibre;
@@ -15,13 +15,12 @@ import java.util.*;
 
 public class ChibreServer {
     // Attributs
-    private List<ChibreHandler> handlers = new ArrayList<>();
-    private ChibreHandler handlerWithBalloon;
-    private Random random = new Random();
-    private BalloonJPanel balloon = new BalloonJPanel();
+    private List<Game> games = new ArrayList<>();
+    private List<ChibreHandler> waitingPlayers = new ArrayList<>();
 
     /**
      * Lancement d'une application pour un serveur
+     *
      * @param args arguments du programme (non requis)
      */
     public static void main(String[] args) {
@@ -33,7 +32,8 @@ public class ChibreServer {
     }
 
     /**
-     * Action effectuée lorsque le serveur recoit un ballon sur le réseau
+     * Action effectuée lorsque le serveur recoit un nouveau handler sur le réseau
+     *
      * @throws IOException s'il y a une erreur de donnée
      */
     private void receive() throws IOException {
@@ -41,43 +41,40 @@ public class ChibreServer {
         while (true) {
             Socket socket = serverSocket.accept();
             ChibreHandler newHandler = new ChibreHandler(socket, this);
-            handlers.add(newHandler);
-            if (handlers.size() == 1) {
-                newHandler.send(balloon);
-                handlerWithBalloon = newHandler;
-            }
+            waitingPlayers.add(newHandler);
+
+            // S'il y a assez de joueurs en attente, on crée un partie
+            if (waitingPlayers.size() == Game.NB_PLAYERS)
+                createNewGame();
         }
     }
 
+    private void createNewGame() {
+        // TODO : voir si créer thread pour éviter que un utilisateur se déconnecte pendant que on crée la partie et que du coup on ait un out_of_bound
+        Game game = new Game(1); // TODO : générer IDs automatiquement
+        for (int i = 0; i < Game.NB_PLAYERS; ++i) {
+            game.addPlayer(waitingPlayers.get(0));
+            waitingPlayers.remove(0);
+        }
+        game.startGame();
+    }
+
     /**
-     * Envoi du ballon à un utilisateur (pas celui qui vient d'envoyer le ballon sauf s'il est seul)
-     * @param balloonJPanel le ballon
+     * @param cardJPanel la carte
      * @throws IOException s'il y a une erreur de donnée
      */
-    public void send(BalloonJPanel balloonJPanel) throws IOException {
-        if (handlers.size() != 1) {
-            ChibreHandler newHandler = getRandomHandler();
-            while (handlerWithBalloon == newHandler)
-                newHandler = getRandomHandler();
-            handlerWithBalloon = newHandler;
-        }
-        handlerWithBalloon.send(balloonJPanel);
-        balloon = balloonJPanel;
+    public void send(CardJPanel cardJPanel) throws IOException {
+
     }
 
     /**
      * Supprimer le handler d'un utilisateur si sa session à été fermée
-     * @param balloonHandler le handler
+     *
+     * @param chibreHandler le handler
      */
-    public void remove(ChibreHandler balloonHandler) {
-        handlers.remove(balloonHandler);
-    }
-
-    /**
-     * Choix aléatorie d'un handler à qui envoyer le ballon
-     * @return le handler tiré aléatoirement
-     */
-    private ChibreHandler getRandomHandler() {
-        return handlers.get(random.nextInt(handlers.size()));
+    public void remove(ChibreHandler chibreHandler) {
+        if (waitingPlayers.contains(chibreHandler))
+            waitingPlayers.remove(chibreHandler);
+        // Si le joueur est dans une partie, on le laisse jouer (le timer jouera un carte aléatoire pour lui)
     }
 }

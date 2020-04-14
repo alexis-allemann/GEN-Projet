@@ -1,9 +1,9 @@
 /* ---------------------------
-Laboratoire : 04
-Fichier :     BalloonUser.java
+Projet de Génie Logiciel (GEN) - HEIG-VD
+Fichier :     ChibreUser.java
 Auteur(s) :   Alexis Allemann, Alexandre Mottier
-Date :        26.03.2020 - 01.04.2020
-But : Classe représentant un utilisateur du ballon
+Date :        01.04.2020 - 11.06.2020
+But : Classe représentant un utilisateur du chibre
 Compilateur : javac 11.0.4
 --------------------------- */
 package ch.heigvd.aalamo.chibre;
@@ -44,14 +44,14 @@ public class ChibreUser {
     }
 
     /**
-     * Lecture du réseau afin de recevoir le ballon du serveur
+     * Lecture du réseau afin de recevoir une carte
      */
     public void receive() {
-        BalloonJPanel balloonJPanel;
+        CardJPanel cardJPanel;
         try {
-            while ((balloonJPanel = (BalloonJPanel) in.readObject()) != null) {
-                // Affichage du ballon reçu
-                userInterface.display(balloonJPanel);
+            while ((cardJPanel = (CardJPanel) in.readObject()) != null) {
+                // Affichage de la carte reçue
+                userInterface.display(cardJPanel);
             }
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
@@ -67,12 +67,12 @@ public class ChibreUser {
     }
 
     /**
-     * Envoi du ballon au serveur
-     * @param balloonJPanel le ballon
+     * Envoi d'une carte au serveur
+     * @param cardJPanel la carte
      */
-    public void send(BalloonJPanel balloonJPanel) {
+    public void send(CardJPanel cardJPanel) {
         try {
-            out.writeObject(balloonJPanel);
+            out.writeObject(cardJPanel);
         } catch (IOException e) {
             e.printStackTrace();
         }
