@@ -41,7 +41,7 @@ public class Game {
 
         try{
             for (ChibreHandler player : players)
-                player.send(new CardJPanel("img/test.jpg"));
+                player.send(new CardJPanel("img/COEUR-VALET.png"));
         }
         catch (IOException e) {
             e.printStackTrace();
