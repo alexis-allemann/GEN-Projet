@@ -15,6 +15,14 @@ public class Announcement {
     Round round;
     Team team;
 
+    /**
+     * Instanciation d'une annonce
+     *
+     * @param player    Joueur qui annonce
+     * @param bonusType Type de l'annonce
+     * @param round     Tour durant lequel a lieu l'annonce
+     * @param team      Equipe qui remporte les points de l'annonce
+     */
     public Announcement(Player player, BonusType bonusType, Round round, Team team) {
         this.player = player;
         this.bonusType = bonusType;

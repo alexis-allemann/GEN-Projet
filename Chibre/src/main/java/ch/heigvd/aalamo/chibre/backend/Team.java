@@ -15,6 +15,11 @@ public class Team {
     // Attributs
     private List<Player> players = new ArrayList<>(Game.NB_PLAYERS_TEAMS);
 
+    /**
+     * Instanciation d'une équipe
+     *
+     * @param players joueurs de l'équipe
+     */
     public Team(List<Player> players) {
         this.players = players;
     }

@@ -17,26 +17,32 @@ public class Player {
     private List<Card> cards = new ArrayList<>(Game.NB_CARDS_PLAYER);
     private Handler handler;
 
+    /**
+     * Instancier un joueur
+     *
+     * @param handler handler relié
+     */
     public Player(Handler handler) {
         if (handler == null)
             throw new IllegalArgumentException("Handler nul");
 
         this.handler = handler;
+        handler.setPlayer(this);
     }
 
+    /**
+     * Distribuer une carte à un joueur
+     *
+     * @param card la carte
+     */
     public void distributeCard(Card card) {
         if (card == null)
             throw new IllegalArgumentException("Carte nulle");
         cards.add(card);
-        try{
+        try {
             handler.sendCard(card);
-        }
-        catch (IOException ex){
+        } catch (IOException ex) {
             ex.printStackTrace();
         }
-    }
-
-    public Handler getHandler() {
-        return handler;
     }
 }

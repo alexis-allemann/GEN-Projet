@@ -42,7 +42,6 @@ public class Server {
             Socket socket = serverSocket.accept();
             Handler newHandler = new Handler(socket, this);
             Player newPlayer = new Player(newHandler);
-            newHandler.setPlayer(newPlayer);
             waitingPlayers.add(newPlayer);
 
             // S'il y a assez de joueurs en attente, on crée un partie
@@ -51,6 +50,9 @@ public class Server {
         }
     }
 
+    /**
+     * Création d'une partie avec les joueurs en attente
+     */
     private void createNewGame() {
         // TODO : voir si créer thread pour éviter que un utilisateur se déconnecte pendant que on crée la partie et que du coup on ait un out_of_bound
         List<Player> players = new ArrayList<>(Game.NB_PLAYERS);

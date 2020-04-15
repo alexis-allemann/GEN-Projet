@@ -16,6 +16,11 @@ public class Round {
     private CardColor trumpColor;
     private List<Turn> turns = new ArrayList<>(Game.NB_CARDS_PLAYER);
 
+    /**
+     * Instancier un tour de jeu
+     *
+     * @param trumpColor l'atout
+     */
     public Round(CardColor trumpColor) {
         this.trumpColor = trumpColor;
     }

@@ -23,11 +23,17 @@ public class Game {
 
     // Attributs
     private int id;
-    private List<Player> players = new ArrayList<>(NB_PLAYERS);
+    private List<Player> players;
     private List<Team> teams = new ArrayList<>(NB_TEAMS);
     private List<Round> rounds = new ArrayList<>();
     private List<Card> cards = new ArrayList<>(NB_CARDS);
 
+    /**
+     * Instancier une parte
+     *
+     * @param id      identifiant unique de la partie
+     * @param players liste des joueurs
+     */
     public Game(int id, List<Player> players) {
         if (players == null || players.contains(null))
             throw new IllegalArgumentException("Liste de joueurs illégale (nulle ou joueur nul)");
@@ -37,6 +43,11 @@ public class Game {
         setTeams(players);
     }
 
+    /**
+     * Définition des équipes à partir d'une liste de joueurs
+     *
+     * @param players les joueurs
+     */
     private void setTeams(List<Player> players) {
         if (players.size() != NB_PLAYERS)
             throw new RuntimeException("Une partie ne peut pas être jouée à moins de " + NB_PLAYERS + " joueurs");
@@ -51,6 +62,9 @@ public class Game {
         );
     }
 
+    /**
+     * Démarrer la partie
+     */
     public void startGame() {
         // A implémenter. Ici, juste envoi d'une carte de test
         for (Player player : players)

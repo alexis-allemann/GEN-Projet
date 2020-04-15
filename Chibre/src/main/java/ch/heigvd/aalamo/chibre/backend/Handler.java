@@ -60,6 +60,11 @@ public class Handler implements Runnable {
         }
     }
 
+    /**
+     * Définir le joueur relié au handler
+     *
+     * @param player le joueur
+     */
     public void setPlayer(Player player) {
         this.player = player;
     }

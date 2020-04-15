@@ -20,10 +20,18 @@ public enum BonusType {
     // Attributs
     private int points;
 
+    /**
+     * Instanciation d'un bonus
+     *
+     * @param points nombre de points du bonus
+     */
     BonusType(int points) {
         this.points = points;
     }
 
+    /**
+     * @return les points du bonus
+     */
     public int getPoints() {
         return points;
     }

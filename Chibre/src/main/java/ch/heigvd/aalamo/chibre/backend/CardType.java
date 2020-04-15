@@ -25,6 +25,14 @@ public enum CardType {
     private int order;
     private int orderOfTrump;
 
+    /**
+     * Instanciation d'un type de carte
+     *
+     * @param value        valeur standard de la carte
+     * @param valueOfTrump valeur de la carte si c'est atout
+     * @param order        ordre standard
+     * @param orderOfTrump ordre si c'est atout
+     */
     CardType(int value, int valueOfTrump, int order, int orderOfTrump) {
         this.order = order;
         this.orderOfTrump = orderOfTrump;
@@ -32,18 +40,30 @@ public enum CardType {
         this.valueOfTrump = valueOfTrump;
     }
 
+    /**
+     * @return l'ordre standard
+     */
     public int getOrder() {
         return order;
     }
 
+    /**
+     * @return la valeur standard
+     */
     public int getValue() {
         return value;
     }
 
+    /**
+     * @return la valeur si atout
+     */
     public int getValueOfTrump() {
         return valueOfTrump;
     }
 
+    /**
+     * @return l'ordre si atout
+     */
     public int getOrderOfTrump() {
         return orderOfTrump;
     }
