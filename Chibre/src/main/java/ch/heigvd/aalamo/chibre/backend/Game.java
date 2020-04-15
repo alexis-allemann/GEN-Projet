@@ -26,7 +26,7 @@ public class Game {
     private List<Player> players;
     private List<Team> teams = new ArrayList<>(NB_TEAMS);
     private List<Round> rounds = new ArrayList<>();
-    private List<Card> cards = new ArrayList<>(NB_CARDS);
+    private CardCollection cardCollection = new CardCollection();
 
     /**
      * Instancier une parte
@@ -67,7 +67,9 @@ public class Game {
      */
     public void startGame() {
         // A implémenter. Ici, juste envoi d'une carte de test
+        // TODO : niveau conception, il faudrait dans le start game, créer un nouveau round au lieu de distribuer
+        //  les cartes et les distribuer dans le round (UML à modifier)
         for (Player player : players)
-            player.distributeCard(new Card(CardType.JACK, CardColor.HEART));
+            cardCollection.distributeCards(player, NB_CARDS_PLAYER);
     }
 }
