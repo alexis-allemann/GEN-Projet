@@ -6,7 +6,7 @@ Date :        01.04.2020 - 11.06.2020
 But : Classe représentant la fenêtre graphique de l'utilisateur
 Compilateur : javac 11.0.4
 --------------------------- */
-package ch.heigvd.aalamo.chibre;
+package ch.heigvd.aalamo.chibre.frontend;
 
 import javax.swing.*;
 import java.awt.*;
