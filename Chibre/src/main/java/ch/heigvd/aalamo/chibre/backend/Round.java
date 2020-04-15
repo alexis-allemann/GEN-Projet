@@ -6,7 +6,17 @@ Date :        01.04.2020 - 11.06.2020
 But : Classe représentant un tour d'atout dans une partie
 Compilateur : javac 11.0.4
 --------------------------- */
-package ch.heigvd.aalamo.chibre.server;
+package ch.heigvd.aalamo.chibre.backend;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Round {
+    // Attributs
+    private CardColor trumpColor;
+    private List<Turn> turns = new ArrayList<>(Game.NB_CARDS_PLAYER);
+
+    public Round(CardColor trumpColor) {
+        this.trumpColor = trumpColor;
+    }
 }

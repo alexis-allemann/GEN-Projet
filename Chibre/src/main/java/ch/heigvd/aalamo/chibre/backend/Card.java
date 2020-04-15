@@ -6,12 +6,16 @@ Date :        01.04.2020 - 11.06.2020
 But : Classe représentant une carte
 Compilateur : javac 11.0.4
 --------------------------- */
-package ch.heigvd.aalamo.chibre.server;
+package ch.heigvd.aalamo.chibre.backend;
 
-public class Card {
+import java.io.Serializable;
+
+public class Card implements Serializable {
+    // Attributs
     private CardType cardType;
     private CardColor cardColor;
     private String imgSrc;
+    private Player player;
 
     public Card(CardType cardType, CardColor cardColor) {
         this.cardType = cardType;

@@ -6,17 +6,17 @@ Date :        01.04.2020 - 11.06.2020
 But : Classe représentant le serveur du chibre
 Compilateur : javac 11.0.4
 --------------------------- */
-package ch.heigvd.aalamo.chibre;
+package ch.heigvd.aalamo.chibre.backend;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
 
-public class ChibreServer {
+public class Server {
     // Attributs
     private List<Game> games = new ArrayList<>();
-    private List<ChibreHandler> waitingPlayers = new ArrayList<>();
+    private List<Player> waitingPlayers = new ArrayList<>();
 
     /**
      * Lancement d'une application pour un serveur
@@ -25,14 +25,14 @@ public class ChibreServer {
      */
     public static void main(String[] args) {
         try {
-            new ChibreServer().receive();
+            new Server().receive();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     /**
-     * Action effectuée lorsque le serveur recoit un nouveau handler sur le réseau
+     * Action effectuée lorsque le serveur reçoit un nouveau handler sur le réseau
      *
      * @throws IOException s'il y a une erreur de donnée
      */
@@ -40,8 +40,10 @@ public class ChibreServer {
         ServerSocket serverSocket = new ServerSocket(6666);
         while (true) {
             Socket socket = serverSocket.accept();
-            ChibreHandler newHandler = new ChibreHandler(socket, this);
-            waitingPlayers.add(newHandler);
+            Handler newHandler = new Handler(socket, this);
+            Player newPlayer = new Player(newHandler);
+            newHandler.setPlayer(newPlayer);
+            waitingPlayers.add(newPlayer);
 
             // S'il y a assez de joueurs en attente, on crée un partie
             if (waitingPlayers.size() == Game.NB_PLAYERS)
@@ -51,30 +53,21 @@ public class ChibreServer {
 
     private void createNewGame() {
         // TODO : voir si créer thread pour éviter que un utilisateur se déconnecte pendant que on crée la partie et que du coup on ait un out_of_bound
-        Game game = new Game(1); // TODO : générer IDs automatiquement
+        List<Player> players = new ArrayList<>(Game.NB_PLAYERS);
         for (int i = 0; i < Game.NB_PLAYERS; ++i) {
-            game.addPlayer(waitingPlayers.get(0));
+            players.add(waitingPlayers.get(0));
             waitingPlayers.remove(0);
         }
+        Game game = new Game(1, players); // TODO : générer IDs automatiquement
         game.startGame();
-    }
-
-    /**
-     * @param cardJPanel la carte
-     * @throws IOException s'il y a une erreur de donnée
-     */
-    public void send(CardJPanel cardJPanel) throws IOException {
-
     }
 
     /**
      * Supprimer le handler d'un utilisateur si sa session à été fermée
      *
-     * @param chibreHandler le handler
+     * @param player le joueur
      */
-    public void remove(ChibreHandler chibreHandler) {
-        if (waitingPlayers.contains(chibreHandler))
-            waitingPlayers.remove(chibreHandler);
-        // Si le joueur est dans une partie, on le laisse jouer (le timer jouera un carte aléatoire pour lui)
+    public void remove(Player player) {
+        waitingPlayers.remove(player);
     }
 }

@@ -6,7 +6,7 @@ Date :        01.04.2020 - 11.06.2020
 But : Classe représentant un type de cartes
 Compilateur : javac 11.0.4
 --------------------------- */
-package ch.heigvd.aalamo.chibre.server;
+package ch.heigvd.aalamo.chibre.backend;
 
 public enum CardType {
     ACE(11, 11, 8, 6),
@@ -19,6 +19,7 @@ public enum CardType {
     SEVEN(0, 0, 1, 1),
     SIX(0, 0, 0, 0);
 
+    // Attributs
     private int value;
     private int valueOfTrump;
     private int order;

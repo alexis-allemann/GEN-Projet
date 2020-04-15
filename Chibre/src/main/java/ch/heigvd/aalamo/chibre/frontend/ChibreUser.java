@@ -6,7 +6,9 @@ Date :        01.04.2020 - 11.06.2020
 But : Classe représentant un utilisateur du chibre
 Compilateur : javac 11.0.4
 --------------------------- */
-package ch.heigvd.aalamo.chibre;
+package ch.heigvd.aalamo.chibre.frontend;
+
+import ch.heigvd.aalamo.chibre.backend.Card;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -25,9 +27,9 @@ public class ChibreUser {
      * @param args arguments du programme (non requis)
      */
     public static void main(String[] args) {
-        ChibreUser balloonUser = new ChibreUser();
-        new ChibreJFrame(balloonUser);
-        balloonUser.receive();
+        ChibreUser chibreUser = new ChibreUser();
+        new ChibreJFrame(chibreUser);
+        chibreUser.receive();
     }
 
     /**
@@ -47,10 +49,11 @@ public class ChibreUser {
      * Lecture du réseau afin de recevoir une carte
      */
     public void receive() {
-        CardJPanel cardJPanel;
+        Card card;
         try {
-            while ((cardJPanel = (CardJPanel) in.readObject()) != null) {
+            while ((card = (Card) in.readObject()) != null) {
                 // Affichage de la carte reçue
+                CardJPanel cardJPanel = new CardJPanel(card.getImgSrc());
                 userInterface.display(cardJPanel);
             }
         } catch (IOException | ClassNotFoundException e) {
