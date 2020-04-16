@@ -16,6 +16,8 @@ public class Player {
     // Attributs
     private List<Card> cards = new ArrayList<>(Game.NB_CARDS_PLAYER);
     private Handler handler;
+    private int id;
+    private static int count = 1;
 
     /**
      * Instancier un joueur
@@ -27,6 +29,7 @@ public class Player {
             throw new IllegalArgumentException("Handler nul");
 
         this.handler = handler;
+        this.id = count++;
         handler.setPlayer(this);
     }
 
@@ -44,5 +47,9 @@ public class Player {
         } catch (IOException ex) {
             ex.printStackTrace();
         }
+    }
+
+    public int getId() {
+        return id;
     }
 }

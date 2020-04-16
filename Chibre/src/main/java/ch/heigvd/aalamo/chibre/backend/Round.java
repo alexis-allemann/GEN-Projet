@@ -23,5 +23,9 @@ public class Round {
      */
     public Round(CardColor trumpColor) {
         this.trumpColor = trumpColor;
+        //TODO :
+        // 1. Récupèrer les joueurs
+        // 2. Distribuer les cartes à chaque joueur
+        // 3.
     }
 }

@@ -8,10 +8,11 @@ Compilateur : javac 11.0.4
 --------------------------- */
 package ch.heigvd.aalamo.chibre.backend;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Collections;
+
+
+import jdk.internal.net.http.common.Pair;
+
+import java.util.*;
 
 public class Game {
     // Constantes globles du jeu
@@ -20,10 +21,14 @@ public class Game {
     public static final int NB_CARDS = 36;
     public static final int NB_CARDS_PLAYER = 9;
     public static final int NB_PLAYERS = NB_TEAMS * NB_PLAYERS_TEAMS;
+    public static final int WIN_POINTS = 1000;
+    public static final boolean CLOCKWISE = true;
 
     // Attributs
     private int id;
+    private Random random = new Random();
     private List<Player> players;
+    private List<Pair<Player, TablePosition>> table;
     private List<Team> teams = new ArrayList<>(NB_TEAMS);
     private List<Round> rounds = new ArrayList<>();
     private CardCollection cardCollection = new CardCollection();
@@ -41,6 +46,35 @@ public class Game {
         this.id = id;
         this.players = players;
         setTeams(players);
+        setTable(teams);
+    }
+
+    private void setTable(List<Team> teams) {
+        int teamPosition = random.nextInt(1);
+        for(Team team : teams){
+            int playerPosition = random.nextInt(team.getMaxIDPlayer() - team.getMinIDPlayer()) +
+                    team.getMinIDPlayer();
+            if(TablePosition.TOP.getTeam() == teamPosition){
+                if(playerPosition == team.getPlayers().get(0).getId()){
+                    table.add(new Pair<>(team.getPlayers().get(0),TablePosition.TOP));
+                    table.add(new Pair<>(team.getPlayers().get(1),TablePosition.BOTTOM));
+                }
+                else{
+                    table.add(new Pair<>(team.getPlayers().get(1),TablePosition.TOP));
+                    table.add(new Pair<>(team.getPlayers().get(0),TablePosition.BOTTOM));
+                }
+            }
+            else{
+                if(playerPosition == team.getPlayers().get(0).getId()){
+                    table.add(new Pair<>(team.getPlayers().get(0),TablePosition.RIGHT));
+                    table.add(new Pair<>(team.getPlayers().get(1),TablePosition.LEFT));
+                }
+                else{
+                    table.add(new Pair<>(team.getPlayers().get(1),TablePosition.RIGHT));
+                    table.add(new Pair<>(team.getPlayers().get(0),TablePosition.LEFT));
+                }
+            }
+        }
     }
 
     /**
