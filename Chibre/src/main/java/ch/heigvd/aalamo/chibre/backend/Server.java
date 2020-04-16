@@ -62,6 +62,7 @@ public class Server {
         }
         Game game = new Game(1, players); // TODO : générer IDs automatiquement
         game.startGame();
+        games.add(game);
     }
 
     /**
@@ -71,5 +72,19 @@ public class Server {
      */
     public void remove(Player player) {
         waitingPlayers.remove(player);
+    }
+
+    /**
+     * @return la liste des parties en cours
+     */
+    public List<Game> getGames() {
+        return games;
+    }
+
+    /**
+     * @return la liste des joueurs en attente
+     */
+    public List<Player> getWaitingPlayers() {
+        return waitingPlayers;
     }
 }
