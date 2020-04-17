@@ -57,6 +57,7 @@ public class Game {
 
     // Attributs
     private int id;
+    private static int count = 1;
     private Random random = new Random();
     private List<Player> players;
     private List<Pair> table;
@@ -67,14 +68,13 @@ public class Game {
     /**
      * Instancier une parte
      *
-     * @param id      identifiant unique de la partie
      * @param players liste des joueurs
      */
-    public Game(int id, List<Player> players) {
+    public Game(List<Player> players) {
         if (players == null || players.contains(null))
             throw new IllegalArgumentException("Liste de joueurs illégale (nulle ou joueur nul)");
 
-        this.id = id;
+        this.id = count++;
         this.players = players;
         setTeams(players);
         setTable(teams);
@@ -134,4 +134,14 @@ public class Game {
         for (Player player : players)
             cardCollection.distributeCards(player, NB_CARDS_PLAYER);
     }
+
+    public int getId() {
+        return id;
+    }
+
+    public List<Player> getPlayers() {
+        return players;
+    }
+
+
 }

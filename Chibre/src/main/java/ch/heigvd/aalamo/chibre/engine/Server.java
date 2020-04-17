@@ -59,7 +59,7 @@ public class Server extends Thread {
             players.add(waitingPlayers.get(0));
             waitingPlayers.remove(0);
         }
-        Game game = new Game(1, players); // TODO : générer IDs automatiquement
+        Game game = new Game(players);
         game.startGame();
         games.add(game);
     }

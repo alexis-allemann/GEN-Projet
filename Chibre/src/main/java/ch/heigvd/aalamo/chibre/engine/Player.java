@@ -52,4 +52,8 @@ public class Player {
     public int getId() {
         return id;
     }
+
+    public List<Card> getCards() {
+        return cards;
+    }
 }

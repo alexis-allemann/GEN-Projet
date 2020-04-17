@@ -1,33 +1,43 @@
 package ch.heigvd.aalamo.chibre.engine;
 
 import ch.heigvd.aalamo.chibre.ChibreController;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ChibreServerTest {
+
+    private static Server server = new Server();
+
+    @BeforeAll
+    public static void setupTest(){
+        server.start();
+    }
+
+    @AfterAll
+    public static void finishTest(){
+        server.stop();
+    }
+
     @Test
     public void waitingUserTest() throws InterruptedException {
-        Server server = new Server();
-        server.start();
-        ChibreController controller1 = new User();
-        ChibreController controller2 = new User();
-        ChibreController controller3 = new User();
+
+        for(int i = 0; i < 3; ++i)
+            new User();
+
         Thread.sleep(100);
         assertEquals(server.getWaitingPlayers().size(), 3);
     }
 
     @Test
-    public void gamesIdTest() {
-        assertTrue(true);
-        // Tester ici si la génération des id en auto
+    public void gameCreationTest() throws InterruptedException {
+
+        for(int i = 0; i < 4; ++i)
+            new User();
+
+        Thread.sleep(100);
+        assertFalse(server.getGames().isEmpty());
     }
-
-    //TODO
-    // 1. Tester qu'un joueur entre dans la partie et attend qu'il y en ai 4
-    // 2. Test que la partie se lance quand il y a 4joueurs
-    // 3. Tester la distribution des cartes
-
-
 }
