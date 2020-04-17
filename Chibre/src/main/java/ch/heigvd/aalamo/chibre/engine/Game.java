@@ -143,5 +143,7 @@ public class Game {
         return players;
     }
 
-
+    public List<Team> getTeams() {
+        return teams;
+    }
 }
