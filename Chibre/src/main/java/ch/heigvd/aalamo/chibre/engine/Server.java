@@ -19,13 +19,11 @@ public class Server {
     private List<Player> waitingPlayers = new ArrayList<>();
 
     /**
-     * Lancement d'une application pour un serveur
-     *
-     * @param args arguments du programme (non requis)
+     * Instancitation d'un serveur
      */
-    public static void main(String[] args) {
+    public Server() {
         try {
-            new Server().receive();
+            receive();
         } catch (IOException e) {
             e.printStackTrace();
         }

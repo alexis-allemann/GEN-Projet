@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ServerTest {
+public class ChibreServerTest {
     @Test
     public void waitingUserTest() {
         assertTrue(true);

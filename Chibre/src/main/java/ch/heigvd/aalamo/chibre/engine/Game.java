@@ -8,11 +8,6 @@ Compilateur : javac 11.0.4
 --------------------------- */
 package ch.heigvd.aalamo.chibre.engine;
 
-
-
-import ch.heigvd.aalamo.chibre.TablePosition;
-import jdk.internal.net.http.common.Pair;
-
 import java.util.*;
 
 public class Game {
@@ -29,7 +24,7 @@ public class Game {
     private int id;
     private Random random = new Random();
     private List<Player> players;
-    private List<Pair<Player, TablePosition>> table;
+    //private List<Pair<Player, TablePosition>> table;
     private List<Team> teams = new ArrayList<>(NB_TEAMS);
     private List<Round> rounds = new ArrayList<>();
     private CardCollection cardCollection = new CardCollection();
@@ -47,10 +42,10 @@ public class Game {
         this.id = id;
         this.players = players;
         setTeams(players);
-        setTable(teams);
+        //setTable(teams);
     }
 
-    private void setTable(List<Team> teams) {
+    /*private void setTable(List<Team> teams) {
         int teamPosition = random.nextInt(1);
         for(Team team : teams){
             int playerPosition = random.nextInt(team.getMaxIDPlayer() - team.getMinIDPlayer()) +
@@ -76,7 +71,7 @@ public class Game {
                 }
             }
         }
-    }
+    }*/
 
     /**
      * Définition des équipes à partir d'une liste de joueurs
