@@ -11,11 +11,28 @@ package ch.heigvd.aalamo.chibre.engine;
 
 
 import ch.heigvd.aalamo.chibre.TablePosition;
-import jdk.internal.net.http.common.Pair;
-
 import java.util.*;
 
 public class Game {
+
+    private class Pair{
+        private Player player;
+        private TablePosition tablePosition;
+
+        Pair(Player player, TablePosition tablePosition){
+            this.player = player;
+            this.tablePosition = tablePosition;
+        }
+
+        public Player getPlayer() {
+            return player;
+        }
+
+        public TablePosition getTablePosition() {
+            return tablePosition;
+        }
+    }
+
     // Constantes globles du jeu
     public static final int NB_TEAMS = 2;
     public static final int NB_PLAYERS_TEAMS = 2;
@@ -29,7 +46,7 @@ public class Game {
     private int id;
     private Random random = new Random();
     private List<Player> players;
-    private List<Pair<Player, TablePosition>> table;
+    private List<Pair> table;
     private List<Team> teams = new ArrayList<>(NB_TEAMS);
     private List<Round> rounds = new ArrayList<>();
     private CardCollection cardCollection = new CardCollection();
@@ -57,22 +74,22 @@ public class Game {
                     team.getMinIDPlayer();
             if(TablePosition.TOP.getTeam() == teamPosition){
                 if(playerPosition == team.getPlayers().get(0).getId()){
-                    table.add(new Pair<>(team.getPlayers().get(0),TablePosition.TOP));
-                    table.add(new Pair<>(team.getPlayers().get(1),TablePosition.BOTTOM));
+                    table.add(new Pair(team.getPlayers().get(0),TablePosition.TOP));
+                    table.add(new Pair(team.getPlayers().get(1),TablePosition.BOTTOM));
                 }
                 else{
-                    table.add(new Pair<>(team.getPlayers().get(1),TablePosition.TOP));
-                    table.add(new Pair<>(team.getPlayers().get(0),TablePosition.BOTTOM));
+                    table.add(new Pair(team.getPlayers().get(1),TablePosition.TOP));
+                    table.add(new Pair(team.getPlayers().get(0),TablePosition.BOTTOM));
                 }
             }
             else{
                 if(playerPosition == team.getPlayers().get(0).getId()){
-                    table.add(new Pair<>(team.getPlayers().get(0),TablePosition.RIGHT));
-                    table.add(new Pair<>(team.getPlayers().get(1),TablePosition.LEFT));
+                    table.add(new Pair(team.getPlayers().get(0),TablePosition.RIGHT));
+                    table.add(new Pair(team.getPlayers().get(1),TablePosition.LEFT));
                 }
                 else{
-                    table.add(new Pair<>(team.getPlayers().get(1),TablePosition.RIGHT));
-                    table.add(new Pair<>(team.getPlayers().get(0),TablePosition.LEFT));
+                    table.add(new Pair(team.getPlayers().get(1),TablePosition.RIGHT));
+                    table.add(new Pair(team.getPlayers().get(0),TablePosition.LEFT));
                 }
             }
         }
