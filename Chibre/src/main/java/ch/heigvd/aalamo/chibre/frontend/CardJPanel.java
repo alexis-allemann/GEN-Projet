@@ -24,7 +24,7 @@ public class CardJPanel extends JPanel {
      * Instanciation d'une carte
      */
     public CardJPanel(String fileName) {
-        setPreferredSize(new Dimension(200, 200));
+        setPreferredSize(new Dimension(211, 322));
         this.fileName = fileName;
     }
 
