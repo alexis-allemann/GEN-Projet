@@ -6,10 +6,11 @@ Date :        01.04.2020 - 11.06.2020
 But : Classe représentant une partie de Chibre
 Compilateur : javac 11.0.4
 --------------------------- */
-package ch.heigvd.aalamo.chibre.backend;
+package ch.heigvd.aalamo.chibre.engine;
 
 
 
+import ch.heigvd.aalamo.chibre.TablePosition;
 import jdk.internal.net.http.common.Pair;
 
 import java.util.*;

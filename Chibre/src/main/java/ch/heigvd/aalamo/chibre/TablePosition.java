@@ -1,4 +1,4 @@
-package ch.heigvd.aalamo.chibre.backend;
+package ch.heigvd.aalamo.chibre;
 
 public enum TablePosition {
     TOP(0),

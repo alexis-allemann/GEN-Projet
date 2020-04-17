@@ -1,4 +1,4 @@
-package ch.heigvd.aalamo.chibre.backend;
+package ch.heigvd.aalamo.chibre.engine;
 
 import org.junit.jupiter.api.Test;
 
