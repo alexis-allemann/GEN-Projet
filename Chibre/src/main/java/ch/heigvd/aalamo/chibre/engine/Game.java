@@ -8,9 +8,6 @@ Compilateur : javac 11.0.4
 --------------------------- */
 package ch.heigvd.aalamo.chibre.engine;
 
-
-import ch.heigvd.aalamo.chibre.TablePosition;
-
 import java.util.*;
 
 public class Game {
@@ -84,7 +81,7 @@ public class Game {
     }
 
     private void setTable(List<Team> teams) {
-        int teamPosition = random.nextInt(1);
+        /*int teamPosition = random.nextInt(1);
         for (Team team : teams) {
             int playerPosition = random.nextInt(team.getMaxIDPlayer() - team.getMinIDPlayer()) +
                     team.getMinIDPlayer();
@@ -105,7 +102,7 @@ public class Game {
                     table.add(new Pair(team.getPlayers().get(0), TablePosition.LEFT));
                 }
             }
-        }
+        }*/
     }
 
     /**
