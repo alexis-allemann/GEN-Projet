@@ -8,7 +8,7 @@ Compilateur : javac 11.0.4
 --------------------------- */
 package ch.heigvd.aalamo.chibre.frontend;
 
-import ch.heigvd.aalamo.chibre.backend.Card;
+import ch.heigvd.aalamo.chibre.engine.Card;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;

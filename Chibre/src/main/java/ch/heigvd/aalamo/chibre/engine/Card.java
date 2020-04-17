@@ -6,7 +6,10 @@ Date :        01.04.2020 - 11.06.2020
 But : Classe représentant une carte
 Compilateur : javac 11.0.4
 --------------------------- */
-package ch.heigvd.aalamo.chibre.backend;
+package ch.heigvd.aalamo.chibre.engine;
+
+import ch.heigvd.aalamo.chibre.CardColor;
+import ch.heigvd.aalamo.chibre.CardType;
 
 import java.io.Serializable;
 
