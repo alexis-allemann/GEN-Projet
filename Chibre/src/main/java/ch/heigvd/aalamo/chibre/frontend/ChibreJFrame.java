@@ -66,7 +66,6 @@ public class ChibreJFrame extends JFrame implements UserInterface {
         contentPane.add(cardJPanel, BorderLayout.CENTER);
         contentPane.revalidate();
         contentPane.repaint();
-        pack();
     }
 
     /**
