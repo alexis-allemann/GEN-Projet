@@ -20,7 +20,7 @@ public class Team {
      * @param players joueurs de l'équipe
      */
     public Team(List<Player> players) {
-        if(players.size() != Game.NB_PLAYERS_TEAMS)
+        if (players.size() != Game.NB_PLAYERS_TEAMS)
             throw new IllegalArgumentException("La liste de joueur ne contient pas deux joueurs pour créer l'équipe.");
         this.players = players;
     }
@@ -29,11 +29,11 @@ public class Team {
         return players;
     }
 
-    public int getMaxIDPlayer(){
-        return Math.max(this.players.get(0).getId(),this.players.get(1).getId());
+    public int getMaxIDPlayer() {
+        return Math.max(this.players.get(0).getId(), this.players.get(1).getId());
     }
 
-    public int getMinIDPlayer(){
-        return Math.min(this.players.get(0).getId(),this.players.get(1).getId());
+    public int getMinIDPlayer() {
+        return Math.min(this.players.get(0).getId(), this.players.get(1).getId());
     }
 }

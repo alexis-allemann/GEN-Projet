@@ -17,7 +17,6 @@ public class Card implements Serializable {
     // Attributs
     private CardType cardType;
     private CardColor cardColor;
-    private String imgSrc;
     private Player player;
 
     /**
@@ -29,17 +28,6 @@ public class Card implements Serializable {
     public Card(CardType cardType, CardColor cardColor) {
         this.cardType = cardType;
         this.cardColor = cardColor;
-        setImgSrc(cardType, cardColor);
-    }
-
-    /**
-     * Définition de l'url de l'image
-     *
-     * @param cardType  type de la carte
-     * @param cardColor couleur de la carte
-     */
-    private void setImgSrc(CardType cardType, CardColor cardColor) {
-        this.imgSrc = "img/" + cardColor.name() + "-" + cardType.name() + ".png";
     }
 
     /**
@@ -54,12 +42,5 @@ public class Card implements Serializable {
      */
     public CardColor getCardColor() {
         return cardColor;
-    }
-
-    /**
-     * @return l'URL de l'image de la carte
-     */
-    public String getImgSrc() {
-        return imgSrc;
     }
 }
