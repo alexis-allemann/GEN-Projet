@@ -6,7 +6,7 @@ Date :        01.04.2020 - 11.06.2020
 But : Classe représentant un joueur
 Compilateur : javac 11.0.4
 --------------------------- */
-package ch.heigvd.aalamo.chibre.backend;
+package ch.heigvd.aalamo.chibre.engine;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -16,6 +16,8 @@ public class Player {
     // Attributs
     private List<Card> cards = new ArrayList<>(Game.NB_CARDS_PLAYER);
     private Handler handler;
+    private int id;
+    private static int count = 1;
 
     /**
      * Instancier un joueur
@@ -27,6 +29,7 @@ public class Player {
             throw new IllegalArgumentException("Handler nul");
 
         this.handler = handler;
+        this.id = count++;
         handler.setPlayer(this);
     }
 
@@ -44,5 +47,9 @@ public class Player {
         } catch (IOException ex) {
             ex.printStackTrace();
         }
+    }
+
+    public int getId() {
+        return id;
     }
 }

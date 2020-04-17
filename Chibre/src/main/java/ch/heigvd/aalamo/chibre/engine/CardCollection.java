@@ -1,4 +1,7 @@
-package ch.heigvd.aalamo.chibre.backend;
+package ch.heigvd.aalamo.chibre.engine;
+
+import ch.heigvd.aalamo.chibre.CardColor;
+import ch.heigvd.aalamo.chibre.CardType;
 
 import java.util.ArrayList;
 import java.util.List;

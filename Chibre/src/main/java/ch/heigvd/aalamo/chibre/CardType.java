@@ -6,7 +6,7 @@ Date :        01.04.2020 - 11.06.2020
 But : Classe représentant un type de cartes
 Compilateur : javac 11.0.4
 --------------------------- */
-package ch.heigvd.aalamo.chibre.backend;
+package ch.heigvd.aalamo.chibre;
 
 public enum CardType {
     ACE(11, 11, 8, 6),
