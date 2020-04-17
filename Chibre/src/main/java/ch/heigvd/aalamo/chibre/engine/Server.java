@@ -13,15 +13,16 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
 
-public class Server {
+public class Server extends Thread {
     // Attributs
     private List<Game> games = new ArrayList<>();
     private List<Player> waitingPlayers = new ArrayList<>();
 
     /**
-     * Instancitation d'un serveur
+     * Instancitation du thread du serveur
      */
-    public Server() {
+    @Override
+    public void run(){
         try {
             receive();
         } catch (IOException e) {

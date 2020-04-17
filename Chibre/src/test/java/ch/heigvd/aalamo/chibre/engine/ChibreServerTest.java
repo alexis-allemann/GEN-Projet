@@ -1,13 +1,21 @@
 package ch.heigvd.aalamo.chibre.engine;
 
+import ch.heigvd.aalamo.chibre.ChibreController;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ChibreServerTest {
     @Test
-    public void waitingUserTest() {
-        assertTrue(true);
+    public void waitingUserTest() throws InterruptedException {
+        Server server = new Server();
+        server.start();
+        ChibreController controller1 = new User();
+        ChibreController controller2 = new User();
+        ChibreController controller3 = new User();
+        Thread.sleep(100);
+        assertEquals(server.getWaitingPlayers().size(), 3);
     }
 
     @Test
