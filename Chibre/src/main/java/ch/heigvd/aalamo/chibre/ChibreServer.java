@@ -12,6 +12,6 @@ import ch.heigvd.aalamo.chibre.engine.Server;
 
 public class ChibreServer {
     public static void main(String[] args) {
-        new Server();
+        new Server().start();
     }
 }
