@@ -8,7 +8,7 @@ Compilateur : javac 11.0.4
 --------------------------- */
 package ch.heigvd.aalamo.chibre;
 
-import ch.heigvd.aalamo.chibre.engine.User;
+import ch.heigvd.aalamo.chibre.network.User;
 import ch.heigvd.aalamo.chibre.view.gui.GUIView;
 
 public class ChibreUser {
