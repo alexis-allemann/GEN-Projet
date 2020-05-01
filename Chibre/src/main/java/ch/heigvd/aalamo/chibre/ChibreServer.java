@@ -8,7 +8,7 @@ Compilateur : javac 11.0.4
 --------------------------- */
 package ch.heigvd.aalamo.chibre;
 
-import ch.heigvd.aalamo.chibre.engine.Server;
+import ch.heigvd.aalamo.chibre.network.Server;
 
 public class ChibreServer {
     public static void main(String[] args) {

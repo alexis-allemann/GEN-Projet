@@ -8,6 +8,8 @@ Compilateur : javac 11.0.4
 --------------------------- */
 package ch.heigvd.aalamo.chibre.engine;
 
+import ch.heigvd.aalamo.chibre.network.Handler;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
