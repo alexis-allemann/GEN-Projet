@@ -17,17 +17,23 @@ public class Round {
     // Attributs
     private CardColor trumpColor;
     private List<Turn> turns = new ArrayList<>(Game.NB_CARDS_PLAYER);
+    private CardCollection cardCollection = new CardCollection();
 
     /**
      * Instancier un tour de jeu
-     *
-     * @param trumpColor l'atout
      */
-    public Round(CardColor trumpColor) {
-        this.trumpColor = trumpColor;
+    public Round(Game game) {
         //TODO :
         // 1. Récupèrer les joueurs
         // 2. Distribuer les cartes à chaque joueur
-        // 3.
+        // 3. Choisir l'atout (le joueur à la suite et le premier tour celui qui a le 7 de carreau)
+
+        Player trumpPlayer = game.getTrumpPlayer();
+
+        for (Player player : game.getPlayers()) {
+            boolean hasDiamondSeven = cardCollection.distributeCards(player, Game.NB_CARDS_PLAYER);
+            if(trumpPlayer == null && hasDiamondSeven)
+                trumpPlayer = player;
+        }
     }
 }

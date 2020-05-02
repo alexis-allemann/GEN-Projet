@@ -103,14 +103,6 @@ public class GUIView extends BaseView<ImageIcon> {
     }
 
     /**
-     * Démarrage de la vue
-     */
-    @Override
-    public void startView() {
-
-    }
-
-    /**
      * Action à effectuer lorsque la fenêtre est fermée
      */
     @Override

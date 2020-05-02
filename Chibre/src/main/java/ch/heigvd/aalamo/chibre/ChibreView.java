@@ -9,10 +9,6 @@ Compilateur : javac 11.0.4
 package ch.heigvd.aalamo.chibre;
 
 public interface ChibreView {
-    /**
-     * Démarrer la vue
-     */
-    void startView();
 
     /**
      * Action à effectuer lorsque la fenêtre est fermée

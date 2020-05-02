@@ -52,7 +52,6 @@ public class User implements ChibreController {
             throw new RuntimeException("La vue est requise");
 
         this.view = view;
-        view.startView();
         receive();
     }
 
