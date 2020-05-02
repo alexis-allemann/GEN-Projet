@@ -8,6 +8,7 @@ Compilateur : javac 11.0.4
 --------------------------- */
 package ch.heigvd.aalamo.chibre.engine;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -55,11 +56,8 @@ public class Table {
         }
     }
 
-    //Constante
-    public static final boolean CLOCKWISE = true;
-
     // Atribut
-    private List<Pair> table;
+    private List<Pair> table = new ArrayList<>();
 
     /**
      * Instancier une parte
@@ -70,21 +68,26 @@ public class Table {
         // Instanciation du random
         Random random = new Random();
 
+        int teamPosition = random.nextInt(2);
 
-        int teamPosition = random.nextInt(1);
+
         for (Team team : game.getTeams()) {
-            int playerPosition = random.nextInt(team.getMaxIDPlayer() - team.getMinIDPlayer()) +
-                    team.getMinIDPlayer();
+
+            // Randomisation des joueurs dans l'équipe
             if (TablePosition.TOP.getTeam() == teamPosition) {
-                if (playerPosition == team.getPlayers().get(0).getId()) {
+                int playerPosition = random.nextInt(2);
+                if(playerPosition == 0){
                     table.add(new Pair(team.getPlayers().get(0), TablePosition.TOP));
                     table.add(new Pair(team.getPlayers().get(1), TablePosition.BOTTOM));
-                } else {
+                }
+                else{
                     table.add(new Pair(team.getPlayers().get(1), TablePosition.TOP));
                     table.add(new Pair(team.getPlayers().get(0), TablePosition.BOTTOM));
                 }
-            } else {
-                if (playerPosition == team.getPlayers().get(0).getId()) {
+            }
+            else {
+                int playerPosition = random.nextInt(1);
+                if (playerPosition == 0) {
                     table.add(new Pair(team.getPlayers().get(0), TablePosition.RIGHT));
                     table.add(new Pair(team.getPlayers().get(1), TablePosition.LEFT));
                 } else {
@@ -103,8 +106,7 @@ public class Table {
      * @return Le joueur qui doit donner atout
      */
     public Player nextTrumpPlayer(int roundId, TablePosition startPosition) {
-        // TODO : Pas sûr du calcul xD
-        return table.get((roundId % TablePosition.values().length) + startPosition.getIndex()).player;
+        return getPlayer(startPosition, (roundId % TablePosition.values().length) - 1);
     }
 
 
@@ -120,4 +122,21 @@ public class Table {
         }
         return null;
     }
+
+    private Player getPlayer(TablePosition startPosition, int nb){
+        for(TablePosition position : TablePosition.values()) {
+            if (position.getIndex() == (startPosition.getIndex() + nb))
+                return getPlayerByPosition(position);
+        }
+        return null;
+    }
+
+    private Player getPlayerByPosition(TablePosition position){
+        for(Pair pair : table){
+            if(pair.getTablePosition() == position)
+                return pair.getPlayer();
+        }
+        return null;
+    }
+
 }
