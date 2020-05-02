@@ -1,11 +1,3 @@
-/* ---------------------------
-Projet de Génie Logiciel (GEN) - HEIG-VD
-Fichier :     GUIView.java
-Auteur(s) :   Alexis Allemann, Alexandre Mottier
-Date :        01.04.2020 - 11.06.2020
-But : Classe de la fenêtre utilisateur du jeu
-Compilateur : javac 11.0.4
---------------------------- */
 package ch.heigvd.aalamo.chibre.view.gui;
 
 import ch.heigvd.aalamo.chibre.CardColor;
@@ -16,24 +8,44 @@ import ch.heigvd.aalamo.chibre.view.BaseView;
 import ch.heigvd.aalamo.chibre.view.DrawableRessource;
 
 import javax.swing.*;
-import javax.swing.border.CompoundBorder;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class GUIView extends BaseView<ImageIcon> {
+    // Composants
+    private JPanel pnlMain;
+    private JPanel pnlTable;
+    private JPanel pnlTableBloc;
+    private JPanel pnlInfo;
+    private JPanel pnlCards;
+    private JLabel lblTableTopName;
+    private JLabel lblTableBottomName;
+    private JLabel lblTableLeftName;
+    private JLabel lblTableRightName;
+    private JPanel pnlInfoGlobal;
+    private JPanel pnlInfoTeam1;
+    private JPanel pnlInfoTeam2;
+    private JPanel pnlInfoBonus;
+    private JButton btnBonus;
+    private JPanel pnlInfoUser;
+    private JLabel lblCard1;
+    private JLabel lblCard2;
+    private JLabel lblCard3;
+    private JLabel lblCard4;
+    private JLabel lblCard5;
+    private JLabel lblCard6;
+    private JLabel lblCard7;
+    private JLabel lblCard8;
+    private JLabel lblCard9;
+
     // Attributs
-    private final JLabel messageLabel = new JLabel("");
-    private final JLabel headerLabel = new JLabel("Bienvenue sur le jeu du Chibre !");
-    private List<CardJPanel> cards = new ArrayList<>(9);
+    JFrame gui = new JFrame("Chibre");
+    private static final int WINDOW_WIDTH = 1260;
+    private static final int WINDOW_HEIGHT = 850;
+    private List<JLabel> cards = new ArrayList<>(9);
     private final static ImageIcon UNKNOWN_ICON;
-    private static final int WINDOW_SIZE = 600;
-    private CardJPanel lastPressed = null;
-    private final JPanel gui = new JPanel(new BorderLayout(3, 3));
 
     // Initialisation des attributs statiques
     static {
@@ -41,6 +53,10 @@ public class GUIView extends BaseView<ImageIcon> {
         Graphics2D g = img.createGraphics();
         g.setColor(Color.WHITE);
         UNKNOWN_ICON = new ImageIcon(img);
+    }
+
+    private void createUIComponents() {
+        // TODO: place custom component creation code here
     }
 
     /**
@@ -67,7 +83,7 @@ public class GUIView extends BaseView<ImageIcon> {
      * @return la ressource
      */
     public static DrawableRessource<ImageIcon> createResource(BufferedImage image) {
-        return new CardResource(image);
+        return new GUIView.CardResource(image);
     }
 
     /**
@@ -78,30 +94,12 @@ public class GUIView extends BaseView<ImageIcon> {
     public GUIView(ChibreController controller) {
         super(controller);
         try {
-            // Set cross-platform Java L&F (also called "Metal")
-            UIManager.setLookAndFeel(
-                    UIManager.getCrossPlatformLookAndFeelClassName());
+            UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
         } catch (UnsupportedLookAndFeelException | InstantiationException | IllegalAccessException | ClassNotFoundException e) {
             e.printStackTrace();
         }
         GuiAssets.loadAssets(this);
         initializeGui();
-    }
-
-    /**
-     * Démarrage de la vue
-     */
-    @Override
-    public void startView() {
-        Runnable r = () -> {
-            JFrame f = new JFrame("Chibre");
-            f.add(gui);
-            f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-            f.setLocationByPlatform(true);
-            f.setSize(WINDOW_SIZE, WINDOW_SIZE);
-            f.setVisible(true);
-        };
-        SwingUtilities.invokeLater(r);
     }
 
     /**
@@ -144,55 +142,23 @@ public class GUIView extends BaseView<ImageIcon> {
     }
 
     /**
-     * Action lors du clic sur une carte
-     *
-     * @param cardJPanel la carte
-     */
-    private void cardAction(CardJPanel cardJPanel) {
-        // Rien de sélectionner
-        if (lastPressed == null) {
-            lastPressed = cardJPanel;
-            cardJPanel.select();
-        }
-        // Quelque chose de sélectionner avant
-        else {
-            lastPressed.deselect();
-            lastPressed = null;
-        }
-    }
-
-    /**
      * Instanciation de la fenêtre avant affichage
      */
     private void initializeGui() {
-        gui.setBorder(new EmptyBorder(5, 5, 5, 5));
-        JToolBar tools = new JToolBar();
-        tools.setFloatable(false);
-        gui.add(tools, BorderLayout.PAGE_START);
-        tools.addSeparator();
-        tools.add(headerLabel);
-        tools.addSeparator();
-        tools.addSeparator();
-        tools.add(messageLabel);
-        messageLabel.setForeground(Color.RED);
+        gui.setContentPane(pnlMain);
+        gui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        gui.pack();
+        gui.setVisible(true);
+        gui.setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
 
-        JPanel cardBoard = new JPanel(new GridLayout(0, 9)) {
-        };
-
-        cardBoard.setBorder(new CompoundBorder(
-                new EmptyBorder(0, 0, 0, 0),
-                new LineBorder(Color.WHITE)
-        ));
-
-        for (int i = 0; i < 9; ++i) {
-            CardJPanel cardJPanel = new CardJPanel(i);
-            cardJPanel.addActionListener(e -> cardAction(cardJPanel));
-            cards.add(cardJPanel);
-            cardBoard.add(cardJPanel);
-        }
-
-        gui.add(cardBoard);
+        cards.add(lblCard1);
+        cards.add(lblCard2);
+        cards.add(lblCard3);
+        cards.add(lblCard4);
+        cards.add(lblCard5);
+        cards.add(lblCard6);
+        cards.add(lblCard7);
+        cards.add(lblCard8);
+        cards.add(lblCard9);
     }
 }
-
-

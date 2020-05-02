@@ -27,11 +27,20 @@ public class CardCollection {
      * @param player utilisateur à qui distribuer
      * @param nb     le nombre de cartes
      */
-    public void distributeCards(Player player, int nb) {
+    public boolean distributeCards(Player player, int nb) {
+        boolean hasDiamondSeven = false; // Pour savoir si le joueur fait atout au premier tour
         for (int i = 0; i < nb; ++i) {
             int cardIndex = random.nextInt(collection.size());
-            player.distributeCard(collection.get(cardIndex));
+            Card currentCard = collection.get(cardIndex);
+
+            // Si c'est le 7 de carreau
+            if(currentCard.getCardColor() == CardColor.DIAMOND && currentCard.getCardType() == CardType.SEVEN)
+                hasDiamondSeven = true;
+
+            player.distributeCard(currentCard);
             collection.remove(cardIndex);
         }
+
+        return hasDiamondSeven;
     }
 }

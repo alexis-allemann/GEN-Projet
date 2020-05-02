@@ -63,7 +63,6 @@ public class Game {
     private List<Pair> table;
     private List<Team> teams = new ArrayList<>(NB_TEAMS);
     private List<Round> rounds = new ArrayList<>();
-    private CardCollection cardCollection = new CardCollection();
 
     /**
      * Instancier une parte
@@ -131,8 +130,11 @@ public class Game {
         // A implémenter. Ici, juste envoi d'une carte de test
         // TODO : niveau conception, il faudrait dans le start game, créer un nouveau round au lieu de distribuer
         //  les cartes et les distribuer dans le round (UML à modifier)
-        for (Player player : players)
-            cardCollection.distributeCards(player, NB_CARDS_PLAYER);
+
+
+        while (teams.get(0).getPoints() < WIN_POINTS && teams.get(1).getPoints() < WIN_POINTS) {
+            rounds.add(new Round(this));
+        }
     }
 
     public int getId() {
@@ -145,5 +147,12 @@ public class Game {
 
     public List<Team> getTeams() {
         return teams;
+    }
+
+    public Player getTrumpPlayer() {
+        if(rounds.size() == 1)
+            return null;
+        else
+            return null; // TODO : Ici faire le mécanisme que c'est le prochain joueur qui fait atout
     }
 }

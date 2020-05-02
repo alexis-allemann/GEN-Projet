@@ -13,6 +13,7 @@ import java.util.List;
 public class Team {
     // Attributs
     private List<Player> players;
+    private int points;
 
     /**
      * Instanciation d'une équipe
@@ -35,5 +36,13 @@ public class Team {
 
     public int getMinIDPlayer() {
         return Math.min(this.players.get(0).getId(), this.players.get(1).getId());
+    }
+
+    public void addPoints(int points){
+        this.points += points;
+    }
+
+    public int getPoints() {
+        return points;
     }
 }
