@@ -27,6 +27,7 @@ public class Game {
     private final Table table;
     private List<Team> teams = new ArrayList<>(NB_TEAMS);
     private List<Round> rounds = new ArrayList<>();
+    Player firstPlayerTrump;
 
     /**
      * Instancier une parte
@@ -68,6 +69,7 @@ public class Game {
     public void startGame() {
         while (teams.get(0).getPoints() < WIN_POINTS && teams.get(1).getPoints() < WIN_POINTS) {
             Round round = new Round(this);
+            // TODO : BUG Il ne s'ajoute pas ?
             rounds.add(round);
             round.run();
         }
@@ -100,5 +102,13 @@ public class Game {
 
     public Table getTable() {
         return table;
+    }
+
+    public Player getFirstPlayerTrump() {
+        return firstPlayerTrump;
+    }
+
+    public void setFirstPlayerTrump(Player firstPlayerTrump) {
+        this.firstPlayerTrump = firstPlayerTrump;
     }
 }

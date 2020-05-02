@@ -21,8 +21,9 @@ public class Round {
     private List<Turn> turns = new ArrayList<>(Game.NB_CARDS_PLAYER);
     private final CardCollection cardCollection = new CardCollection();
     private final Game game;
-    private boolean isPlayed = true; // TODO : remettre à zéro quand le round est fini
-    Player firstPlayerTrump;
+    private boolean isPlayed = true;
+    Player trumpPlayer;
+
 
     /**
      * Instancier un tour de jeu
@@ -30,18 +31,21 @@ public class Round {
     public Round(Game game) {
         this.game = game;
         this.id = count++;
+        // TODO : BUG il ne passe pas dans le if
+        for(Player player : game.getPlayers()){
+            if(cardCollection.distributeCards(player, Game.NB_CARDS_PLAYER) && game.getRounds().size() == 1)
+                game.setFirstPlayerTrump(player);
+        }
+
+        this.trumpPlayer = game.getTable().nextTrumpPlayer(id, game.getTable().getPlayerPosition(game.getFirstPlayerTrump()));
+
     }
 
     public Player getTrumpPlayer() {
-        return game.getTable().nextTrumpPlayer(id, game.getTable().getPlayerPosition(firstPlayerTrump));
+        return trumpPlayer;
     }
 
     public void run(){
-        
-        for(Player player : game.getPlayers()){
-            if(cardCollection.distributeCards(player, Game.NB_CARDS_PLAYER) && game.getRounds().size() == 1)
-                firstPlayerTrump = player;
-        }
 
         while(!playerCardsEmpty()){
             Turn turn = new Turn(this);

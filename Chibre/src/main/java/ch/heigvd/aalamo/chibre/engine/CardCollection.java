@@ -9,8 +9,8 @@ import java.util.Random;
 
 public class CardCollection {
     // Attributs
-    private List<Card> collection = new ArrayList(Game.NB_CARDS);
-    private Random random = new Random();
+    private final List<Card> collection = new ArrayList(Game.NB_CARDS);
+    private final Random random = new Random();
 
     /**
      * Instancier une collection de cartes

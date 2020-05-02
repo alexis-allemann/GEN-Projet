@@ -68,6 +68,7 @@ public class Table {
         // Instanciation du random
         Random random = new Random();
 
+        // Randomisation des deux équipes
         int teamPosition = random.nextInt(2);
 
 
