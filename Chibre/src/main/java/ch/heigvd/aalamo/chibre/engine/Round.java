@@ -27,6 +27,7 @@ public class Round {
         // 1. Récupèrer les joueurs
         // 2. Distribuer les cartes à chaque joueur
         // 3. Choisir l'atout (le joueur à la suite et le premier tour celui qui a le 7 de carreau)
+        // test
 
         Player trumpPlayer = game.getTrumpPlayer();
 
