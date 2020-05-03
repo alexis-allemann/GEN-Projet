@@ -9,6 +9,8 @@ import ch.heigvd.aalamo.chibre.view.DrawableRessource;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +41,10 @@ public class GUIView extends BaseView<ImageIcon> {
     private JLabel lblCard7;
     private JLabel lblCard8;
     private JLabel lblCard9;
+    private JLabel test;
+    private JLabel cardPlayed;
+    private JTextField textfield;
+    private JPanel panelTest;
 
     // Attributs
     JFrame gui = new JFrame("Chibre");
@@ -100,6 +106,16 @@ public class GUIView extends BaseView<ImageIcon> {
         }
         GuiAssets.loadAssets(this);
         initializeGui();
+
+        test.setTransferHandler(new TransferHandler("icon"));
+        test.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                JComponent lab = (JComponent)e.getSource();
+                TransferHandler handle = lab.getTransferHandler();
+                handle.exportAsDrag(lab, e, TransferHandler.COPY);
+            }
+        });
     }
 
     /**
@@ -160,5 +176,11 @@ public class GUIView extends BaseView<ImageIcon> {
         cards.add(lblCard7);
         cards.add(lblCard8);
         cards.add(lblCard9);
+
+        test.setIcon(loadResourceFor(CardType.KING, CardColor.HEART, UNKNOWN_ICON));
+
+        cardPlayed.setIcon(new ImageIcon("DropImage.png"));
+        test.setTransferHandler(new TransferHandler("icon"));
+        cardPlayed.setTransferHandler(new TransferHandler("icon"));
     }
 }

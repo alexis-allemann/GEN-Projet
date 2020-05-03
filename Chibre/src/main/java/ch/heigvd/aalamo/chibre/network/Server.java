@@ -64,7 +64,7 @@ public class Server extends Thread {
             waitingPlayers.remove(0);
         }
         Game game = new Game(players);
-        game.startGame();
+        game.run();
         games.add(game);
     }
 

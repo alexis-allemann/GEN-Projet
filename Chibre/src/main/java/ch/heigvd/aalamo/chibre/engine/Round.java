@@ -9,6 +9,8 @@ Compilateur : javac 11.0.4
 package ch.heigvd.aalamo.chibre.engine;
 
 import ch.heigvd.aalamo.chibre.CardColor;
+import ch.heigvd.aalamo.chibre.network.objects.State;
+import ch.heigvd.aalamo.chibre.network.objects.UserAction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,27 +39,40 @@ public class Round {
         return trumpPlayer;
     }
 
-    public void run(){
+    public void setTrumpColor(CardColor trumpColor) {
+        this.trumpColor = trumpColor;
+    }
 
-        for(Player player : game.getPlayers()){
-            if(cardCollection.distributeCards(player, Game.NB_CARDS_PLAYER) && game.getRounds().size() == 1)
+    public void initRound() {
+
+        for (Player player : game.getPlayers()) {
+            if (cardCollection.distributeCards(player, Game.NB_CARDS_PLAYER) && game.getRounds().size() == 1)
                 game.setFirstPlayerTrump(player);
+            State state = new State();
+            state.setCards(player.getCards());
+            state.setUserAction(UserAction.SEND_CARDS);
+            player.sendState(state);
         }
 
         this.trumpPlayer = game.getTable().nextTrumpPlayer(id, game.getTable().getPlayerPosition(game.getFirstPlayerTrump()));
 
-        while(!playerCardsEmpty()){
+        State state = new State();
+        state.setUserAction(UserAction.CHOOSE_TRUMP);
+        trumpPlayer.sendState(state);
+
+        /*
+        while (!playerCardsEmpty()) {
             Turn turn = new Turn(this);
             turns.add(turn);
             turn.run();
         }
 
-        isPlayed = false;
+        isPlayed = false;*/
     }
 
     private boolean playerCardsEmpty() {
-        for(Player player : game.getPlayers()){
-            if(player.getCards().size() > 1)
+        for (Player player : game.getPlayers()) {
+            if (player.getCards().size() > 1)
                 return false;
         }
         return true;

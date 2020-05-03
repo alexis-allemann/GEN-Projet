@@ -39,8 +39,6 @@ public class CardCollection {
 
             player.distributeCard(currentCard);
 
-            currentCard.setPlayer(player);
-
             collection.remove(cardIndex);
         }
 

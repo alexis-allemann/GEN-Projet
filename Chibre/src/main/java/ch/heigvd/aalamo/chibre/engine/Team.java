@@ -8,9 +8,10 @@ Compilateur : javac 11.0.4
 --------------------------- */
 package ch.heigvd.aalamo.chibre.engine;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Team {
+public class Team implements Serializable {
     // Attributs
     private List<Player> players;
     private int points;

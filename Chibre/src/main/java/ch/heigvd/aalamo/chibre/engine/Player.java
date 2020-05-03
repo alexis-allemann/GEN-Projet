@@ -9,17 +9,28 @@ Compilateur : javac 11.0.4
 package ch.heigvd.aalamo.chibre.engine;
 
 import ch.heigvd.aalamo.chibre.network.Handler;
+import ch.heigvd.aalamo.chibre.network.objects.State;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Player {
+public class Player implements Serializable {
     // Attributs
     private List<Card> cards = new ArrayList<>(Game.NB_CARDS_PLAYER);
     private Handler handler;
     private int id;
     private static int count = 1;
+    private Game game;
+
+    public Game getGame() {
+        return game;
+    }
+
+    public void setGame(Game game) {
+        this.game = game;
+    }
 
     /**
      * Instancier un joueur
@@ -44,11 +55,6 @@ public class Player {
         if (card == null)
             throw new IllegalArgumentException("Carte nulle");
         cards.add(card);
-        try {
-            handler.sendCard(card);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
     }
 
     public int getId() {
@@ -57,5 +63,16 @@ public class Player {
 
     public List<Card> getCards() {
         return cards;
+    }
+
+    public void sendState(State state) {
+        if (state == null)
+            throw new IllegalArgumentException("State nul");
+
+        try {
+            handler.sendState(state);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
 }

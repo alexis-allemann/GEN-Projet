@@ -10,7 +10,7 @@ package ch.heigvd.aalamo.chibre.engine;
 
 import java.util.*;
 
-public class Game {
+public class Game implements Runnable {
 
     // Constantes globles du jeu
     public static final int NB_TEAMS = 2;
@@ -38,6 +38,9 @@ public class Game {
         if (players == null || players.contains(null))
             throw new IllegalArgumentException("Liste de joueurs illégale (nulle ou joueur nul)");
 
+        for(Player player: players)
+            player.setGame(this);
+
         this.id = count++;
         this.players = players;
         setTeams(players);
@@ -61,18 +64,6 @@ public class Game {
                 new Team(players.subList(0, NB_PLAYERS_TEAMS)),
                 new Team(players.subList(NB_PLAYERS_TEAMS, NB_PLAYERS))
         );
-    }
-
-    /**
-     * Démarrer la partie
-     */
-    public void startGame() {
-        while (teams.get(0).getPoints() < WIN_POINTS && teams.get(1).getPoints() < WIN_POINTS) {
-            Round round = new Round(this);
-            // TODO : BUG Il ne s'ajoute pas ?
-            rounds.add(round);
-            round.run();
-        }
     }
 
     public int getId() {
@@ -110,5 +101,17 @@ public class Game {
 
     public void setFirstPlayerTrump(Player firstPlayerTrump) {
         this.firstPlayerTrump = firstPlayerTrump;
+    }
+
+    @Override
+    public void run() {
+        Round round = new Round(this);
+        // TODO : BUG Il ne s'ajoute pas ?
+        rounds.add(round);
+        round.initRound();
+
+        /*while (teams.get(0).getPoints() < WIN_POINTS && teams.get(1).getPoints() < WIN_POINTS) {
+
+        }*/
     }
 }

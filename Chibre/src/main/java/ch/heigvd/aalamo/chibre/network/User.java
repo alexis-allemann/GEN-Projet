@@ -12,6 +12,7 @@ import ch.heigvd.aalamo.chibre.ChibreController;
 import ch.heigvd.aalamo.chibre.ChibreView;
 import ch.heigvd.aalamo.chibre.engine.Card;
 import ch.heigvd.aalamo.chibre.engine.Game;
+import ch.heigvd.aalamo.chibre.network.objects.State;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -26,7 +27,7 @@ public class User implements ChibreController {
     private Socket socket;
     private ObjectOutputStream out;
     private ObjectInputStream in;
-    private List<Card> cards = new ArrayList<>(Game.NB_CARDS_PLAYER);
+    private int nbCards;
 
     /**
      * Instancier un utilisateur de l'application
@@ -59,11 +60,23 @@ public class User implements ChibreController {
      * Lecture du réseau afin de recevoir des objets
      */
     private void receive() {
-        Card card;
+        State state;
         try {
-            while ((card = (Card) in.readObject()) != null) {
-                view.addCard(card.getCardType(), card.getCardColor(), cards.size());
-                cards.add(card);
+            while ((state = (State) in.readObject()) != null) {
+                switch (state.getUserAction()) {
+                    case SEND_CARDS:
+                        for (Card card : state.getCards()) {
+                            view.addCard(card.getCardType(), card.getCardColor(), nbCards);
+                            nbCards++;
+                        }
+                        break;
+                    case PLAY_CARD:
+                        break;
+                    case CHOOSE_TRUMP:
+                        System.out.println("choix atout");
+                        break;
+                    case MAKE_ANNOUNCEMENT:
+                }
             }
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();

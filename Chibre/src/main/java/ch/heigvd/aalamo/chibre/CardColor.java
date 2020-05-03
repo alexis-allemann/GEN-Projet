@@ -8,7 +8,9 @@ Compilateur : javac 11.0.4
 --------------------------- */
 package ch.heigvd.aalamo.chibre;
 
-public enum CardColor {
+import java.io.Serializable;
+
+public enum CardColor implements Serializable {
     CLUB,
     DIAMOND,
     HEART,

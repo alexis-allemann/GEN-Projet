@@ -1,6 +1,9 @@
 package ch.heigvd.aalamo.chibre.network.objects;
 
-public enum UserAction {
+import java.io.Serializable;
+
+public enum UserAction implements Serializable {
+    SEND_CARDS,
     PLAY_CARD,
     CHOOSE_TRUMP,
     MAKE_ANNOUNCEMENT

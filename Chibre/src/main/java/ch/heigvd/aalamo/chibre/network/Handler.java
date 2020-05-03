@@ -10,6 +10,7 @@ package ch.heigvd.aalamo.chibre.network;
 
 import ch.heigvd.aalamo.chibre.engine.Card;
 import ch.heigvd.aalamo.chibre.engine.Player;
+import ch.heigvd.aalamo.chibre.network.objects.State;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -44,10 +45,20 @@ public class Handler implements Runnable {
      */
     @Override
     public void run() {
-        Card card;
+        State state;
         try {
-            while ((card = (Card) in.readObject()) != null) {
+            while ((state = (State) in.readObject()) != null) {
                 // game.send(cardJPanel);
+                switch (state.getUserAction()) {
+                    case SEND_CARDS:
+                        break;
+                    case PLAY_CARD:
+                        break;
+                    case CHOOSE_TRUMP:
+                        player.getGame().getCurrentRound().setTrumpColor(state.getTrumpColor());
+                        break;
+                    case MAKE_ANNOUNCEMENT:
+                }
             }
         } catch (ClassNotFoundException | IOException e) {
             e.printStackTrace();
@@ -72,13 +83,7 @@ public class Handler implements Runnable {
         this.player = player;
     }
 
-    /**
-     * Envoi d'une carte sur le réseau
-     *
-     * @param card la carte
-     * @throws IOException s'il y a une erreur de donnée
-     */
-    public void sendCard(Card card) throws IOException {
-        out.writeObject(card);
+    public void sendState(State state) throws IOException {
+        out.writeObject(state);
     }
 }
