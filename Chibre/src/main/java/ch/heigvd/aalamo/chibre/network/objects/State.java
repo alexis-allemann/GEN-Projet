@@ -15,6 +15,7 @@ public class State {
     private Player currentPlayer;
     private List<Card> cards = new ArrayList<>(Game.NB_CARDS_PLAYER);
     private CardColor trumpColor;
+    private UserAction userAction;
 
     // Getters
     public Team getTeam1() {
