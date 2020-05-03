@@ -65,18 +65,19 @@ public class Table {
      * @param game la partie jouée
      */
     public Table(Game game){
+        // TODO : a factoriser, pas très propre
         // Instanciation du random
         Random random = new Random();
 
         // Randomisation des deux équipes
-        int teamPosition = random.nextInt(2);
+        int teamPosition = random.nextInt(Game.NB_TEAMS);
 
 
         for (Team team : game.getTeams()) {
 
             // Randomisation des joueurs dans l'équipe
             if (TablePosition.TOP.getTeam() == teamPosition) {
-                int playerPosition = random.nextInt(2);
+                int playerPosition = random.nextInt(Game.NB_PLAYERS_TEAMS);
                 if(playerPosition == 0){
                     table.add(new Pair(team.getPlayers().get(0), TablePosition.TOP));
                     table.add(new Pair(team.getPlayers().get(1), TablePosition.BOTTOM));

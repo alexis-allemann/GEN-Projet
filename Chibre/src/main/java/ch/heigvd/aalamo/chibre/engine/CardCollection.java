@@ -38,6 +38,9 @@ public class CardCollection {
                 hasDiamondSeven = true;
 
             player.distributeCard(currentCard);
+
+            currentCard.setPlayer(player);
+
             collection.remove(cardIndex);
         }
 

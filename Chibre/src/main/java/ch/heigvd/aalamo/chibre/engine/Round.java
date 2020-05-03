@@ -31,14 +31,6 @@ public class Round {
     public Round(Game game) {
         this.game = game;
         this.id = count++;
-        // TODO : BUG il ne passe pas dans le if
-        for(Player player : game.getPlayers()){
-            if(cardCollection.distributeCards(player, Game.NB_CARDS_PLAYER) && game.getRounds().size() == 1)
-                game.setFirstPlayerTrump(player);
-        }
-
-        this.trumpPlayer = game.getTable().nextTrumpPlayer(id, game.getTable().getPlayerPosition(game.getFirstPlayerTrump()));
-
     }
 
     public Player getTrumpPlayer() {
@@ -46,6 +38,13 @@ public class Round {
     }
 
     public void run(){
+
+        for(Player player : game.getPlayers()){
+            if(cardCollection.distributeCards(player, Game.NB_CARDS_PLAYER) && game.getRounds().size() == 1)
+                game.setFirstPlayerTrump(player);
+        }
+
+        this.trumpPlayer = game.getTable().nextTrumpPlayer(id, game.getTable().getPlayerPosition(game.getFirstPlayerTrump()));
 
         while(!playerCardsEmpty()){
             Turn turn = new Turn(this);
