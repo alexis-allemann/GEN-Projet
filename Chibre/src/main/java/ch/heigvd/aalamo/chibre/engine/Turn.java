@@ -8,9 +8,7 @@ Compilateur : javac 11.0.4
 --------------------------- */
 package ch.heigvd.aalamo.chibre.engine;
 
-import ch.heigvd.aalamo.chibre.CardColor;
 import ch.heigvd.aalamo.chibre.network.objects.AskCardRequest;
-import ch.heigvd.aalamo.chibre.network.objects.Request;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +18,7 @@ public class Turn {
     private List<Card> cards = new ArrayList<>(Game.NB_PLAYERS);
     private final Round round;
     private boolean isPlayed;
-    private Player currentPlayer;
+    private Player firstPlayer;
     private Player winner;
     private Turn lastTurn;
 
@@ -43,20 +41,45 @@ public class Turn {
 
     public void initTurn(){
         if(round.isFirstRound())
-            currentPlayer = round.getTrumpPlayer();
+            firstPlayer = round.getTrumpPlayer();
         else if(lastTurn != null)
-            currentPlayer = lastTurn.getWinner();
+            firstPlayer = lastTurn.getWinner();
 
-        currentPlayer.sendState(new AskCardRequest());
+        firstPlayer.sendState(new AskCardRequest());
 
         // TODO : Renvoyez une erreur au client ?
     }
 
     public void pursueTurn(){
+
+        //TODO :
+        // 1. Si la mise est pleine on calcule les points et
+        // on les attribue à l'équipe du joueur qui remporte la main
+        // 1.1. Si les joueurs n'ont plus du cartes, on crée un nouveau tour
+        // 2. Sinon on demande au joueur suivant de jouer
+
+        if(cards.size() == Game.NB_PLAYERS){
+            // TODO
+            //  1. Calcul des points
+            //  2. Ajout des points à l'équipe du joueur gagnant
+            //  3. Suppression des cartes jouées aux joueurs
+
+            newTurn();
+        }
+        else{
+            Player nextPlayer = round.getTable().getPlayer(firstPlayer, cards.size());
+            nextPlayer.sendState(new AskCardRequest());
+        }
+    }
+
+    // TODO: A voir si c'est propre
+    private void newTurn() {
         if(round.playerCardsEmpty())
             round.getGame().newRound();
         else{
-            // TODO demander au currentPlayer de jouer une carte
+            Turn turn = new Turn(round, this);
+            round.addTurn(turn);
+            turn.initTurn();
         }
     }
 
@@ -70,6 +93,10 @@ public class Turn {
 
     public void playCard(Card card){
         cards.add(card);
+    }
+
+    public boolean isPlayed() {
+        return isPlayed;
     }
 }
 

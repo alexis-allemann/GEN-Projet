@@ -10,9 +10,7 @@ package ch.heigvd.aalamo.chibre.engine;
 
 import ch.heigvd.aalamo.chibre.CardColor;
 import ch.heigvd.aalamo.chibre.network.objects.AskTrumpRequest;
-import ch.heigvd.aalamo.chibre.network.objects.Request;
 import ch.heigvd.aalamo.chibre.network.objects.SendCardsRequest;
-import ch.heigvd.aalamo.chibre.network.objects.ServerAction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,7 +52,7 @@ public class Round {
             player.sendState(new SendCardsRequest(player.getCards()));
         }
 
-        this.trumpPlayer = game.getTable().nextTrumpPlayer(id, game.getTable().getPlayerPosition(game.getFirstPlayerTrump()));
+        this.trumpPlayer = game.getTable().nextTrumpPlayer(id, game.getTable().getPositionByPlayer(game.getFirstPlayerTrump()));
 
         trumpPlayer.sendState(new AskTrumpRequest());
     }
@@ -99,5 +97,17 @@ public class Round {
 
     public Table getTable(){
         return game.getTable();
+    }
+
+    public Turn getCurrentTurn(){
+        for (Turn turn : turns)
+            if(turn.isPlayed())
+                return turn;
+
+        return null;
+    }
+
+    public void addTurn(Turn turn){
+        turns.add(turn);
     }
 }

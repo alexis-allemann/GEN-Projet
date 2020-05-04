@@ -52,7 +52,8 @@ public class Handler implements Runnable {
                     case SEND_ANNOUCEMENT:
                         break;
                     case PLAY_CARD:
-                        //player.getGame().getCurrentRound().getCurrentTurn().
+                        player.getGame().getCurrentRound().getCurrentTurn().playCard(response.getCard());
+                        player.getGame().getCurrentRound().getCurrentTurn().pursueTurn();
                         break;
                     case SEND_TRUMP:
                         player.getGame().getCurrentRound().setTrumpColor(response.getTrumpColor());
