@@ -65,39 +65,10 @@ public class Table {
      * @param game la partie jouée
      */
     public Table(Game game){
-        // TODO : a factoriser, pas très propre
-        // Instanciation du random
-        Random random = new Random();
-
-        // Randomisation des deux équipes
-        int teamPosition = random.nextInt(Game.NB_TEAMS);
-
-
-        for (Team team : game.getTeams()) {
-
-            // Randomisation des joueurs dans l'équipe
-            if (TablePosition.TOP.getTeam() == teamPosition) {
-                int playerPosition = random.nextInt(Game.NB_PLAYERS_TEAMS);
-                if(playerPosition == 0){
-                    table.add(new Pair(team.getPlayers().get(0), TablePosition.TOP));
-                    table.add(new Pair(team.getPlayers().get(1), TablePosition.BOTTOM));
-                }
-                else{
-                    table.add(new Pair(team.getPlayers().get(1), TablePosition.TOP));
-                    table.add(new Pair(team.getPlayers().get(0), TablePosition.BOTTOM));
-                }
-            }
-            else {
-                int playerPosition = random.nextInt(1);
-                if (playerPosition == 0) {
-                    table.add(new Pair(team.getPlayers().get(0), TablePosition.RIGHT));
-                    table.add(new Pair(team.getPlayers().get(1), TablePosition.LEFT));
-                } else {
-                    table.add(new Pair(team.getPlayers().get(1), TablePosition.RIGHT));
-                    table.add(new Pair(team.getPlayers().get(0), TablePosition.LEFT));
-                }
-            }
-        }
+        table.add(new Pair(game.getTeams().get(0).getPlayers().get(0), TablePosition.TOP));
+        table.add(new Pair(game.getTeams().get(0).getPlayers().get(1), TablePosition.BOTTOM));
+        table.add(new Pair(game.getTeams().get(1).getPlayers().get(0), TablePosition.RIGHT));
+        table.add(new Pair(game.getTeams().get(1).getPlayers().get(1), TablePosition.LEFT));
     }
 
     /**
@@ -117,7 +88,7 @@ public class Table {
      * @param player Joueur dont on veut la position
      * @return La position du joueur sur la table
      */
-    public TablePosition getPlayerPosition(Player player){
+    public TablePosition getPositionByPlayer(Player player){
         for(Pair pair : table){
             if(pair.getPlayer() == player)
                 return pair.getTablePosition();
@@ -139,6 +110,10 @@ public class Table {
                 return pair.getPlayer();
         }
         return null;
+    }
+
+    public Player getPlayer(Player firstPlayer, int nb) {
+        return getPlayer(getPositionByPlayer(firstPlayer), nb);
     }
 
 }
