@@ -7,11 +7,15 @@ import ch.heigvd.aalamo.chibre.assets.GuiAssets;
 import ch.heigvd.aalamo.chibre.view.BaseView;
 import ch.heigvd.aalamo.chibre.view.DrawableRessource;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,10 +45,7 @@ public class GUIView extends BaseView<ImageIcon> {
     private JLabel lblCard7;
     private JLabel lblCard8;
     private JLabel lblCard9;
-    private JLabel test;
     private JLabel cardPlayed;
-    private JTextField textfield;
-    private JPanel panelTest;
 
     // Attributs
     JFrame gui = new JFrame("Chibre");
@@ -52,6 +53,8 @@ public class GUIView extends BaseView<ImageIcon> {
     private static final int WINDOW_HEIGHT = 850;
     private List<JLabel> cards = new ArrayList<>(9);
     private final static ImageIcon UNKNOWN_ICON;
+    private JLabel dragSource;
+    private ChibreController controller;
 
     // Initialisation des attributs statiques
     static {
@@ -61,8 +64,21 @@ public class GUIView extends BaseView<ImageIcon> {
         UNKNOWN_ICON = new ImageIcon(img);
     }
 
-    private void createUIComponents() {
-        // TODO: place custom component creation code here
+    /**
+     * Instanciation de la vue
+     *
+     * @param controller controlleur de la vue
+     */
+    public GUIView(ChibreController controller) {
+        super(controller);
+        this.controller = controller;
+        try {
+            UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+        } catch (UnsupportedLookAndFeelException | InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        GuiAssets.loadAssets(this);
+        initializeGui();
     }
 
     /**
@@ -93,32 +109,6 @@ public class GUIView extends BaseView<ImageIcon> {
     }
 
     /**
-     * Instanciation de la vue
-     *
-     * @param controller controlleur de la vue
-     */
-    public GUIView(ChibreController controller) {
-        super(controller);
-        try {
-            UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-        } catch (UnsupportedLookAndFeelException | InstantiationException | IllegalAccessException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        GuiAssets.loadAssets(this);
-        initializeGui();
-
-        test.setTransferHandler(new TransferHandler("icon"));
-        test.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                JComponent lab = (JComponent)e.getSource();
-                TransferHandler handle = lab.getTransferHandler();
-                handle.exportAsDrag(lab, e, TransferHandler.COPY);
-            }
-        });
-    }
-
-    /**
      * Action à effectuer lorsque la fenêtre est fermée
      */
     @Override
@@ -135,7 +125,18 @@ public class GUIView extends BaseView<ImageIcon> {
      */
     @Override
     public void addCard(CardType type, CardColor color, int position) {
-        cards.get(position).setIcon(loadResourceFor(type, color, UNKNOWN_ICON));
+        JLabel card = cards.get(position);
+        card.setIcon(loadResourceFor(type, color, UNKNOWN_ICON));
+        card.setTransferHandler(new TransferHandler("icon"));
+        card.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                JComponent lab = (JComponent) e.getSource();
+                TransferHandler handle = lab.getTransferHandler();
+                handle.exportAsDrag(lab, e, TransferHandler.COPY);
+                dragSource = card;
+            }
+        });
     }
 
     /**
@@ -177,10 +178,25 @@ public class GUIView extends BaseView<ImageIcon> {
         cards.add(lblCard8);
         cards.add(lblCard9);
 
-        test.setIcon(loadResourceFor(CardType.KING, CardColor.HEART, UNKNOWN_ICON));
+        for (JLabel card : cards)
+            card.setTransferHandler(new TransferHandler("icon"));
 
-        cardPlayed.setIcon(new ImageIcon("DropImage.png"));
-        test.setTransferHandler(new TransferHandler("icon"));
-        cardPlayed.setTransferHandler(new TransferHandler("icon"));
+        BufferedImage dropImage;
+        try {
+            dropImage = ImageIO.read(GuiAssets.class.getResource("images/DropImage.png"));
+            cardPlayed.setIcon(new ImageIcon(dropImage));
+            cardPlayed.setTransferHandler(new TransferHandler("icon"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        cardPlayed.addPropertyChangeListener(new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent e) {
+                if (e.getPropertyName() == "icon" && dragSource != null)
+                    dragSource.setIcon(null);
+                controller.sendCard(cards.indexOf(dragSource));
+            }
+        });
     }
 }
