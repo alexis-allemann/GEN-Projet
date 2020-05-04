@@ -40,6 +40,9 @@ public class CardCollection {
 
             player.distributeCard(currentCard);
 
+            // TODO décommenter lors de la serialization
+            //currentCard.setPlayer(player);
+
             collection.remove(cardIndex);
         }
 

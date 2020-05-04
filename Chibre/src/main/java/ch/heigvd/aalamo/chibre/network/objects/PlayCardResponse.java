@@ -21,7 +21,7 @@ public class PlayCardResponse implements Response{
     }
 
     @Override
-    public Card getCard() {
+    public Card getCardPlayed() {
         return card;
     }
 }

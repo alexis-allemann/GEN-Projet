@@ -22,10 +22,10 @@ public class Turn {
     private Player winner;
     private Turn lastTurn;
 
-    public Turn(Round round, Turn lastTurn){
+    public Turn(Round round, Turn lastTurn) {
         this.round = round;
         this.lastTurn = lastTurn;
-
+        this.isPlayed = true;
         //TODO :
         // 1. Récupérer le joueur qui doit jouer
         // 2. Lui demander de jouer une carte
@@ -39,10 +39,10 @@ public class Turn {
 
     }
 
-    public void initTurn(){
-        if(round.isFirstRound())
+    public void initTurn() {
+        if (round.isFirstRound())
             firstPlayer = round.getTrumpPlayer();
-        else if(lastTurn != null)
+        else if (lastTurn != null)
             firstPlayer = lastTurn.getWinner();
 
         firstPlayer.sendState(new AskCardRequest());
@@ -50,7 +50,7 @@ public class Turn {
         // TODO : Renvoyez une erreur au client ?
     }
 
-    public void pursueTurn(){
+    public void pursueTurn() {
 
         //TODO :
         // 1. Si la mise est pleine on calcule les points et
@@ -58,7 +58,7 @@ public class Turn {
         // 1.1. Si les joueurs n'ont plus du cartes, on crée un nouveau tour
         // 2. Sinon on demande au joueur suivant de jouer
 
-        if(cards.size() == Game.NB_PLAYERS){
+        if (cards.size() == Game.NB_PLAYERS) {
             // TODO
             //  1. Calcul des points
             //  2. Définir le joueur gagant
@@ -67,18 +67,17 @@ public class Turn {
             defineWinner();
             int points = getTotalPoints();
             newTurn();
-        }
-        else{
-            Player nextPlayer = round.getTable().getPlayer(firstPlayer, cards.size());
+        } else {
+            Player nextPlayer = round.getTable().getPlayer(firstPlayer, cards.size() - 1);
             nextPlayer.sendState(new AskCardRequest());
         }
     }
 
     // TODO: A voir si c'est propre
     private void newTurn() {
-        if(round.playerCardsEmpty())
+        if (round.playerCardsEmpty())
             round.getGame().newRound();
-        else{
+        else {
             Turn turn = new Turn(round, this);
             round.addTurn(turn);
             turn.initTurn();
@@ -90,7 +89,7 @@ public class Turn {
     }
 
 
-    public void playCard(Card card){
+    public void playCard(Card card) {
         cards.add(card);
     }
 
@@ -98,39 +97,36 @@ public class Turn {
         return isPlayed;
     }
 
-    private void defineWinner(){
+    private void defineWinner() {
         Card winningCard = null;
-        for(Card card : cards){
-            if(winningCard == null)
+        for (Card card : cards) {
+            if (winningCard == null)
                 winningCard = card;
-            else if(card.getCardColor() != round.getTrumpColor()){
-                if( winningCard.getCardColor() != round.getTrumpColor() &&
-                        card.getCardType().getOrder() > winningCard.getCardType().getOrder())
-                {
+            else if (card.getCardColor() != round.getTrumpColor()) {
+                if (winningCard.getCardColor() != round.getTrumpColor() &&
+                        card.getCardType().getOrder() > winningCard.getCardType().getOrder()) {
                     winningCard = card;
                 }
-            }
-            else{
-                if(winningCard.getCardColor() != round.getTrumpColor()){
-                    if(card.getCardType().getOrderOfTrump() > winningCard.getCardType().getOrder())
+            } else {
+                if (winningCard.getCardColor() != round.getTrumpColor()) {
+                    if (card.getCardType().getOrderOfTrump() > winningCard.getCardType().getOrder())
                         winningCard = card;
-                }
-                else {
-                    if(card.getCardType().getOrderOfTrump() > winningCard.getCardType().getOrder())
+                } else {
+                    if (card.getCardType().getOrderOfTrump() > winningCard.getCardType().getOrder())
                         winningCard = card;
                 }
             }
         }
 
-        if(winningCard != null)
+        if (winningCard != null)
             this.winner = winningCard.getPlayer();
     }
 
-    private int getTotalPoints(){
+    private int getTotalPoints() {
         int points = 0;
 
-        for(Card card : cards)
-            if(card.getCardColor() == round.getTrumpColor())
+        for (Card card : cards)
+            if (card.getCardColor() == round.getTrumpColor())
                 points += card.getCardType().getValueOfTrump();
             else
                 points += card.getCardType().getValue();

@@ -17,6 +17,7 @@ public class Card implements Serializable{
     // Attributs
     private CardType cardType;
     private CardColor cardColor;
+    private Player player;
 
     /**
      * Instanciation d'une carte

@@ -24,6 +24,6 @@ public class SendCardPlayedResponse implements Response{
 
     @Override
     public Card getCardPlayed() {
-        return null;
+        return cardPlayed;
     }
 }

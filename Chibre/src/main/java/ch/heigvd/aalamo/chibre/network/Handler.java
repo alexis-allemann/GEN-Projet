@@ -8,6 +8,7 @@ Compilateur : javac 11.0.4
 --------------------------- */
 package ch.heigvd.aalamo.chibre.network;
 
+import ch.heigvd.aalamo.chibre.engine.Card;
 import ch.heigvd.aalamo.chibre.engine.Player;
 import ch.heigvd.aalamo.chibre.network.objects.Request;
 import ch.heigvd.aalamo.chibre.network.objects.Response;
@@ -52,10 +53,14 @@ public class Handler implements Runnable {
                     case SEND_ANNOUCEMENT:
                         break;
                     case PLAY_CARD:
-                        player.getGame().getCurrentRound().getCurrentTurn().playCard(response.getCard());
+                        Card card = response.getCardPlayed();
+                        card.setPlayer(player);
+                        // TODO : serializer pour éviter de set le player relié à la carte ici
+                        player.getGame().getCurrentRound().getCurrentTurn().playCard(card);
                         player.getGame().getCurrentRound().getCurrentTurn().pursueTurn();
                         break;
                     case SEND_TRUMP:
+                        // TODO : test si null ==> chibrer
                         player.getGame().getCurrentRound().setTrumpColor(response.getTrumpColor());
                         player.getGame().getCurrentRound().initTurn();
                         break;
