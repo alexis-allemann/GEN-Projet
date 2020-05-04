@@ -51,14 +51,12 @@ public class Round {
         for (Player player : game.getPlayers()) {
             if (cardCollection.distributeCards(player, Game.NB_CARDS_PLAYER) && game.getRounds().size() == 1)
                 game.setFirstPlayerTrump(player);
-            Request request = new SendCardsRequest(player.getCards());
-            player.sendState(request);
+            player.sendState(new SendCardsRequest(player.getCards()));
         }
 
         this.trumpPlayer = game.getTable().nextTrumpPlayer(id, game.getTable().getPlayerPosition(game.getFirstPlayerTrump()));
 
-        Request request = new AskTrumpRequest();
-        trumpPlayer.sendState(request);
+        trumpPlayer.sendState(new AskTrumpRequest());
     }
 
     public boolean isPlayed() {
