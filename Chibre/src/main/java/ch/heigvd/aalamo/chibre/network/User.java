@@ -8,15 +8,19 @@ Compilateur : javac 11.0.4
 --------------------------- */
 package ch.heigvd.aalamo.chibre.network;
 
+import ch.heigvd.aalamo.chibre.CardColor;
 import ch.heigvd.aalamo.chibre.ChibreController;
 import ch.heigvd.aalamo.chibre.ChibreView;
 import ch.heigvd.aalamo.chibre.engine.Card;
-import ch.heigvd.aalamo.chibre.network.objects.Request;
+import ch.heigvd.aalamo.chibre.engine.Game;
+import ch.heigvd.aalamo.chibre.network.objects.*;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 
 public class User implements ChibreController {
     // Attributs
@@ -24,7 +28,7 @@ public class User implements ChibreController {
     private Socket socket;
     private ObjectOutputStream out;
     private ObjectInputStream in;
-    private int nbCards;
+    private List<Card> cards = new ArrayList<>(Game.NB_CARDS_PLAYER);
 
     /**
      * Instancier un utilisateur de l'application
@@ -62,11 +66,86 @@ public class User implements ChibreController {
             while ((request = (Request) in.readObject()) != null) {
                 switch (request.getServerAction()) {
                     case SEND_CARDS:
-                        for (Card card : request.getCards())
-                            view.addCard(card.getCardType(), card.getCardColor(), nbCards++);
+                        cards = new ArrayList<>(Game.NB_CARDS_PLAYER);
+                        for (Card card : request.getCards()) {
+                            view.addCard(card.getCardType(), card.getCardColor(), cards.size());
+                            cards.add(card);
+                        }
                         break;
                     case ASK_TRUMP:
-                        System.out.println("choix atout");
+                        ChibreView.UserChoice choice = view.askUser("Choix atout", "Quel couleur voulez-vous faire atout ?",
+                                new ChibreView.UserChoice() {
+                                    @Override
+                                    public String textValue() {
+                                        return "Carreau";
+                                    }
+
+                                    @Override
+                                    public String toString() {
+                                        return "Carreau";
+                                    }
+                                },
+                                new ChibreView.UserChoice() {
+                                    @Override
+                                    public String textValue() {
+                                        return "Coeur";
+                                    }
+
+                                    @Override
+                                    public String toString() {
+                                        return "Coeur";
+                                    }
+                                },
+                                new ChibreView.UserChoice() {
+                                    @Override
+                                    public String textValue() {
+                                        return "Pique";
+                                    }
+
+                                    @Override
+                                    public String toString() {
+                                        return "Pique";
+                                    }
+                                },
+                                new ChibreView.UserChoice() {
+                                    @Override
+                                    public String textValue() {
+                                        return "Trèfle";
+                                    }
+
+                                    @Override
+                                    public String toString() {
+                                        return "Trèfle";
+                                    }
+                                },
+                                new ChibreView.UserChoice() {
+                                    @Override
+                                    public String textValue() {
+                                        return "Chibrer";
+                                    }
+
+                                    @Override
+                                    public String toString() {
+                                        return "Chibrer";
+                                    }
+                                });
+
+                        CardColor trumpColor = null;
+                        switch (choice.toString()) {
+                            case "Carreau":
+                                trumpColor = CardColor.DIAMOND;
+                                break;
+                            case "Coeur":
+                                trumpColor = CardColor.HEART;
+                                break;
+                            case "Pique":
+                                trumpColor = CardColor.SPADE;
+                                break;
+                            case "Trèfle":
+                                trumpColor = CardColor.CLUB;
+                                break;
+                        }
+                        chooseTrump(trumpColor);
                         break;
                     case ASK_ANNOUNCEMENT:
                 }
@@ -78,8 +157,28 @@ public class User implements ChibreController {
 
     /**
      * Envoi d'une carte au serveur
+     *
+     * @throws IndexOutOfBoundsException si l'index dépasse la taille du tableau
      */
-    public void sendCard() {
-        // Méthode de juste pour le test (hérite du controlleur)
+    public void sendCard(int index) {
+        if (index >= cards.size())
+            throw new IndexOutOfBoundsException("index plus grand que le nombre de cartes");
+
+        try {
+            out.writeObject(new SendCardPlayedResponse(cards.get(index)));
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
+        System.out.println("Carte envoyée");
+    }
+
+    @Override
+    public void chooseTrump(CardColor color) {
+        try {
+            out.writeObject(new SendTrumpReponse(color));
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
+        System.out.println("Choix atout envoyé");
     }
 }

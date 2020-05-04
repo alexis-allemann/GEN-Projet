@@ -3,12 +3,13 @@ package ch.heigvd.aalamo.chibre.network.objects;
 import ch.heigvd.aalamo.chibre.CardColor;
 import ch.heigvd.aalamo.chibre.engine.Card;
 
-public interface Response {
+import java.io.Serializable;
 
+public interface Response extends Serializable {
     UserAction getUserAction();
 
     CardColor getTrumpColor();
 
-    Card getCard();
+    Card getCardPlayed();
 
 }
