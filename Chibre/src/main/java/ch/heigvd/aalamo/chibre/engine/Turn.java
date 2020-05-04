@@ -61,9 +61,11 @@ public class Turn {
         if(cards.size() == Game.NB_PLAYERS){
             // TODO
             //  1. Calcul des points
-            //  2. Ajout des points à l'équipe du joueur gagnant
-            //  3. Suppression des cartes jouées aux joueurs
-
+            //  2. Définir le joueur gagant
+            //  3. Ajout des points à l'équipe du joueur gagnant
+            //  4. Suppression des cartes jouées aux joueurs
+            defineWinner();
+            int points = getTotalPoints();
             newTurn();
         }
         else{
@@ -87,9 +89,6 @@ public class Turn {
         return winner;
     }
 
-    public void setWinner(Player winner) {
-        this.winner = winner;
-    }
 
     public void playCard(Card card){
         cards.add(card);
@@ -97,6 +96,46 @@ public class Turn {
 
     public boolean isPlayed() {
         return isPlayed;
+    }
+
+    private void defineWinner(){
+        Card winningCard = null;
+        for(Card card : cards){
+            if(winningCard == null)
+                winningCard = card;
+            else if(card.getCardColor() != round.getTrumpColor()){
+                if( winningCard.getCardColor() != round.getTrumpColor() &&
+                        card.getCardType().getOrder() > winningCard.getCardType().getOrder())
+                {
+                    winningCard = card;
+                }
+            }
+            else{
+                if(winningCard.getCardColor() != round.getTrumpColor()){
+                    if(card.getCardType().getOrderOfTrump() > winningCard.getCardType().getOrder())
+                        winningCard = card;
+                }
+                else {
+                    if(card.getCardType().getOrderOfTrump() > winningCard.getCardType().getOrder())
+                        winningCard = card;
+                }
+            }
+        }
+
+        if(winningCard != null)
+            this.winner = winningCard.getPlayer();
+    }
+
+    private int getTotalPoints(){
+        int points = 0;
+
+        for(Card card : cards)
+            if(card.getCardColor() == round.getTrumpColor())
+                points += card.getCardType().getValueOfTrump();
+            else
+                points += card.getCardType().getValue();
+
+        return points;
     }
 }
 
