@@ -31,14 +31,6 @@ public class Team implements Serializable {
         return players;
     }
 
-    public int getMaxIDPlayer() {
-        return Math.max(this.players.get(0).getId(), this.players.get(1).getId());
-    }
-
-    public int getMinIDPlayer() {
-        return Math.min(this.players.get(0).getId(), this.players.get(1).getId());
-    }
-
     public void addPoints(int points){
         this.points += points;
     }

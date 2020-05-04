@@ -9,8 +9,10 @@ Compilateur : javac 11.0.4
 package ch.heigvd.aalamo.chibre.engine;
 
 import ch.heigvd.aalamo.chibre.CardColor;
-import ch.heigvd.aalamo.chibre.network.objects.State;
-import ch.heigvd.aalamo.chibre.network.objects.UserAction;
+import ch.heigvd.aalamo.chibre.network.objects.AskTrumpRequest;
+import ch.heigvd.aalamo.chibre.network.objects.Request;
+import ch.heigvd.aalamo.chibre.network.objects.SendCardsRequest;
+import ch.heigvd.aalamo.chibre.network.objects.ServerAction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,19 +22,20 @@ public class Round {
     private final int id;
     private static int count = 1;
     private CardColor trumpColor;
-    private List<Turn> turns = new ArrayList<>(Game.NB_CARDS_PLAYER);
+    private final List<Turn> turns = new ArrayList<>(Game.NB_CARDS_PLAYER);
     private final CardCollection cardCollection = new CardCollection();
     private final Game game;
-    private boolean isPlayed = true;
+    private boolean isPlayed;
     Player trumpPlayer;
 
 
     /**
      * Instancier un tour de jeu
      */
-    public Round(Game game) {
+    public Round(Game game, boolean isPlayed) {
         this.game = game;
         this.id = count++;
+        this.isPlayed = isPlayed;
     }
 
     public Player getTrumpPlayer() {
@@ -48,29 +51,43 @@ public class Round {
         for (Player player : game.getPlayers()) {
             if (cardCollection.distributeCards(player, Game.NB_CARDS_PLAYER) && game.getRounds().size() == 1)
                 game.setFirstPlayerTrump(player);
-            State state = new State();
-            state.setCards(player.getCards());
-            state.setUserAction(UserAction.SEND_CARDS);
-            player.sendState(state);
+            Request request = new SendCardsRequest(player.getCards());
+            player.sendState(request);
         }
 
         this.trumpPlayer = game.getTable().nextTrumpPlayer(id, game.getTable().getPlayerPosition(game.getFirstPlayerTrump()));
 
-        State state = new State();
-        state.setUserAction(UserAction.CHOOSE_TRUMP);
-        trumpPlayer.sendState(state);
-
-        /*
-        while (!playerCardsEmpty()) {
-            Turn turn = new Turn(this);
-            turns.add(turn);
-            turn.run();
-        }
-
-        isPlayed = false;*/
+        Request request = new AskTrumpRequest();
+        trumpPlayer.sendState(request);
     }
 
-    private boolean playerCardsEmpty() {
+    public boolean isPlayed() {
+        return isPlayed;
+    }
+
+    public void endRound() {
+        isPlayed = false;
+    }
+
+    public Game getGame() {
+        return game;
+    }
+
+    public void initTurn(){
+        Turn turn = new Turn(this, null);
+        turns.add(turn);
+        turn.initTurn();
+    }
+
+    public CardColor getTrumpColor() {
+        return trumpColor;
+    }
+
+    public List<Turn> getTurns() {
+        return turns;
+    }
+
+    public boolean playerCardsEmpty() {
         for (Player player : game.getPlayers()) {
             if (player.getCards().size() > 1)
                 return false;
@@ -78,11 +95,11 @@ public class Round {
         return true;
     }
 
-    public boolean isPlayed() {
-        return isPlayed;
+    public boolean isFirstRound(){
+        return id == 1;
     }
 
-    public Game getGame() {
-        return game;
+    public Table getTable(){
+        return game.getTable();
     }
 }

@@ -13,10 +13,11 @@ import ch.heigvd.aalamo.chibre.CardType;
 
 import java.io.Serializable;
 
-public class Card implements Serializable {
+public class Card {
     // Attributs
     private CardType cardType;
     private CardColor cardColor;
+    private Player player;
 
     /**
      * Instanciation d'une carte
@@ -41,5 +42,9 @@ public class Card implements Serializable {
      */
     public CardColor getCardColor() {
         return cardColor;
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
     }
 }

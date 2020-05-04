@@ -9,14 +9,14 @@ Compilateur : javac 11.0.4
 package ch.heigvd.aalamo.chibre.engine;
 
 import ch.heigvd.aalamo.chibre.network.Handler;
-import ch.heigvd.aalamo.chibre.network.objects.State;
+import ch.heigvd.aalamo.chibre.network.objects.Request;
 
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Player implements Serializable {
+public class Player {
     // Attributs
     private List<Card> cards = new ArrayList<>(Game.NB_CARDS_PLAYER);
     private Handler handler;
@@ -57,20 +57,16 @@ public class Player implements Serializable {
         cards.add(card);
     }
 
-    public int getId() {
-        return id;
-    }
-
     public List<Card> getCards() {
         return cards;
     }
 
-    public void sendState(State state) {
-        if (state == null)
+    public void sendState(Request request) {
+        if (request == null)
             throw new IllegalArgumentException("State nul");
 
         try {
-            handler.sendState(state);
+            handler.sendState(request);
         } catch (IOException ex) {
             ex.printStackTrace();
         }

@@ -11,15 +11,12 @@ package ch.heigvd.aalamo.chibre.network;
 import ch.heigvd.aalamo.chibre.ChibreController;
 import ch.heigvd.aalamo.chibre.ChibreView;
 import ch.heigvd.aalamo.chibre.engine.Card;
-import ch.heigvd.aalamo.chibre.engine.Game;
-import ch.heigvd.aalamo.chibre.network.objects.State;
+import ch.heigvd.aalamo.chibre.network.objects.Request;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.List;
 
 public class User implements ChibreController {
     // Attributs
@@ -57,25 +54,21 @@ public class User implements ChibreController {
     }
 
     /**
-     * Lecture du réseau afin de recevoir des objets
+     * Lecture du réseau afin de recevoir des objets et des les envoyer à la GUI
      */
     private void receive() {
-        State state;
+        Request request;
         try {
-            while ((state = (State) in.readObject()) != null) {
-                switch (state.getUserAction()) {
+            while ((request = (Request) in.readObject()) != null) {
+                switch (request.getServerAction()) {
                     case SEND_CARDS:
-                        for (Card card : state.getCards()) {
-                            view.addCard(card.getCardType(), card.getCardColor(), nbCards);
-                            nbCards++;
-                        }
+                        for (Card card : request.getCards())
+                            view.addCard(card.getCardType(), card.getCardColor(), nbCards++);
                         break;
-                    case PLAY_CARD:
-                        break;
-                    case CHOOSE_TRUMP:
+                    case ASK_TRUMP:
                         System.out.println("choix atout");
                         break;
-                    case MAKE_ANNOUNCEMENT:
+                    case ASK_ANNOUNCEMENT:
                 }
             }
         } catch (IOException | ClassNotFoundException e) {

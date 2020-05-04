@@ -103,15 +103,18 @@ public class Game implements Runnable {
         this.firstPlayerTrump = firstPlayerTrump;
     }
 
+    public void newRound(){
+        if (teams.get(0).getPoints() < WIN_POINTS && teams.get(1).getPoints() < WIN_POINTS) {
+            Round round = new Round(this, true);
+            rounds.add(round);
+            round.initRound();
+        }
+    }
+
     @Override
     public void run() {
-        Round round = new Round(this);
-        // TODO : BUG Il ne s'ajoute pas ?
+        Round round = new Round(this, true);
         rounds.add(round);
         round.initRound();
-
-        /*while (teams.get(0).getPoints() < WIN_POINTS && teams.get(1).getPoints() < WIN_POINTS) {
-
-        }*/
     }
 }

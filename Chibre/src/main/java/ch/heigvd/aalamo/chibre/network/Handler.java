@@ -8,9 +8,9 @@ Compilateur : javac 11.0.4
 --------------------------- */
 package ch.heigvd.aalamo.chibre.network;
 
-import ch.heigvd.aalamo.chibre.engine.Card;
 import ch.heigvd.aalamo.chibre.engine.Player;
-import ch.heigvd.aalamo.chibre.network.objects.State;
+import ch.heigvd.aalamo.chibre.network.objects.Request;
+import ch.heigvd.aalamo.chibre.network.objects.Response;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -41,23 +41,22 @@ public class Handler implements Runnable {
     }
 
     /**
-     * Méthode du thread qui écoute le réseau pour savoir si une carte est reçue
+     * Méthode du thread qui écoute le réseau et qui envoie les données au server
      */
     @Override
     public void run() {
-        State state;
+        Response response;
         try {
-            while ((state = (State) in.readObject()) != null) {
-                // game.send(cardJPanel);
-                switch (state.getUserAction()) {
-                    case SEND_CARDS:
+            while ((response = (Response) in.readObject()) != null) {
+                switch (response.getUserAction()) {
+                    case SEND_ANNOUCEMENT:
                         break;
                     case PLAY_CARD:
                         break;
-                    case CHOOSE_TRUMP:
-                        player.getGame().getCurrentRound().setTrumpColor(state.getTrumpColor());
+                    case SEND_TRUMP:
+                        player.getGame().getCurrentRound().setTrumpColor(response.getTrumpColor());
+                        player.getGame().getCurrentRound().initTurn();
                         break;
-                    case MAKE_ANNOUNCEMENT:
                 }
             }
         } catch (ClassNotFoundException | IOException e) {
@@ -83,7 +82,7 @@ public class Handler implements Runnable {
         this.player = player;
     }
 
-    public void sendState(State state) throws IOException {
-        out.writeObject(state);
+    public void sendState(Request request) throws IOException {
+        out.writeObject(request);
     }
 }

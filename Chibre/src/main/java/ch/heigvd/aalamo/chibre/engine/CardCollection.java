@@ -26,6 +26,7 @@ public class CardCollection {
      *
      * @param player utilisateur à qui distribuer
      * @param nb     le nombre de cartes
+     * @return true si le joueur a le 7 de carreau
      */
     public boolean distributeCards(Player player, int nb) {
         boolean hasDiamondSeven = false; // Pour savoir si le joueur fait atout au premier tour
@@ -38,6 +39,7 @@ public class CardCollection {
                 hasDiamondSeven = true;
 
             player.distributeCard(currentCard);
+            currentCard.setPlayer(player);
 
             collection.remove(cardIndex);
         }

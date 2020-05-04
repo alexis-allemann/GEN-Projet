@@ -9,6 +9,7 @@ Compilateur : javac 11.0.4
 package ch.heigvd.aalamo.chibre.engine;
 
 import ch.heigvd.aalamo.chibre.CardColor;
+import ch.heigvd.aalamo.chibre.network.objects.Request;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,12 +17,52 @@ import java.util.List;
 public class Turn {
     // Attributs
     private List<Card> cards = new ArrayList<>(Game.NB_PLAYERS);
-    private Round round;
+    private final Round round;
+    private Player currentPlayer;
+    private Player winner;
+    private Turn lastTurn;
 
-    public Turn(Round round){
+    public Turn(Round round, Turn lastTurn){
         this.round = round;
+        this.lastTurn = lastTurn;
+
+        //TODO :
+        // 1. Récupérer le joueur qui doit jouer
+        // 2. Lui demander de jouer une carte
+        // 3. Faire ça pour les 3 autres joueur
+        // 4. Regarder qui a remporter la mise
+        // 5. Calculer les points
+        // 6. Attribuer les points à la bonne équipe
+        // 7. Recréer un tour si ils restent des cartes, sinon créer un nouveau round
+
+
     }
 
-    public void run() {
+    public void initTurn(){
+        if(round.isFirstRound())
+            currentPlayer = round.getTrumpPlayer();
+        else if(lastTurn != null)
+            currentPlayer = lastTurn.getWinner();
+
+        Request request = new AskCardRequest();
+        currentPlayer.sendState();
+        // Renvoyez une erreur au client ?
+    }
+
+    public void pursueTurn(){
+        if(round.playerCardsEmpty())
+            round.getGame().newRound();
+        else{
+
+        }
+    }
+
+    public Player getWinner() {
+        return winner;
+    }
+
+    public void setWinner(Player winner) {
+        this.winner = winner;
     }
 }
+
