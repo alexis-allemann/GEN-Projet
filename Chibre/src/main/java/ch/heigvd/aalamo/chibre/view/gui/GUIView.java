@@ -13,9 +13,6 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
-import java.awt.image.ImageObserver;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +43,10 @@ public class GUIView extends BaseView<ImageIcon> {
     private JLabel lblCard7;
     private JLabel lblCard8;
     private JLabel lblCard9;
-    private JLabel lblCardPlayed;
+    private JLabel lblCardPlayedPlayerBottom;
+    private JLabel lblCardPlayedPlayerTop;
+    private JLabel lblCardPlayedPlayerRight;
+    private JLabel lblCardPlayedPlayerLeft;
 
     // Attributs
     JFrame gui = new JFrame("Chibre");
@@ -112,18 +112,21 @@ public class GUIView extends BaseView<ImageIcon> {
         for (JLabel card : cards)
             card.setTransferHandler(new TransferHandler("icon"));
 
-        // Création de la zone pour déposer une carte jouée
+        // Création de la zone pour déposer les cartes jouées
         BufferedImage dropImage;
         try {
             dropImage = ImageIO.read(GuiAssets.class.getResource("images/DropImage.png"));
-            lblCardPlayed.setIcon(new ImageIcon(dropImage));
-            lblCardPlayed.setTransferHandler(new TransferHandler("icon"));
+            lblCardPlayedPlayerTop.setIcon(new ImageIcon(dropImage));
+            lblCardPlayedPlayerLeft.setIcon(new ImageIcon(dropImage));
+            lblCardPlayedPlayerRight.setIcon(new ImageIcon(dropImage));
+            lblCardPlayedPlayerBottom.setIcon(new ImageIcon(dropImage));
+            lblCardPlayedPlayerBottom.setTransferHandler(new TransferHandler("icon"));
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         // Ajout du listeneur pour envoyer une carte jouée
-        lblCardPlayed.addPropertyChangeListener(e -> {
+        lblCardPlayedPlayerBottom.addPropertyChangeListener(e -> {
             // Identification de la carte jouée si la propriété icon a changée
             if (e.getPropertyName().equals("icon") && dragSource != null)
                 dragSource.setIcon(null);
@@ -184,14 +187,23 @@ public class GUIView extends BaseView<ImageIcon> {
     }
 
     /**
-     * Afficher un message à l'utilisateur
+     * Demander une saisie à l'utilisateur
      *
-     * @param title   titre du message
-     * @param message message
+     * @param title titre du message
      */
     @Override
-    public void displayMessage(String title, String message) {
-        JOptionPane.showInputDialog(title, message);
+    public String askUser(String title, String question) {
+        return JOptionPane.showInputDialog(null, question, title, JOptionPane.QUESTION_MESSAGE);
+    }
+
+    /**
+     * Définir le nom de l'utilisateur en cours
+     *
+     * @param userName nom de l'utilisateur
+     */
+    @Override
+    public void setUserName(String userName) {
+        lblTableBottomName.setText(userName);
     }
 
     // Instanciation des ressources graphiques

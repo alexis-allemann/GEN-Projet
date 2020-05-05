@@ -48,8 +48,16 @@ public interface ChibreView {
     /**
      * Afficher un message à l'utilisateur
      *
-     * @param title   titre du message
-     * @param message message
+     * @param title    titre du message
+     * @param question question à poser
+     * @return la réponse saisie
      */
-    void displayMessage(String title, String message);
+    String askUser(String title, String question);
+
+    /**
+     * Définir le nom de l'utilisateur en cours
+     *
+     * @param userName nom de l'utilisateur
+     */
+    void setUserName(String userName);
 }

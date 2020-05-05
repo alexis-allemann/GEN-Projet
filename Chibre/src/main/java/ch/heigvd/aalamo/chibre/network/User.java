@@ -16,7 +16,6 @@ import ch.heigvd.aalamo.chibre.engine.Game;
 import ch.heigvd.aalamo.chibre.network.objects.*;
 import ch.heigvd.aalamo.chibre.view.gui.GUIErrorFrame;
 
-import javax.swing.*;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -152,6 +151,7 @@ public class User implements ChibreController {
             throw new RuntimeException("La vue est requise");
 
         this.view = view;
+        view.setUserName(view.askUser("Identification", "Quel est votre nom : "));
         receive();
     }
 
