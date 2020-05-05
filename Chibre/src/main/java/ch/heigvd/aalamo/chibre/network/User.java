@@ -36,6 +36,7 @@ public class User implements ChibreController {
     private String topPlayer;
     private String rightPlayer;
     private String leftPlayer;
+    private String trumpPlayer;
     private int pointsTeam1;
     private int pointsTeam2;
     private int points;
@@ -158,7 +159,7 @@ public class User implements ChibreController {
                         view.resetPlayedCards();
                         break;
                     case ASK_TRUMP:
-                        // Création du choix utilisateur
+                        // TODO : empecher de chibrer si le joueur n'est pas le trump player
                         ChibreView.UserChoice choice = view.askUser("Choix atout", "Quel couleur voulez-vous faire atout ?",
                                 new ChibreView.UserChoice() {
                                     @Override
@@ -204,6 +205,7 @@ public class User implements ChibreController {
                                         return "Trèfle";
                                     }
                                 },
+
                                 new ChibreView.UserChoice() {
                                     @Override
                                     public Object value() {
