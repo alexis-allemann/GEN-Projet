@@ -85,6 +85,7 @@ public class Round {
      */
     public void setTrumpColor(CardColor trumpColor) {
         this.trumpColor = trumpColor;
+        game.sendToAllPlayers(new Request(ServerAction.SEND_TRUMP_COLOR, trumpColor));
     }
 
     // Méthodes
@@ -103,6 +104,8 @@ public class Round {
         this.trumpPlayer = game.getTable().nextTrumpPlayer(id, game.getTable().getPositionByPlayer(game.getFirstPlayerTrump()));
 
         trumpPlayer.sendRequest(new Request(ServerAction.ASK_TRUMP));
+
+        game.sendToAllPlayers(new Request(ServerAction.SEND_TRUMP_PLAYER, trumpPlayer.getName()));
     }
 
     /**

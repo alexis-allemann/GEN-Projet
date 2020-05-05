@@ -60,4 +60,67 @@ public interface ChibreView {
      * @param userName nom de l'utilisateur
      */
     void setUserName(String userName);
+
+    /**
+     * Définir le nom de l'utilisateur à droite
+     *
+     * @param userName nom de l'utilisateur
+     */
+    void setRightPlayerName(String userName);
+
+    /**
+     * Définir le nom de l'utilisateur en haut
+     *
+     * @param userName nom de l'utilisateur
+     */
+    void setTopPlayerName(String userName);
+
+    /**
+     * Définir le nom de l'utilisateur à gauche
+     *
+     * @param userName nom de l'utilisateur
+     */
+    void setLeftPlayerName(String userName);
+
+    /**
+     * Affichage du joueur 1 de l'équipe 1
+     *
+     * @param userName nom de l'utilisateur
+     */
+    void setTeam1Player1(String userName);
+
+    /**
+     * Affichage du joueur 2 de l'équipe 1
+     *
+     * @param userName nom de l'utilisateur
+     */
+    void setTeam1Player2(String userName);
+
+    /**
+     * Affichage du joueur 1 de l'équipe 2
+     *
+     * @param userName nom de l'utilisateur
+     */
+    void setTeam2Player1(String userName);
+
+    /**
+     * Affichage du joueur 2 de l'équipe 2
+     *
+     * @param userName nom de l'utilisateur
+     */
+    void setTeam2Player2(String userName);
+
+    /**
+     * Affichage du joueur qui fait atout
+     *
+     * @param userName nom de l'utilisateur
+     */
+    void setTrumpPlayer(String userName);
+
+    /**
+     * Affichage de la couleur atout
+     *
+     * @param trumpColor couleur atout
+     */
+    void setTrumpColor(CardColor trumpColor);
 }

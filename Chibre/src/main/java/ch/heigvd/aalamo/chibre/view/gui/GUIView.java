@@ -47,6 +47,12 @@ public class GUIView extends BaseView<ImageIcon> {
     private JLabel lblCardPlayedPlayerTop;
     private JLabel lblCardPlayedPlayerRight;
     private JLabel lblCardPlayedPlayerLeft;
+    private JLabel lblTeam1Player1;
+    private JLabel lblTeam1Player2;
+    private JLabel lblTeam2Player1;
+    private JLabel lblTeam2Player2;
+    private JLabel lblTrumpPlayer;
+    private JLabel lblTrumpColor;
 
     // Attributs
     JFrame gui = new JFrame("Chibre");
@@ -204,6 +210,92 @@ public class GUIView extends BaseView<ImageIcon> {
     @Override
     public void setUserName(String userName) {
         lblTableBottomName.setText(userName);
+    }
+
+    /**
+     * Définir le nom de l'utilisateur à droite
+     *
+     * @param userName nom de l'utilisateur
+     */
+    @Override
+    public void setRightPlayerName(String userName) {
+        lblTableRightName.setText(userName);
+    }
+
+    /**
+     * Définir le nom de l'utilisateur en haut
+     *
+     * @param userName nom de l'utilisateur
+     */
+    @Override
+    public void setTopPlayerName(String userName) {
+        lblTableTopName.setText(userName);
+    }
+
+    /**
+     * Définir le nom de l'utilisateur à gauche
+     *
+     * @param userName nom de l'utilisateur
+     */
+    @Override
+    public void setLeftPlayerName(String userName) {
+        lblTableLeftName.setText(userName);
+    }
+
+    /**
+     * Affichage du joueur 1 de l'équipe 1
+     *
+     * @param userName nom de l'utilisateur
+     */
+    @Override
+    public void setTeam1Player1(String userName) {
+        lblTeam1Player1.setText(userName);
+    }
+
+    /**
+     * Affichage du joueur 2 de l'équipe 1
+     *
+     * @param userName nom de l'utilisateur
+     */
+    @Override
+    public void setTeam1Player2(String userName){
+        lblTeam1Player2.setText(userName);
+    }
+
+    /**
+     * Affichage du joueur 1 de l'équipe 2
+     *
+     * @param userName nom de l'utilisateur
+     */
+    @Override
+    public void setTeam2Player1(String userName){
+        lblTeam2Player1.setText(userName);
+    }
+
+    /**
+     * Affichage du joueur 2 de l'équipe 2
+     *
+     * @param userName nom de l'utilisateur
+     */
+    @Override
+    public void setTeam2Player2(String userName){
+        lblTeam2Player2.setText(userName);
+    }
+
+    @Override
+    public void setTrumpPlayer(String userName) {
+        lblTrumpPlayer.setText(userName);
+    }
+
+    @Override
+    public void setTrumpColor(CardColor trumpColor) {
+        BufferedImage trumpImage;
+        try {
+            trumpImage = ImageIO.read(GuiAssets.class.getResource("images/"+ trumpColor.toString() + ".png"));
+            lblTrumpColor.setIcon(new ImageIcon(trumpImage));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     // Instanciation des ressources graphiques

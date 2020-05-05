@@ -30,6 +30,7 @@ public class User implements ChibreController {
     private ObjectOutputStream out;
     private ObjectInputStream in;
     private List<Card> cards = new ArrayList<>(Game.NB_CARDS_PLAYER);
+    private String playerName;
 
     /**
      * Instancier un utilisateur de l'application
@@ -58,6 +59,40 @@ public class User implements ChibreController {
             while ((request = (Request) in.readObject()) != null) {
                 // Selon le type de requête du serveur
                 switch (request.getAction()) {
+                    case SEND_PLAYER_NAMES:
+                        // Affichage des joueurs
+                        if (request.getObject() instanceof List) {
+                            List<String> names = (List<String>) request.getObject();
+                            int index = names.indexOf(playerName);
+                            if (index >= 2) {
+                                if (index == 2) {
+                                    view.setTopPlayerName(names.get(3));
+                                    view.setRightPlayerName(names.get(1));
+                                    view.setLeftPlayerName(names.get(0));
+                                }
+                                if (index == 3) {
+                                    view.setTopPlayerName(names.get(2));
+                                    view.setRightPlayerName(names.get(0));
+                                    view.setLeftPlayerName(names.get(1));
+                                }
+                            } else {
+                                if (index == 0) {
+                                    view.setTopPlayerName(names.get(1));
+                                    view.setRightPlayerName(names.get(2));
+                                    view.setLeftPlayerName(names.get(3));
+                                }
+                                if (index == 1) {
+                                    view.setTopPlayerName(names.get(0));
+                                    view.setRightPlayerName(names.get(3));
+                                    view.setLeftPlayerName(names.get(2));
+                                }
+                            }
+                            view.setTeam1Player1(names.get(0));
+                            view.setTeam1Player2(names.get(1));
+                            view.setTeam2Player1(names.get(2));
+                            view.setTeam2Player2(names.get(3));
+                        }
+                        break;
                     case SEND_CARDS:
                         // Affichage des cartes reçues
                         if (request.getObject() instanceof List) {
@@ -67,6 +102,12 @@ public class User implements ChibreController {
                                 cards.add(card);
                             }
                         }
+                        break;
+                    case SEND_TRUMP_PLAYER:
+                        view.setTrumpPlayer((String) request.getObject());
+                        break;
+                    case SEND_TRUMP_COLOR:
+                        view.setTrumpColor((CardColor) request.getObject());
                         break;
                     case ASK_TRUMP:
                         // Création du choix utilisateur
@@ -151,8 +192,26 @@ public class User implements ChibreController {
             throw new RuntimeException("La vue est requise");
 
         this.view = view;
-        view.setUserName(view.askUser("Identification", "Quel est votre nom : "));
+        String playerName = view.askUser("Identification", "Quel est votre nom : ");
+        view.setUserName(playerName);
+        sendPlayerName(playerName);
         receive();
+    }
+
+    /**
+     * Envoi du nom du joueur
+     *
+     * @param name nom du joueur
+     */
+    @Override
+    public void sendPlayerName(String name) {
+        try {
+            playerName = name;
+            out.writeObject(new Response(UserAction.SEND_NAME, name));
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
+        System.out.println("Nom envoyé");
     }
 
     /**

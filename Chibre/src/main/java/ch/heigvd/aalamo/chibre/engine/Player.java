@@ -22,6 +22,7 @@ public class Player {
     private int id;
     private static int count = 1;
     private Game game;
+    private String name;
 
     /**
      * Instancier un joueur
@@ -38,6 +39,13 @@ public class Player {
     }
 
     // Getters
+
+    /**
+     * @return le nom du joueur
+     */
+    public String getName() {
+        return name;
+    }
 
     /**
      * @return la partie dans laquelle le joueur joue
@@ -64,6 +72,15 @@ public class Player {
         this.game = game;
     }
 
+    /**
+     * Définir le nom du joueur
+     *
+     * @param name nom du joueur
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
     // Méthodes
 
     /**
@@ -84,7 +101,7 @@ public class Player {
      */
     public void sendRequest(Request request) {
         if (request == null)
-            throw new IllegalArgumentException("State nul");
+            throw new IllegalArgumentException("Requête nulle");
 
         handler.sendRequest(request);
     }

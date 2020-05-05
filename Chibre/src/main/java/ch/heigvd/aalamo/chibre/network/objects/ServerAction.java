@@ -11,8 +11,11 @@ package ch.heigvd.aalamo.chibre.network.objects;
 import java.io.Serializable;
 
 public enum ServerAction implements Serializable {
+    SEND_PLAYER_NAMES,
     SEND_CARDS,
     ASK_TRUMP,
     ASK_ANNOUNCEMENT,
-    ASK_CARD
+    ASK_CARD,
+    SEND_TRUMP_PLAYER,
+    SEND_TRUMP_COLOR
 }

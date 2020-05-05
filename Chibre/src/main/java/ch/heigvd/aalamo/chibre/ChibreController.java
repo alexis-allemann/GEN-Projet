@@ -29,4 +29,10 @@ public interface ChibreController {
      * @param color couleur de l'atout
      */
     void chooseTrump(CardColor color);
+
+    /**
+     * Envoi du nom du joueur au serveur
+     * @param name nom du joueur
+     */
+    void sendPlayerName(String name);
 }

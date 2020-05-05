@@ -65,6 +65,11 @@ public class Handler implements Runnable {
             while ((response = (Response) in.readObject()) != null) {
                 // Selon le type d'action de la GUI
                 switch (response.getAction()) {
+                    case SEND_NAME:
+                        player.setName((String) response.getObject());
+                        if(player.getGame() != null)
+                            player.getGame().run();
+                        break;
                     case SEND_ANNOUCEMENT:
                         break;
                     case PLAY_CARD:

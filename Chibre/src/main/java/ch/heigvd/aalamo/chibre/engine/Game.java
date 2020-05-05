@@ -8,6 +8,9 @@ Compilateur : javac 11.0.4
 --------------------------- */
 package ch.heigvd.aalamo.chibre.engine;
 
+import ch.heigvd.aalamo.chibre.network.objects.Request;
+import ch.heigvd.aalamo.chibre.network.objects.ServerAction;
+
 import java.util.*;
 
 public class Game implements Runnable {
@@ -37,13 +40,13 @@ public class Game implements Runnable {
         if (players == null || players.contains(null))
             throw new IllegalArgumentException("Liste de joueurs illégale (nulle ou joueur nul)");
 
-        for (Player player : players)
-            player.setGame(this);
-
         this.id = count++;
         this.players = players;
-        setTeams(players);
+        setTeams();
         this.table = new Table(this);
+
+        for (Player player : this.players)
+            player.setGame(this);
     }
 
     // Getters
@@ -120,6 +123,15 @@ public class Game implements Runnable {
      */
     @Override
     public void run() {
+        // Envoi du nom des joueurs
+        List<String> playerNames = new ArrayList<>(NB_PLAYERS);
+
+        for (Player player : this.players)
+            playerNames.add(player.getName());
+
+        sendToAllPlayers(new Request(ServerAction.SEND_PLAYER_NAMES, playerNames));
+
+        // Démarrage du premier tour
         Round round = new Round(this, true);
         rounds.add(round);
         round.initRound();
@@ -127,10 +139,8 @@ public class Game implements Runnable {
 
     /**
      * Définition des équipes à partir d'une liste de joueurs
-     *
-     * @param players les joueurs
      */
-    private void setTeams(List<Player> players) {
+    private void setTeams() {
         if (players.size() != NB_PLAYERS)
             throw new RuntimeException("Une partie ne peut pas être jouée à moins de " + NB_PLAYERS + " joueurs");
 
@@ -153,5 +163,14 @@ public class Game implements Runnable {
             rounds.add(round);
             round.initRound();
         }
+    }
+
+    /**
+     * Envoi d'une requête à tous les joueurs
+     * @param request la requête à envoyer
+     */
+    public void sendToAllPlayers(Request request){
+        for(Player player : players)
+            player.sendRequest(request);
     }
 }
