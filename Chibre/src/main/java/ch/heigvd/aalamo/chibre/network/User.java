@@ -14,7 +14,9 @@ import ch.heigvd.aalamo.chibre.ChibreView;
 import ch.heigvd.aalamo.chibre.engine.Card;
 import ch.heigvd.aalamo.chibre.engine.Game;
 import ch.heigvd.aalamo.chibre.network.objects.*;
+import ch.heigvd.aalamo.chibre.view.gui.GUIErrorFrame;
 
+import javax.swing.*;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -32,6 +34,8 @@ public class User implements ChibreController {
 
     /**
      * Instancier un utilisateur de l'application
+     *
+     * @throws RuntimeException si aucun serveur n'est disponible sur le réseau
      */
     public User() {
         try {
@@ -39,7 +43,8 @@ public class User implements ChibreController {
             out = new ObjectOutputStream(socket.getOutputStream());
             in = new ObjectInputStream(socket.getInputStream());
         } catch (IOException e) {
-            e.printStackTrace();
+            new GUIErrorFrame("Aucun serveur n'est disponible sur le réseau");
+            throw new RuntimeException("Aucun serveur n'est disponible");
         }
     }
 

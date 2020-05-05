@@ -13,6 +13,7 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.awt.image.ImageObserver;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
@@ -93,6 +94,8 @@ public class GUIView extends BaseView<ImageIcon> {
         gui.pack();
         gui.setVisible(true);
         gui.setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
+        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+        gui.setLocation(dim.width / 2 - WINDOW_WIDTH / 2, dim.height / 2 - WINDOW_HEIGHT / 2);
 
         // Création des emplacements pour les cartes
         cards.add(lblCard1);
@@ -178,6 +181,17 @@ public class GUIView extends BaseView<ImageIcon> {
                     question, title, JOptionPane.QUESTION_MESSAGE, null, possibilities, result);
         }
         return result;
+    }
+
+    /**
+     * Afficher un message à l'utilisateur
+     *
+     * @param title   titre du message
+     * @param message message
+     */
+    @Override
+    public void displayMessage(String title, String message) {
+        JOptionPane.showInputDialog(title, message);
     }
 
     // Instanciation des ressources graphiques

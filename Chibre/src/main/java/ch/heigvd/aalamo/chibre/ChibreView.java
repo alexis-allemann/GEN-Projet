@@ -35,7 +35,6 @@ public interface ChibreView {
      */
     <T extends UserChoice> T askUser(String title, String question, T... possibilities);
 
-
     /**
      * Interface représentant un choix utilisateur
      */
@@ -45,4 +44,12 @@ public interface ChibreView {
          */
         Object value();
     }
+
+    /**
+     * Afficher un message à l'utilisateur
+     *
+     * @param title   titre du message
+     * @param message message
+     */
+    void displayMessage(String title, String message);
 }
