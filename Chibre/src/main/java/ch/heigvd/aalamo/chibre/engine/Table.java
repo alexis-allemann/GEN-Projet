@@ -131,6 +131,13 @@ public class Table {
         return getTrumpPlayer(getPositionByPlayer(firstPlayer), nb);
     }
 
+    public List<Player> getPlayers(){
+        List<Player> players = new ArrayList<>(Game.NB_PLAYERS);
+        for(Pair pair : table)
+            players.add(pair.getPlayer());
+        return players;
+    }
+
     // Méthodes
 
     /**

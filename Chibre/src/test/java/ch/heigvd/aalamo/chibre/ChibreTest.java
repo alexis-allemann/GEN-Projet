@@ -15,6 +15,10 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ChibreTest {
@@ -100,5 +104,32 @@ public class ChibreTest {
                 break;
             }
         assertTrue(everyBodyHasNineCards);
+    }
+
+    @Test
+    public void checkRoundStart() throws InterruptedException{
+        for(int i = 0; i < 4; ++i)
+            new User();
+        Thread.sleep(100);
+
+        assertNotNull(server.getGames().get(0).getCurrentRound());
+    }
+
+    @Test
+    public void checkTableCreation() throws InterruptedException{
+        for(int i = 0; i < 4; ++i)
+            new User();
+
+        Thread.sleep(100);
+        List<TablePosition> tablePositions = new ArrayList<>(TablePosition.values().length);
+        tablePositions.addAll(Arrays.asList(TablePosition.values()));
+
+        Table table = server.getGames().get(0).getTable();
+        for(Player player : table.getPlayers()){
+            tablePositions.remove(table.getPositionByPlayer(player));
+        }
+
+        assertTrue(tablePositions.isEmpty());
+
     }
 }

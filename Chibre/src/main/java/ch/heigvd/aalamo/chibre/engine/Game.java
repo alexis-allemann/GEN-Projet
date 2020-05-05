@@ -133,7 +133,7 @@ public class Game implements Runnable {
         sendToAllPlayers(new Request(ServerAction.SEND_PLAYER_NAMES, playerNames));
 
         // Démarrage du premier tour
-        Round round = new Round(this, true);
+        Round round = new Round(this);
         rounds.add(round);
         round.initRound();
     }
@@ -160,7 +160,7 @@ public class Game implements Runnable {
      */
     public void newRound() {
         if (teams.get(0).getPoints() < WIN_POINTS && teams.get(1).getPoints() < WIN_POINTS) {
-            Round round = new Round(this, true);
+            Round round = new Round(this);
             rounds.add(round);
             round.initRound();
         }

@@ -29,10 +29,10 @@ public class Round {
     /**
      * Instancier un tour de jeu
      */
-    public Round(Game game, boolean isPlayed) {
+    public Round(Game game) {
         this.game = game;
         this.id = count++;
-        this.isPlayed = isPlayed;
+        this.isPlayed = true;
     }
 
     // Getters
