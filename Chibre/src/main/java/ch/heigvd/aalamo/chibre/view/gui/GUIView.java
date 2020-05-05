@@ -56,6 +56,9 @@ public class GUIView extends BaseView<ImageIcon> {
     private JLabel lblTrumpPlayer;
     private JLabel lblTrumpColor;
     private JLabel lblCurrentPlayer;
+    private JLabel lblTeam1Points;
+    private JLabel lblTeam2Points;
+    private JLabel lblWinningTeam;
 
     // Attributs
     JFrame gui = new JFrame("Chibre");
@@ -382,6 +385,44 @@ public class GUIView extends BaseView<ImageIcon> {
     @Override
     public void showMessage(String title, String message) {
         JOptionPane.showMessageDialog(null, message, title, JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    /**
+     * Afficher les points de l'équipe 1 à l'utilisateur
+     * @param points points à afficher
+     */
+    @Override
+    public void setPointsTeam1(int points){
+        lblTeam1Points.setText(String.valueOf(points));
+    }
+
+    /**
+     * Afficher les points de l'équipe 2 à l'utilisateur
+     * @param points points à afficher
+     */
+    @Override
+    public void setPointsTeam2(int points){
+        lblTeam2Points.setText(String.valueOf(points));
+    }
+
+    /**
+     * Afficher l'équipe gagnante provisoire
+     * @param team team à afficher
+     */
+    @Override
+    public void setWinningTeam(String team){
+        lblWinningTeam.setText(team);
+    }
+
+    /**
+     * Permet d'enlever l'affichage des cartes jouées
+     */
+    @Override
+    public void resetPlayedCards(){
+        lblCardPlayedPlayerTop.setIcon(dropIcon);
+        lblCardPlayedPlayerRight.setIcon(dropIcon);
+        lblCardPlayedPlayerBottom.setIcon(dropIcon);
+        lblCardPlayedPlayerLeft.setIcon(dropIcon);
     }
 
     // Instanciation des ressources graphiques

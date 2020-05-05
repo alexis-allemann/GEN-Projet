@@ -36,6 +36,9 @@ public class User implements ChibreController {
     private String topPlayer;
     private String rightPlayer;
     private String leftPlayer;
+    private int pointsTeam1;
+    private int pointsTeam2;
+    private int points;
 
     /**
      * Instancier un utilisateur de l'application
@@ -138,6 +141,21 @@ public class User implements ChibreController {
                             view.setLeftPlayerCard(card);
                         else if(currentPlayer.equals(rightPlayer))
                             view.setRightPlayerCard(card);
+                        break;
+                    case SEND_POINTS_TEAM1:
+                        points = (int) request.getObject();
+                        view.setPointsTeam1(points);
+                        pointsTeam1 = points;
+                        setWinningTeam();
+                        break;
+                    case SEND_POINTS_TEAM2:
+                        points = (int) request.getObject();
+                        view.setPointsTeam2(points);
+                        pointsTeam2 = points;
+                        setWinningTeam();
+                        break;
+                    case SEND_RESET_CARDS:
+                        view.resetPlayedCards();
                         break;
                     case ASK_TRUMP:
                         // Création du choix utilisateur
@@ -284,5 +302,14 @@ public class User implements ChibreController {
             exception.printStackTrace();
         }
         System.out.println("Choix atout envoyé");
+    }
+
+    private void setWinningTeam(){
+        if(pointsTeam1 > pointsTeam2)
+            view.setWinningTeam("Equipe 1");
+        else if(pointsTeam1 < pointsTeam2)
+            view.setWinningTeam("Equipe 2");
+        else
+            view.setWinningTeam("");
     }
 }

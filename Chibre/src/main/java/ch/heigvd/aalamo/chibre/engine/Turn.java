@@ -144,7 +144,13 @@ public class Turn {
      */
     public void playCard(Card card) {
         cards.add(card);
-        Card cardPlayed = card;
+        Card cardPlayed = null;
+        try{
+            cardPlayed = (Card)card.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+
         // TODO : décommenter si sérialization
         cardPlayed.setPlayer(null);
         round.getGame().sendToAllPlayers(new Request(ServerAction.SEND_CARD_PLAYED, cardPlayed));

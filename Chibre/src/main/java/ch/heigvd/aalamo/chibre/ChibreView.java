@@ -172,4 +172,27 @@ public interface ChibreView {
      * @param message message à afficher
      */
     void showMessage(String title, String message);
+
+    /**
+     * Afficher les points de l'équipe 1 à l'utilisateur
+     * @param points points à afficher
+     */
+    void setPointsTeam1(int points);
+
+    /**
+     * Afficher les points de l'équipe 2 à l'utilisateur
+     * @param points points à afficher
+     */
+    void setPointsTeam2(int points);
+
+    /**
+     * Afficher l'équipe gagnante provisoire
+     * @param team team à afficher
+     */
+    void setWinningTeam(String team);
+
+    /**
+     * Permet d'enlever l'affichage des cartes jouées
+     */
+    void resetPlayedCards();
 }

@@ -13,7 +13,7 @@ import ch.heigvd.aalamo.chibre.CardType;
 
 import java.io.Serializable;
 
-public class Card implements Serializable {
+public class Card implements Serializable, Cloneable {
     // Attributs
     private CardType cardType;
     private CardColor cardColor;
@@ -62,5 +62,11 @@ public class Card implements Serializable {
      */
     public void setPlayer(Player player) {
         this.player = player;
+    }
+
+    //Method
+
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 }
