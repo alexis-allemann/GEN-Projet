@@ -13,6 +13,7 @@ import ch.heigvd.aalamo.chibre.engine.Card;
 import ch.heigvd.aalamo.chibre.engine.Player;
 import ch.heigvd.aalamo.chibre.network.objects.Request;
 import ch.heigvd.aalamo.chibre.network.objects.Response;
+import ch.heigvd.aalamo.chibre.network.objects.ServerAction;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -80,9 +81,13 @@ public class Handler implements Runnable {
                         player.getGame().getCurrentRound().getCurrentTurn().pursueTurn();
                         break;
                     case SEND_TRUMP:
-                        // TODO : test si null ==> chibrer
-                        player.getGame().getCurrentRound().setTrumpColor((CardColor) response.getObject());
-                        player.getGame().getCurrentRound().initTurn();
+                        CardColor color = (CardColor) response.getObject();
+                        if(color == null)
+                            player.sendRequest(new Request(ServerAction.ASK_TRUMP));
+                        else{
+                            player.getGame().getCurrentRound().setTrumpColor(color);
+                            player.getGame().getCurrentRound().initTurn();
+                        }
                         break;
                 }
             }
