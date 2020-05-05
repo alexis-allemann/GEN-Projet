@@ -4,6 +4,8 @@ import ch.heigvd.aalamo.chibre.CardColor;
 import ch.heigvd.aalamo.chibre.CardType;
 import ch.heigvd.aalamo.chibre.ChibreController;
 import ch.heigvd.aalamo.chibre.assets.GuiAssets;
+import ch.heigvd.aalamo.chibre.engine.Card;
+import ch.heigvd.aalamo.chibre.engine.Player;
 import ch.heigvd.aalamo.chibre.view.BaseView;
 import ch.heigvd.aalamo.chibre.view.DrawableRessource;
 
@@ -53,6 +55,7 @@ public class GUIView extends BaseView<ImageIcon> {
     private JLabel lblTeam2Player2;
     private JLabel lblTrumpPlayer;
     private JLabel lblTrumpColor;
+    private JLabel lblCurrentPlayer;
 
     // Attributs
     JFrame gui = new JFrame("Chibre");
@@ -62,6 +65,7 @@ public class GUIView extends BaseView<ImageIcon> {
     private final static ImageIcon UNKNOWN_ICON;
     private JLabel dragSource;
     private ChibreController controller;
+    private ImageIcon dropIcon;
 
     // Initialisation des attributs statiques
     static {
@@ -122,10 +126,11 @@ public class GUIView extends BaseView<ImageIcon> {
         BufferedImage dropImage;
         try {
             dropImage = ImageIO.read(GuiAssets.class.getResource("images/DropImage.png"));
-            lblCardPlayedPlayerTop.setIcon(new ImageIcon(dropImage));
-            lblCardPlayedPlayerLeft.setIcon(new ImageIcon(dropImage));
-            lblCardPlayedPlayerRight.setIcon(new ImageIcon(dropImage));
-            lblCardPlayedPlayerBottom.setIcon(new ImageIcon(dropImage));
+            dropIcon = new ImageIcon(dropImage);
+            lblCardPlayedPlayerTop.setIcon(dropIcon);
+            lblCardPlayedPlayerLeft.setIcon(dropIcon);
+            lblCardPlayedPlayerRight.setIcon(dropIcon);
+            lblCardPlayedPlayerBottom.setIcon(dropIcon);
             lblCardPlayedPlayerBottom.setTransferHandler(new TransferHandler("icon"));
         } catch (IOException e) {
             e.printStackTrace();
@@ -136,7 +141,9 @@ public class GUIView extends BaseView<ImageIcon> {
             // Identification de la carte jouée si la propriété icon a changée
             if (e.getPropertyName().equals("icon") && dragSource != null)
                 dragSource.setIcon(null);
-            controller.sendCard(cards.indexOf(dragSource));
+
+            if(e.getNewValue() != dropIcon)
+                controller.sendCard(cards.indexOf(dragSource));
         });
     }
 
@@ -258,7 +265,7 @@ public class GUIView extends BaseView<ImageIcon> {
      * @param userName nom de l'utilisateur
      */
     @Override
-    public void setTeam1Player2(String userName){
+    public void setTeam1Player2(String userName) {
         lblTeam1Player2.setText(userName);
     }
 
@@ -268,7 +275,7 @@ public class GUIView extends BaseView<ImageIcon> {
      * @param userName nom de l'utilisateur
      */
     @Override
-    public void setTeam2Player1(String userName){
+    public void setTeam2Player1(String userName) {
         lblTeam2Player1.setText(userName);
     }
 
@@ -278,24 +285,103 @@ public class GUIView extends BaseView<ImageIcon> {
      * @param userName nom de l'utilisateur
      */
     @Override
-    public void setTeam2Player2(String userName){
+    public void setTeam2Player2(String userName) {
         lblTeam2Player2.setText(userName);
     }
 
+    /**
+     * Affichage du joueur qui fait atout
+     *
+     * @param userName nom de l'utilisateur
+     */
     @Override
     public void setTrumpPlayer(String userName) {
         lblTrumpPlayer.setText(userName);
     }
 
+    /**
+     * Affichage de la couleur atout
+     *
+     * @param trumpColor couleur atout
+     */
     @Override
     public void setTrumpColor(CardColor trumpColor) {
         BufferedImage trumpImage;
         try {
-            trumpImage = ImageIO.read(GuiAssets.class.getResource("images/"+ trumpColor.toString() + ".png"));
+            trumpImage = ImageIO.read(GuiAssets.class.getResource("images/" + trumpColor.toString() + ".png"));
             lblTrumpColor.setIcon(new ImageIcon(trumpImage));
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Affichage du joueur qui a le tour
+     *
+     * @param userName joueur qui a le tour
+     */
+    @Override
+    public void setCurrentPlayer(String userName) {
+        lblCurrentPlayer.setText("C'est au tour de " + userName + ", temps restant :");
+    }
+
+    /**
+     * Afficher la carte jouée par le joueur en haut
+     *
+     * @param card carte à afficher
+     */
+    @Override
+    public void setTopPlayerCard(Card card) {
+        lblCardPlayedPlayerTop.setIcon(loadResourceFor(card.getCardType(), card.getCardColor(), UNKNOWN_ICON));
+    }
+
+    /**
+     * Afficher la carte jouée par le joueur à gauche
+     *
+     * @param card carte à afficher
+     */
+    @Override
+    public void setLeftPlayerCard(Card card) {
+        lblCardPlayedPlayerLeft.setIcon(loadResourceFor(card.getCardType(), card.getCardColor(), UNKNOWN_ICON));
+    }
+
+    /**
+     * Afficher la carte jouée par le joueur à droite
+     *
+     * @param card carte à afficher
+     */
+    @Override
+    public void setRightPlayerCard(Card card) {
+        lblCardPlayedPlayerRight.setIcon(loadResourceFor(card.getCardType(), card.getCardColor(), UNKNOWN_ICON));
+    }
+
+    /**
+     * Afficher la carte jouée par le joueur en cours
+     *
+     * @param card carte à afficher
+     */
+    @Override
+    public void setBottomPlayerCard(Card card){
+        lblCardPlayedPlayerBottom.setIcon(loadResourceFor(card.getCardType(), card.getCardColor(), UNKNOWN_ICON));
+    }
+
+    /**
+     * Redéfinir la carte jouée à vide
+     */
+    @Override
+    public void resetBottomPlayerCard() {
+        lblCardPlayedPlayerBottom.setIcon(dropIcon);
+    }
+
+    /**
+     * Afficher un message
+     *
+     * @param title   titre de la popup
+     * @param message message à afficher
+     */
+    @Override
+    public void showMessage(String title, String message) {
+        JOptionPane.showMessageDialog(null, message, title, JOptionPane.INFORMATION_MESSAGE);
     }
 
     // Instanciation des ressources graphiques

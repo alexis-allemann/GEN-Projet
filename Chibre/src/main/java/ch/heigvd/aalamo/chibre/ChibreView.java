@@ -8,6 +8,8 @@ Compilateur : javac 11.0.4
 --------------------------- */
 package ch.heigvd.aalamo.chibre;
 
+import ch.heigvd.aalamo.chibre.engine.Card;
+
 public interface ChibreView {
 
     /**
@@ -123,4 +125,51 @@ public interface ChibreView {
      * @param trumpColor couleur atout
      */
     void setTrumpColor(CardColor trumpColor);
+
+    /**
+     * Affichage du joueur qui a le tour
+     *
+     * @param userName joueur qui a le tour
+     */
+    void setCurrentPlayer(String userName);
+
+    /**
+     * Afficher la carte jouée par le joueur en haut
+     *
+     * @param card carte à afficher
+     */
+    void setTopPlayerCard(Card card);
+
+    /**
+     * Afficher la carte jouée par le joueur à gauche
+     *
+     * @param card carte à afficher
+     */
+    void setLeftPlayerCard(Card card);
+
+    /**
+     * Afficher la carte jouée par le joueur à droite
+     *
+     * @param card carte à afficher
+     */
+    void setRightPlayerCard(Card card);
+
+    /**
+     * Afficher la carte jouée par le joueur en cours
+     *
+     * @param card carte à afficher
+     */
+    void setBottomPlayerCard(Card card);
+
+    /**
+     * Redéfinir la carte jouée à vide
+     */
+    void resetBottomPlayerCard();
+
+    /**
+     * Afficher un message à l'utilisateur
+     * @param title titre de la popup
+     * @param message message à afficher
+     */
+    void showMessage(String title, String message);
 }

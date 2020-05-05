@@ -17,5 +17,7 @@ public enum ServerAction implements Serializable {
     ASK_ANNOUNCEMENT,
     ASK_CARD,
     SEND_TRUMP_PLAYER,
-    SEND_TRUMP_COLOR
+    SEND_TRUMP_COLOR,
+    SEND_CARD_PLAYED,
+    SEND_CURRENT_PLAYER
 }

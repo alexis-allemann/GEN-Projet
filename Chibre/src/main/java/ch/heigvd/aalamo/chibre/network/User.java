@@ -30,7 +30,12 @@ public class User implements ChibreController {
     private ObjectOutputStream out;
     private ObjectInputStream in;
     private List<Card> cards = new ArrayList<>(Game.NB_CARDS_PLAYER);
+    private Card lastCardPlayed;
     private String playerName;
+    private String currentPlayer;
+    private String topPlayer;
+    private String rightPlayer;
+    private String leftPlayer;
 
     /**
      * Instancier un utilisateur de l'application
@@ -69,22 +74,34 @@ public class User implements ChibreController {
                                     view.setTopPlayerName(names.get(3));
                                     view.setRightPlayerName(names.get(1));
                                     view.setLeftPlayerName(names.get(0));
+                                    topPlayer = names.get(3);
+                                    rightPlayer = names.get(1);
+                                    leftPlayer = names.get(0);
                                 }
                                 if (index == 3) {
                                     view.setTopPlayerName(names.get(2));
                                     view.setRightPlayerName(names.get(0));
                                     view.setLeftPlayerName(names.get(1));
+                                    topPlayer = names.get(2);
+                                    rightPlayer = names.get(0);
+                                    leftPlayer = names.get(1);
                                 }
                             } else {
                                 if (index == 0) {
                                     view.setTopPlayerName(names.get(1));
                                     view.setRightPlayerName(names.get(2));
                                     view.setLeftPlayerName(names.get(3));
+                                    topPlayer = names.get(1);
+                                    rightPlayer = names.get(2);
+                                    leftPlayer = names.get(3);
                                 }
                                 if (index == 1) {
                                     view.setTopPlayerName(names.get(0));
                                     view.setRightPlayerName(names.get(3));
                                     view.setLeftPlayerName(names.get(2));
+                                    topPlayer = names.get(0);
+                                    rightPlayer = names.get(3);
+                                    leftPlayer = names.get(2);
                                 }
                             }
                             view.setTeam1Player1(names.get(0));
@@ -108,6 +125,19 @@ public class User implements ChibreController {
                         break;
                     case SEND_TRUMP_COLOR:
                         view.setTrumpColor((CardColor) request.getObject());
+                        break;
+                    case SEND_CURRENT_PLAYER:
+                        currentPlayer = (String) request.getObject();
+                        view.setCurrentPlayer(currentPlayer);
+                        break;
+                    case SEND_CARD_PLAYED:
+                        Card card = (Card) request.getObject();
+                        if(currentPlayer.equals(topPlayer))
+                            view.setTopPlayerCard(card);
+                        else if(currentPlayer.equals(leftPlayer))
+                            view.setLeftPlayerCard(card);
+                        else if(currentPlayer.equals(rightPlayer))
+                            view.setRightPlayerCard(card);
                         break;
                     case ASK_TRUMP:
                         // Création du choix utilisateur
@@ -222,12 +252,23 @@ public class User implements ChibreController {
         if (index >= cards.size())
             throw new IndexOutOfBoundsException("index plus grand que le nombre de cartes");
 
-        try {
-            out.writeObject(new Response(UserAction.PLAY_CARD, cards.get(index)));
-        } catch (IOException exception) {
-            exception.printStackTrace();
+        if(! currentPlayer.equals(playerName)){
+            view.showMessage("Ce n'est pas votre tour", "C'est le tour de " + currentPlayer);
+            if(lastCardPlayed != null)
+                view.setBottomPlayerCard(cards.get(cards.indexOf(lastCardPlayed)));
+            else
+                view.resetBottomPlayerCard();
+            view.addCard(cards.get(index).getCardType(), cards.get(index).getCardColor(), index);
         }
-        System.out.println("Carte envoyée");
+        else{
+            try {
+                out.writeObject(new Response(UserAction.PLAY_CARD, cards.get(index)));
+                lastCardPlayed = cards.get(index);
+            } catch (IOException exception) {
+                exception.printStackTrace();
+            }
+            System.out.println("Carte envoyée");
+        }
     }
 
     /**

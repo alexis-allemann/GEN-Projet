@@ -27,7 +27,7 @@ public class Table {
          * @param player        joueur
          * @param tablePosition position à la table
          */
-        public Pair(Player player, TablePosition tablePosition){
+        public Pair(Player player, TablePosition tablePosition) {
             this.player = player;
             this.tablePosition = tablePosition;
         }
@@ -37,14 +37,14 @@ public class Table {
         /**
          * @return le joueur
          */
-        public Player getPlayer(){
+        public Player getPlayer() {
             return player;
         }
 
         /**
          * @return la position à la table
          */
-        public TablePosition getTablePosition(){
+        public TablePosition getTablePosition() {
             return tablePosition;
         }
 
@@ -52,9 +52,10 @@ public class Table {
 
         /**
          * Définir le joueur à la position
+         *
          * @param player joueur
          */
-        public void setPlayer(Player player){
+        public void setPlayer(Player player) {
             this.player = player;
         }
     }
@@ -67,7 +68,7 @@ public class Table {
      *
      * @param game la partie jouée
      */
-    public Table(Game game){
+    public Table(Game game) {
         table.add(new Pair(game.getTeams().get(0).getPlayers().get(0), TablePosition.TOP));
         table.add(new Pair(game.getTeams().get(0).getPlayers().get(1), TablePosition.BOTTOM));
         table.add(new Pair(game.getTeams().get(1).getPlayers().get(0), TablePosition.RIGHT));
@@ -78,12 +79,13 @@ public class Table {
 
     /**
      * Permet d'obtenir la position d'un joueur
+     *
      * @param player Joueur dont on veut la position
      * @return La position du joueur sur la table
      */
-    public TablePosition getPositionByPlayer(Player player){
-        for(Pair pair : table){
-            if(pair.getPlayer() == player)
+    public TablePosition getPositionByPlayer(Player player) {
+        for (Pair pair : table) {
+            if (pair.getPlayer() == player)
                 return pair.getTablePosition();
         }
         return null;
@@ -91,13 +93,14 @@ public class Table {
 
     /**
      * Obtenir le joueur selon une position de départ et du numéro du round
+     *
      * @param startPosition position de départ
-     * @param nb numéro du round
+     * @param nb            numéro du round
      * @return le joueur selon les paramètres donnés
      */
-    private Player getTrumpPlayer(TablePosition startPosition, int nb){
-        for(TablePosition position : TablePosition.values()) {
-            if (position.getIndex() == (startPosition.getIndex() + nb))
+    private Player getTrumpPlayer(TablePosition startPosition, int nb) {
+        for (TablePosition position : TablePosition.values()) {
+            if (position.getIndex() == ((startPosition.getIndex() + nb) % Game.NB_PLAYERS))
                 return getPlayerByPosition(position);
         }
         return null;
@@ -105,12 +108,13 @@ public class Table {
 
     /**
      * Obtenir le joueur à une certaine position de la table
+     *
      * @param position position du joueur
      * @return le joueur à la position donnée, null si aucun joueur
      */
-    private Player getPlayerByPosition(TablePosition position){
-        for(Pair pair : table){
-            if(pair.getTablePosition() == position)
+    private Player getPlayerByPosition(TablePosition position) {
+        for (Pair pair : table) {
+            if (pair.getTablePosition() == position)
                 return pair.getPlayer();
         }
         return null;
@@ -118,8 +122,9 @@ public class Table {
 
     /**
      * Obtenir le joueur qui doit faire atout
+     *
      * @param firstPlayer joueur qui a fait atout en premier
-     * @param nb numéro du round
+     * @param nb          numéro du round
      * @return le joueur qui doit faire atout
      */
     public Player getTrumpPlayer(Player firstPlayer, int nb) {
@@ -131,7 +136,8 @@ public class Table {
     /**
      * Permet d'obtenir le prochain joueur qui fera atout en fonction
      * du round et de la position du premier à avoir donné atout
-     * @param roundId Numéro du round
+     *
+     * @param roundId       Numéro du round
      * @param startPosition Position du joueur ayant donné atout au départ
      * @return Le joueur qui doit donner atout
      */

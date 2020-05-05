@@ -112,7 +112,8 @@ public class Turn {
             int points = getTotalPoints();
             newTurn();
         } else {
-            Player nextPlayer = round.getTable().getTrumpPlayer(firstPlayer, cards.size() - 1);
+            Player nextPlayer = round.getTable().getTrumpPlayer(firstPlayer, cards.size());
+            round.getGame().sendToAllPlayers(new Request(ServerAction.SEND_CURRENT_PLAYER, nextPlayer.getName()));
             nextPlayer.sendRequest(new Request(ServerAction.ASK_CARD));
         }
     }
@@ -138,6 +139,10 @@ public class Turn {
      */
     public void playCard(Card card) {
         cards.add(card);
+        Card cardPlayed = card;
+        // TODO : décommenter si sérialization
+        cardPlayed.setPlayer(null);
+        round.getGame().sendToAllPlayers(new Request(ServerAction.SEND_CARD_PLAYED, cardPlayed));
     }
 
     /**
