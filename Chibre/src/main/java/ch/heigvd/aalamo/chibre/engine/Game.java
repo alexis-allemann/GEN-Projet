@@ -11,7 +11,6 @@ package ch.heigvd.aalamo.chibre.engine;
 import java.util.*;
 
 public class Game implements Runnable {
-
     // Constantes globles du jeu
     public static final int NB_TEAMS = 2;
     public static final int NB_PLAYERS_TEAMS = 2;
@@ -38,13 +37,92 @@ public class Game implements Runnable {
         if (players == null || players.contains(null))
             throw new IllegalArgumentException("Liste de joueurs illégale (nulle ou joueur nul)");
 
-        for(Player player: players)
+        for (Player player : players)
             player.setGame(this);
 
         this.id = count++;
         this.players = players;
         setTeams(players);
         this.table = new Table(this);
+    }
+
+    // Getters
+
+    /**
+     * @return l'id de la partie
+     */
+    public int getId() {
+        return id;
+    }
+
+    /**
+     * @return la liste de joueurs de la partie
+     */
+    public List<Player> getPlayers() {
+        return players;
+    }
+
+    /**
+     * @return les équipes de la partie
+     */
+    public List<Team> getTeams() {
+        return teams;
+    }
+
+    /**
+     * @return le tour actuellement joué, null si aucun tour n'est joué
+     */
+    public Round getCurrentRound() {
+        Round round = null;
+        for (Round r : rounds)
+            if (r.isPlayed())
+                round = r;
+
+        return round;
+    }
+
+    /**
+     * @return la liste des tours de la partie
+     */
+    public List<Round> getRounds() {
+        return rounds;
+    }
+
+    /**
+     * @return la table de jeu de la partie
+     */
+    public Table getTable() {
+        return table;
+    }
+
+    /**
+     * @return le premier joueur qui doit faire atout
+     */
+    public Player getFirstPlayerTrump() {
+        return firstPlayerTrump;
+    }
+
+    // Setters
+
+    /**
+     * Définir le joueur qui fait atout en premier
+     *
+     * @param firstPlayerTrump joueur
+     */
+    public void setFirstPlayerTrump(Player firstPlayerTrump) {
+        this.firstPlayerTrump = firstPlayerTrump;
+    }
+
+    // Méthodes
+
+    /**
+     * Démarrage du thread de la partie et instanciation du premier tour
+     */
+    @Override
+    public void run() {
+        Round round = new Round(this, true);
+        rounds.add(round);
+        round.initRound();
     }
 
     /**
@@ -66,55 +144,14 @@ public class Game implements Runnable {
         );
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public List<Player> getPlayers() {
-        return players;
-    }
-
-    public List<Team> getTeams() {
-        return teams;
-    }
-
-    public Round getCurrentRound(){
-        Round round = null;
-        for(Round r : rounds)
-            if(r.isPlayed())
-                round = r;
-
-        return round;
-    }
-
-    public List<Round> getRounds() {
-        return rounds;
-    }
-
-    public Table getTable() {
-        return table;
-    }
-
-    public Player getFirstPlayerTrump() {
-        return firstPlayerTrump;
-    }
-
-    public void setFirstPlayerTrump(Player firstPlayerTrump) {
-        this.firstPlayerTrump = firstPlayerTrump;
-    }
-
-    public void newRound(){
+    /**
+     * Instancier un nouveau tour de jeu
+     */
+    public void newRound() {
         if (teams.get(0).getPoints() < WIN_POINTS && teams.get(1).getPoints() < WIN_POINTS) {
             Round round = new Round(this, true);
             rounds.add(round);
             round.initRound();
         }
-    }
-
-    @Override
-    public void run() {
-        Round round = new Round(this, true);
-        rounds.add(round);
-        round.initRound();
     }
 }

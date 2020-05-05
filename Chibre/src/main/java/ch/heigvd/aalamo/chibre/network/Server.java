@@ -22,11 +22,29 @@ public class Server extends Thread {
     private List<Game> games = new ArrayList<>();
     private List<Player> waitingPlayers = new ArrayList<>();
 
+    // Getters
+
+    /**
+     * @return la liste des parties en cours
+     */
+    public List<Game> getGames() {
+        return games;
+    }
+
+    /**
+     * @return la liste des joueurs en attente
+     */
+    public List<Player> getWaitingPlayers() {
+        return waitingPlayers;
+    }
+
+    // Méthodes
+
     /**
      * Instancitation du thread du serveur
      */
     @Override
-    public void run(){
+    public void run() {
         try {
             receive();
         } catch (IOException e) {
@@ -75,19 +93,5 @@ public class Server extends Thread {
      */
     public void remove(Player player) {
         waitingPlayers.remove(player);
-    }
-
-    /**
-     * @return la liste des parties en cours
-     */
-    public List<Game> getGames() {
-        return games;
-    }
-
-    /**
-     * @return la liste des joueurs en attente
-     */
-    public List<Player> getWaitingPlayers() {
-        return waitingPlayers;
     }
 }

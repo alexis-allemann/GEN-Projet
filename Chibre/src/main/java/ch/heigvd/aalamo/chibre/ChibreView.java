@@ -41,8 +41,8 @@ public interface ChibreView {
      */
     interface UserChoice {
         /**
-         * @return la valeur du choix au format texuel
+         * @return l'objet représenté par la valeur
          */
-        String textValue();
+        Object value();
     }
 }

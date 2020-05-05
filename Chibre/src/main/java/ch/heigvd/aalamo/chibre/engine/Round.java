@@ -9,8 +9,8 @@ Compilateur : javac 11.0.4
 package ch.heigvd.aalamo.chibre.engine;
 
 import ch.heigvd.aalamo.chibre.CardColor;
-import ch.heigvd.aalamo.chibre.network.objects.AskTrumpRequest;
-import ch.heigvd.aalamo.chibre.network.objects.SendCardsRequest;
+import ch.heigvd.aalamo.chibre.network.objects.Request;
+import ch.heigvd.aalamo.chibre.network.objects.ServerAction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +26,6 @@ public class Round {
     private boolean isPlayed;
     Player trumpPlayer;
 
-
     /**
      * Instancier un tour de jeu
      */
@@ -36,53 +35,106 @@ public class Round {
         this.isPlayed = isPlayed;
     }
 
+    // Getters
+
+    /**
+     * @return le joueur qui fait atout dans le tour
+     */
     public Player getTrumpPlayer() {
         return trumpPlayer;
     }
 
+    /**
+     * @return la partie qui a instancier le tour
+     */
+    public Game getGame() {
+        return game;
+    }
+
+    /**
+     * @return la couleur atout du tour
+     */
+    public CardColor getTrumpColor() {
+        return trumpColor;
+    }
+
+    /**
+     * @return la table de jeu du tour
+     */
+    public Table getTable() {
+        return game.getTable();
+    }
+
+    /**
+     * @return la tour de table en cours, null si aucun tour de table n'a commencé
+     */
+    public Turn getCurrentTurn() {
+        for (Turn turn : turns)
+            if (turn.isPlayed())
+                return turn;
+
+        return null;
+    }
+
+    // Setters
+
+    /**
+     * Définir la couleur atout du tour
+     *
+     * @param trumpColor la couleur atout
+     */
     public void setTrumpColor(CardColor trumpColor) {
         this.trumpColor = trumpColor;
     }
 
+    // Méthodes
+
+    /**
+     * Initialiser le tour
+     */
     public void initRound() {
 
         for (Player player : game.getPlayers()) {
             if (cardCollection.distributeCards(player, Game.NB_CARDS_PLAYER) && game.getRounds().size() == 1)
                 game.setFirstPlayerTrump(player);
-            player.sendState(new SendCardsRequest(player.getCards()));
+            player.sendRequest(new Request(ServerAction.SEND_CARDS, player.getCards()));
         }
 
         this.trumpPlayer = game.getTable().nextTrumpPlayer(id, game.getTable().getPositionByPlayer(game.getFirstPlayerTrump()));
 
-        trumpPlayer.sendState(new AskTrumpRequest());
+        trumpPlayer.sendRequest(new Request(ServerAction.ASK_TRUMP));
     }
 
+    /**
+     * Savoir si le tour en train d'être joué
+     *
+     * @return si le tour en train d'être joué
+     */
     public boolean isPlayed() {
         return isPlayed;
     }
 
+    /**
+     * Définir que le tour est terminé
+     */
     public void endRound() {
         isPlayed = false;
     }
 
-    public Game getGame() {
-        return game;
-    }
-
-    public void initTurn(){
+    /**
+     * Démarrer un tour de table
+     */
+    public void initTurn() {
         Turn turn = new Turn(this, null);
         turns.add(turn);
         turn.initTurn();
     }
 
-    public CardColor getTrumpColor() {
-        return trumpColor;
-    }
-
-    public List<Turn> getTurns() {
-        return turns;
-    }
-
+    /**
+     * Savoir si les joueurs ont encore des cartes à jouer dans le tour
+     *
+     * @return booléen si les joueurs ont des cartes ou non
+     */
     public boolean playerCardsEmpty() {
         for (Player player : game.getPlayers()) {
             if (player.getCards().size() > 1)
@@ -91,23 +143,21 @@ public class Round {
         return true;
     }
 
-    public boolean isFirstRound(){
+    /**
+     * Savoir si le tour de jeu est le premier de la partie
+     *
+     * @return booléen si c'est le premier ou non
+     */
+    public boolean isFirstRound() {
         return id == 1;
     }
 
-    public Table getTable(){
-        return game.getTable();
-    }
-
-    public Turn getCurrentTurn(){
-        for (Turn turn : turns)
-            if(turn.isPlayed())
-                return turn;
-
-        return null;
-    }
-
-    public void addTurn(Turn turn){
+    /**
+     * Ajouter un tour de table au tour de jeu
+     *
+     * @param turn tour de table à ajouter
+     */
+    public void addTurn(Turn turn) {
         turns.add(turn);
     }
 }

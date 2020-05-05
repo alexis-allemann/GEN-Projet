@@ -45,7 +45,7 @@ public class GUIView extends BaseView<ImageIcon> {
     private JLabel lblCard7;
     private JLabel lblCard8;
     private JLabel lblCard9;
-    private JLabel cardPlayed;
+    private JLabel lblCardPlayed;
 
     // Attributs
     JFrame gui = new JFrame("Chibre");
@@ -63,6 +63,8 @@ public class GUIView extends BaseView<ImageIcon> {
         g.setColor(Color.WHITE);
         UNKNOWN_ICON = new ImageIcon(img);
     }
+
+    // Instanciation de la GUI
 
     /**
      * Instanciation de la vue
@@ -82,31 +84,51 @@ public class GUIView extends BaseView<ImageIcon> {
     }
 
     /**
-     * Instanciation des cartes
+     * Instanciation de la fenêtre avant affichage
      */
-    private static class CardResource implements DrawableRessource<ImageIcon> {
+    private void initializeGui() {
+        // Propriétés globales de la GUI
+        gui.setContentPane(pnlMain);
+        gui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        gui.pack();
+        gui.setVisible(true);
+        gui.setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
 
-        private ImageIcon icon;
+        // Création des emplacements pour les cartes
+        cards.add(lblCard1);
+        cards.add(lblCard2);
+        cards.add(lblCard3);
+        cards.add(lblCard4);
+        cards.add(lblCard5);
+        cards.add(lblCard6);
+        cards.add(lblCard7);
+        cards.add(lblCard8);
+        cards.add(lblCard9);
 
-        CardResource(BufferedImage bufferedImage) {
-            icon = new ImageIcon(bufferedImage);
+        // Autoriser le drag and drop entre les cartes
+        for (JLabel card : cards)
+            card.setTransferHandler(new TransferHandler("icon"));
+
+        // Création de la zone pour déposer une carte jouée
+        BufferedImage dropImage;
+        try {
+            dropImage = ImageIO.read(GuiAssets.class.getResource("images/DropImage.png"));
+            lblCardPlayed.setIcon(new ImageIcon(dropImage));
+            lblCardPlayed.setTransferHandler(new TransferHandler("icon"));
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
-        @Override
-        public ImageIcon getResource() {
-            return icon;
-        }
+        // Ajout du listeneur pour envoyer une carte jouée
+        lblCardPlayed.addPropertyChangeListener(e -> {
+            // Identification de la carte jouée si la propriété icon a changée
+            if (e.getPropertyName().equals("icon") && dragSource != null)
+                dragSource.setIcon(null);
+            controller.sendCard(cards.indexOf(dragSource));
+        });
     }
 
-    /**
-     * Chargement des ressources images
-     *
-     * @param image image à charger
-     * @return la ressource
-     */
-    public static DrawableRessource<ImageIcon> createResource(BufferedImage image) {
-        return new GUIView.CardResource(image);
-    }
+    // Implémentation des méthodes de la vue
 
     /**
      * Action à effectuer lorsque la fenêtre est fermée
@@ -158,45 +180,33 @@ public class GUIView extends BaseView<ImageIcon> {
         return result;
     }
 
+    // Instanciation des ressources graphiques
+
     /**
-     * Instanciation de la fenêtre avant affichage
+     * Instanciation des cartes
      */
-    private void initializeGui() {
-        gui.setContentPane(pnlMain);
-        gui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        gui.pack();
-        gui.setVisible(true);
-        gui.setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
+    private static class CardResource implements DrawableRessource<ImageIcon> {
+        private ImageIcon icon;
 
-        cards.add(lblCard1);
-        cards.add(lblCard2);
-        cards.add(lblCard3);
-        cards.add(lblCard4);
-        cards.add(lblCard5);
-        cards.add(lblCard6);
-        cards.add(lblCard7);
-        cards.add(lblCard8);
-        cards.add(lblCard9);
-
-        for (JLabel card : cards)
-            card.setTransferHandler(new TransferHandler("icon"));
-
-        BufferedImage dropImage;
-        try {
-            dropImage = ImageIO.read(GuiAssets.class.getResource("images/DropImage.png"));
-            cardPlayed.setIcon(new ImageIcon(dropImage));
-            cardPlayed.setTransferHandler(new TransferHandler("icon"));
-        } catch (IOException e) {
-            e.printStackTrace();
+        CardResource(BufferedImage bufferedImage) {
+            icon = new ImageIcon(bufferedImage);
         }
 
-        cardPlayed.addPropertyChangeListener(new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent e) {
-                if (e.getPropertyName() == "icon" && dragSource != null)
-                    dragSource.setIcon(null);
-                controller.sendCard(cards.indexOf(dragSource));
-            }
-        });
+        @Override
+        public ImageIcon getResource() {
+            return icon;
+        }
+    }
+
+    /**
+     * Chargement des ressources images des cartes
+     *
+     * @param image image à charger
+     * @return la ressource
+     */
+    public static DrawableRessource<ImageIcon> createResource(BufferedImage image) {
+        return new GUIView.CardResource(image);
     }
 }
+
+

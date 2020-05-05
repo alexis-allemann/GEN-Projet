@@ -3,12 +3,13 @@ Projet de Génie Logiciel (GEN) - HEIG-VD
 Fichier :     Turn.java
 Auteur(s) :   Alexis Allemann, Alexandre Mottier
 Date :        01.04.2020 - 11.06.2020
-But : Classe représentant un tour de jeu
+But : Classe représentant un tour de table
 Compilateur : javac 11.0.4
 --------------------------- */
 package ch.heigvd.aalamo.chibre.engine;
 
-import ch.heigvd.aalamo.chibre.network.objects.AskCardRequest;
+import ch.heigvd.aalamo.chibre.network.objects.Request;
+import ch.heigvd.aalamo.chibre.network.objects.ServerAction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +23,12 @@ public class Turn {
     private Player winner;
     private Turn lastTurn;
 
+    /**
+     * Instanciation d'un tour de table
+     *
+     * @param round    tour de jeu du tour de table
+     * @param lastTurn dernier tour de table joué
+     */
     public Turn(Round round, Turn lastTurn) {
         this.round = round;
         this.lastTurn = lastTurn;
@@ -35,21 +42,58 @@ public class Turn {
         // 6. Attribuer les points à la bonne équipe
         // 7. Enlever les cartes de la main des joueurs
         // 8. Recréer un tour si ils restent des cartes, sinon créer un nouveau round
-
-
     }
 
+    // Getters
+
+    /**
+     * @return le joueur qui a posé la meilleure carte
+     */
+    public Player getWinner() {
+        return winner;
+    }
+
+    /**
+     * @return si le tour est en cours de jeu ou non
+     */
+    public boolean isPlayed() {
+        return isPlayed;
+    }
+
+    /**
+     * @return le nombre de points des cartes jouées dans le tour de table
+     */
+    private int getTotalPoints() {
+        int points = 0;
+
+        for (Card card : cards)
+            if (card.getCardColor() == round.getTrumpColor())
+                points += card.getCardType().getValueOfTrump();
+            else
+                points += card.getCardType().getValue();
+
+        return points;
+    }
+
+    // Méthodes
+
+    /**
+     * Démarrer le tour de table
+     */
     public void initTurn() {
         if (round.isFirstRound())
             firstPlayer = round.getTrumpPlayer();
         else if (lastTurn != null)
             firstPlayer = lastTurn.getWinner();
 
-        firstPlayer.sendState(new AskCardRequest());
+        firstPlayer.sendRequest(new Request(ServerAction.ASK_CARD));
 
         // TODO : Renvoyez une erreur au client ?
     }
 
+    /**
+     * Méthode appelée pour continuer le tour de table lorsqu'une carte est jouée par un joueur
+     */
     public void pursueTurn() {
 
         //TODO :
@@ -68,13 +112,16 @@ public class Turn {
             int points = getTotalPoints();
             newTurn();
         } else {
-            Player nextPlayer = round.getTable().getPlayer(firstPlayer, cards.size() - 1);
-            nextPlayer.sendState(new AskCardRequest());
+            Player nextPlayer = round.getTable().getTrumpPlayer(firstPlayer, cards.size() - 1);
+            nextPlayer.sendRequest(new Request(ServerAction.ASK_CARD));
         }
     }
 
-    // TODO: A voir si c'est propre
+    /**
+     * Démarer un nouveau tour de table
+     */
     private void newTurn() {
+        // TODO : voir si on peut démarrer un nouveau round dans game plutôt
         if (round.playerCardsEmpty())
             round.getGame().newRound();
         else {
@@ -84,19 +131,18 @@ public class Turn {
         }
     }
 
-    public Player getWinner() {
-        return winner;
-    }
-
-
+    /**
+     * Jouer une carte
+     *
+     * @param card carte jouée
+     */
     public void playCard(Card card) {
         cards.add(card);
     }
 
-    public boolean isPlayed() {
-        return isPlayed;
-    }
-
+    /**
+     * Définir le joueur qui a posé la meilleure carte
+     */
     private void defineWinner() {
         Card winningCard = null;
         for (Card card : cards) {
@@ -120,18 +166,6 @@ public class Turn {
 
         if (winningCard != null)
             this.winner = winningCard.getPlayer();
-    }
-
-    private int getTotalPoints() {
-        int points = 0;
-
-        for (Card card : cards)
-            if (card.getCardColor() == round.getTrumpColor())
-                points += card.getCardType().getValueOfTrump();
-            else
-                points += card.getCardType().getValue();
-
-        return points;
     }
 }
 

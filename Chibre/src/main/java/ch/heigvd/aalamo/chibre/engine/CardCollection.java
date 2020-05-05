@@ -21,6 +21,8 @@ public class CardCollection {
                 collection.add(new Card(type, color));
     }
 
+    // Méthodes
+
     /**
      * Distribuer les cartes
      *
@@ -35,7 +37,7 @@ public class CardCollection {
             Card currentCard = collection.get(cardIndex);
 
             // Si c'est le 7 de carreau
-            if(currentCard.getCardColor() == CardColor.DIAMOND && currentCard.getCardType() == CardType.SEVEN)
+            if (currentCard.getCardColor() == CardColor.DIAMOND && currentCard.getCardType() == CardType.SEVEN)
                 hasDiamondSeven = true;
 
             player.distributeCard(currentCard);

@@ -9,10 +9,10 @@ Compilateur : javac 11.0.4
 package ch.heigvd.aalamo.chibre.engine;
 
 public enum TablePosition {
-    TOP(0,0),
-    RIGHT(1,1),
-    BOTTOM(2,0),
-    LEFT(3,1);
+    TOP(0, 0),
+    RIGHT(1, 1),
+    BOTTOM(2, 0),
+    LEFT(3, 1);
 
     // Attributs
     private final int index;
@@ -28,6 +28,8 @@ public enum TablePosition {
         this.teamIndex = team;
     }
 
+    // Getters
+
     /**
      * Obtenir l'index de la position
      *
@@ -35,14 +37,5 @@ public enum TablePosition {
      */
     public int getIndex() {
         return index;
-    }
-
-    /**
-     * Obtenir l'index de l'équipe à la place
-     *
-     * @return l'index de l'équipe
-     */
-    public int getTeam() {
-        return teamIndex;
     }
 }

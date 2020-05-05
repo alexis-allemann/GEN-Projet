@@ -12,7 +12,6 @@ import ch.heigvd.aalamo.chibre.network.Handler;
 import ch.heigvd.aalamo.chibre.network.objects.Request;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,14 +22,6 @@ public class Player {
     private int id;
     private static int count = 1;
     private Game game;
-
-    public Game getGame() {
-        return game;
-    }
-
-    public void setGame(Game game) {
-        this.game = game;
-    }
 
     /**
      * Instancier un joueur
@@ -46,6 +37,35 @@ public class Player {
         handler.setPlayer(this);
     }
 
+    // Getters
+
+    /**
+     * @return la partie dans laquelle le joueur joue
+     */
+    public Game getGame() {
+        return game;
+    }
+
+    /**
+     * @return la liste des cartes du joueur
+     */
+    public List<Card> getCards() {
+        return cards;
+    }
+
+    // Setters
+
+    /**
+     * Définir la partie dans lequel le joueur joue
+     *
+     * @param game la partie à laquelle il joue
+     */
+    public void setGame(Game game) {
+        this.game = game;
+    }
+
+    // Méthodes
+
     /**
      * Distribuer une carte à un joueur
      *
@@ -57,18 +77,15 @@ public class Player {
         cards.add(card);
     }
 
-    public List<Card> getCards() {
-        return cards;
-    }
-
-    public void sendState(Request request) {
+    /**
+     * Envoyer une requête à la GUI du joueur via le réseau
+     *
+     * @param request la requête à envoyer
+     */
+    public void sendRequest(Request request) {
         if (request == null)
             throw new IllegalArgumentException("State nul");
 
-        try {
-            handler.sendState(request);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
+        handler.sendRequest(request);
     }
 }

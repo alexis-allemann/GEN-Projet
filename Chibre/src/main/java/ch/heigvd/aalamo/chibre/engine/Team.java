@@ -11,7 +11,7 @@ package ch.heigvd.aalamo.chibre.engine;
 import java.io.Serializable;
 import java.util.List;
 
-public class Team implements Serializable {
+public class Team {
     // Attributs
     private List<Player> players;
     private int points;
@@ -27,15 +27,31 @@ public class Team implements Serializable {
         this.players = players;
     }
 
+    // Getters
+
+    /**
+     * @return la liste des joueurs qui font partie de l'équipe
+     */
     public List<Player> getPlayers() {
         return players;
     }
 
-    public void addPoints(int points){
-        this.points += points;
-    }
-
+    /**
+     * @return le nombre de points de l'équipe
+     */
     public int getPoints() {
         return points;
     }
+
+    // Méthodes
+
+    /**
+     * Ajouter des points l'équipe
+     *
+     * @param points le nombre de points à ajouter
+     */
+    public void addPoints(int points) {
+        this.points += points;
+    }
+
 }

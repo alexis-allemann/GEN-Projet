@@ -10,15 +10,14 @@ package ch.heigvd.aalamo.chibre.engine;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class Table {
 
     /**
-     * Classe représentant une paire
+     * Classe représentant une paire pour lier un position à un joueur
      */
     class Pair {
-
+        // Attributs
         private Player player;
         private TablePosition tablePosition;
 
@@ -32,6 +31,8 @@ public class Table {
             this.player = player;
             this.tablePosition = tablePosition;
         }
+
+        // Getters
 
         /**
          * @return le joueur
@@ -47,16 +48,18 @@ public class Table {
             return tablePosition;
         }
 
+        // Setters
+
+        /**
+         * Définir le joueur à la position
+         * @param player joueur
+         */
         public void setPlayer(Player player){
             this.player = player;
         }
-
-        public void setTablePosition(TablePosition tablePosition){
-            this.tablePosition = tablePosition;
-        }
     }
 
-    // Atribut
+    // Attributs
     private List<Pair> table = new ArrayList<>();
 
     /**
@@ -71,17 +74,7 @@ public class Table {
         table.add(new Pair(game.getTeams().get(1).getPlayers().get(1), TablePosition.LEFT));
     }
 
-    /**
-     * Permet d'obtenir le prochain joueur qui fera atout en fonction
-     * du round et de la position du premier à avoir donné atout
-     * @param roundId Numéro du round
-     * @param startPosition Position du joueur ayant donné atout au départ
-     * @return Le joueur qui doit donner atout
-     */
-    public Player nextTrumpPlayer(int roundId, TablePosition startPosition) {
-        return getPlayer(startPosition, (roundId % TablePosition.values().length) - 1);
-    }
-
+    // Getters
 
     /**
      * Permet d'obtenir la position d'un joueur
@@ -96,7 +89,13 @@ public class Table {
         return null;
     }
 
-    private Player getPlayer(TablePosition startPosition, int nb){
+    /**
+     * Obtenir le joueur selon une position de départ et du numéro du round
+     * @param startPosition position de départ
+     * @param nb numéro du round
+     * @return le joueur selon les paramètres donnés
+     */
+    private Player getTrumpPlayer(TablePosition startPosition, int nb){
         for(TablePosition position : TablePosition.values()) {
             if (position.getIndex() == (startPosition.getIndex() + nb))
                 return getPlayerByPosition(position);
@@ -104,6 +103,11 @@ public class Table {
         return null;
     }
 
+    /**
+     * Obtenir le joueur à une certaine position de la table
+     * @param position position du joueur
+     * @return le joueur à la position donnée, null si aucun joueur
+     */
     private Player getPlayerByPosition(TablePosition position){
         for(Pair pair : table){
             if(pair.getTablePosition() == position)
@@ -112,8 +116,26 @@ public class Table {
         return null;
     }
 
-    public Player getPlayer(Player firstPlayer, int nb) {
-        return getPlayer(getPositionByPlayer(firstPlayer), nb);
+    /**
+     * Obtenir le joueur qui doit faire atout
+     * @param firstPlayer joueur qui a fait atout en premier
+     * @param nb numéro du round
+     * @return le joueur qui doit faire atout
+     */
+    public Player getTrumpPlayer(Player firstPlayer, int nb) {
+        return getTrumpPlayer(getPositionByPlayer(firstPlayer), nb);
     }
 
+    // Méthodes
+
+    /**
+     * Permet d'obtenir le prochain joueur qui fera atout en fonction
+     * du round et de la position du premier à avoir donné atout
+     * @param roundId Numéro du round
+     * @param startPosition Position du joueur ayant donné atout au départ
+     * @return Le joueur qui doit donner atout
+     */
+    public Player nextTrumpPlayer(int roundId, TablePosition startPosition) {
+        return getTrumpPlayer(startPosition, (roundId % TablePosition.values().length) - 1);
+    }
 }

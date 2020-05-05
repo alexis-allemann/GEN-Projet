@@ -8,6 +8,7 @@ Compilateur : javac 11.0.4
 --------------------------- */
 package ch.heigvd.aalamo.chibre.network;
 
+import ch.heigvd.aalamo.chibre.CardColor;
 import ch.heigvd.aalamo.chibre.engine.Card;
 import ch.heigvd.aalamo.chibre.engine.Player;
 import ch.heigvd.aalamo.chibre.network.objects.Request;
@@ -41,44 +42,7 @@ public class Handler implements Runnable {
         new Thread(this).start();
     }
 
-    /**
-     * Méthode du thread qui écoute le réseau et qui envoie les données au server
-     */
-    @Override
-    public void run() {
-        Response response;
-        try {
-            while ((response = (Response) in.readObject()) != null) {
-                switch (response.getUserAction()) {
-                    case SEND_ANNOUCEMENT:
-                        break;
-                    case PLAY_CARD:
-                        Card card = response.getCardPlayed();
-                        card.setPlayer(player);
-                        // TODO : serializer pour éviter de set le player relié à la carte ici
-                        player.getGame().getCurrentRound().getCurrentTurn().playCard(card);
-                        player.getGame().getCurrentRound().getCurrentTurn().pursueTurn();
-                        break;
-                    case SEND_TRUMP:
-                        // TODO : test si null ==> chibrer
-                        player.getGame().getCurrentRound().setTrumpColor(response.getTrumpColor());
-                        player.getGame().getCurrentRound().initTurn();
-                        break;
-                }
-            }
-        } catch (ClassNotFoundException | IOException e) {
-            e.printStackTrace();
-        }
-        try {
-            socket.close();
-            // Notifier le serveur que le joueur n'est plus disponible
-            if (player != null)
-                server.remove(player);
-            // TODO : voir si on notifie le player que le handler n'est plus disponible ou si on met un timer (par exemple)
-        } catch (IOException e1) {
-            e1.printStackTrace();
-        }
-    }
+    // Setters
 
     /**
      * Définir le joueur relié au handler
@@ -89,7 +53,60 @@ public class Handler implements Runnable {
         this.player = player;
     }
 
-    public void sendState(Request request) throws IOException {
-        out.writeObject(request);
+    // Méthodes
+
+    /**
+     * Méthode du thread qui écoute le réseau et qui envoie les données au server
+     */
+    @Override
+    public void run() {
+        Response response;
+        try {
+            while ((response = (Response) in.readObject()) != null) {
+                // Selon le type d'action de la GUI
+                switch (response.getAction()) {
+                    case SEND_ANNOUCEMENT:
+                        break;
+                    case PLAY_CARD:
+                        Card card = (Card) response.getObject();
+                        card.setPlayer(player);
+                        // TODO : serializer pour éviter de set le player relié à la carte ici
+                        player.getGame().getCurrentRound().getCurrentTurn().playCard(card);
+                        player.getGame().getCurrentRound().getCurrentTurn().pursueTurn();
+                        break;
+                    case SEND_TRUMP:
+                        // TODO : test si null ==> chibrer
+                        player.getGame().getCurrentRound().setTrumpColor((CardColor) response.getObject());
+                        player.getGame().getCurrentRound().initTurn();
+                        break;
+                }
+            }
+        } catch (ClassNotFoundException | IOException e) {
+            e.printStackTrace();
+        }
+
+        // Lorsque le joueur se déconnecte
+        try {
+            socket.close();
+            // Notifier le serveur que le joueur n'est plus disponible
+            if (player != null)
+                server.remove(player);
+            // TODO : voir si on notifie le player que le handler n'est plus disponible ou si on met un timer (par exemple)
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Envoi d'une requête à la GUI
+     *
+     * @param request requête à envoyer
+     */
+    public void sendRequest(Request request) {
+        try {
+            out.writeObject(request);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
