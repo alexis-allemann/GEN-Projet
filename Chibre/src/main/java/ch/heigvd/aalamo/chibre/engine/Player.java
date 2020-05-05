@@ -20,6 +20,7 @@ public class Player {
     private List<Card> cards = new ArrayList<>(Game.NB_CARDS_PLAYER);
     private Handler handler;
     private int id;
+    private Team team;
     private static int count = 1;
     private Game game;
     private String name;
@@ -104,5 +105,13 @@ public class Player {
             throw new IllegalArgumentException("Requête nulle");
 
         handler.sendRequest(request);
+    }
+
+    public Team getTeam() {
+        return team;
+    }
+
+    public void setTeam(Team team) {
+        this.team = team;
     }
 }

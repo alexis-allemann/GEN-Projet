@@ -25,6 +25,8 @@ public class Team {
         if (players.size() != Game.NB_PLAYERS_TEAMS)
             throw new IllegalArgumentException("La liste de joueur ne contient pas deux joueurs pour créer l'équipe.");
         this.players = players;
+        for(Player player : players)
+            player.setTeam(this);
     }
 
     // Getters

@@ -109,7 +109,12 @@ public class Turn {
             //  3. Ajout des points à l'équipe du joueur gagnant
             //  4. Suppression des cartes jouées aux joueurs
             defineWinner();
-            int points = getTotalPoints();
+            this.winner.getTeam().addPoints(getTotalPoints());
+            // Suppression des cartes
+            // TODO refactor après serialization
+            round.getGame().sendToAllPlayers(new Request(ServerAction.SEND_POINTS_TEAM1, round.getGame().getTeams().get(0).getPoints()));
+            round.getGame().sendToAllPlayers(new Request(ServerAction.SEND_POINTS_TEAM2, round.getGame().getTeams().get(1).getPoints()));
+            round.getGame().sendToAllPlayers(new Request(ServerAction.SEND_RESET_CARDS));
             newTurn();
         } else {
             Player nextPlayer = round.getTable().getTrumpPlayer(firstPlayer, cards.size());

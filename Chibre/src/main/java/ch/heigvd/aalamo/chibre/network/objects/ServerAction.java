@@ -19,5 +19,8 @@ public enum ServerAction implements Serializable {
     SEND_TRUMP_PLAYER,
     SEND_TRUMP_COLOR,
     SEND_CARD_PLAYED,
-    SEND_CURRENT_PLAYER
+    SEND_CURRENT_PLAYER,
+    SEND_POINTS_TEAM1,
+    SEND_POINTS_TEAM2,
+    SEND_RESET_CARDS
 }
