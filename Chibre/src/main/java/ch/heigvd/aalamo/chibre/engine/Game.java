@@ -29,7 +29,7 @@ public class Game implements Runnable {
     private final Table table;
     private List<Team> teams = new ArrayList<>(NB_TEAMS);
     private List<Round> rounds = new ArrayList<>();
-    Player firstPlayerTrump;
+    private Player firstPlayerTrump;
 
     /**
      * Instancier une parte

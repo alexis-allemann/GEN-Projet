@@ -53,6 +53,22 @@ public class Turn {
         return winner;
     }
 
+    // Méthodes
+
+    /**
+     * Démarrer le tour de table
+     */
+    public void initTurn() {
+        if (round.isFirstRound())
+            firstPlayer = round.getTrumpPlayer();
+        else if (lastTurn != null)
+            firstPlayer = lastTurn.getWinner();
+
+        firstPlayer.sendRequest(new Request(ServerAction.ASK_CARD));
+
+        // TODO : Renvoyez une erreur au client ?
+    }
+
     /**
      * @return si le tour est en cours de jeu ou non
      */
@@ -73,22 +89,6 @@ public class Turn {
                 points += card.getCardType().getValue();
 
         return points;
-    }
-
-    // Méthodes
-
-    /**
-     * Démarrer le tour de table
-     */
-    public void initTurn() {
-        if (round.isFirstRound())
-            firstPlayer = round.getTrumpPlayer();
-        else if (lastTurn != null)
-            firstPlayer = lastTurn.getWinner();
-
-        firstPlayer.sendRequest(new Request(ServerAction.ASK_CARD));
-
-        // TODO : Renvoyez une erreur au client ?
     }
 
     /**

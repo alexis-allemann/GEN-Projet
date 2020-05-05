@@ -20,7 +20,7 @@ public class Player {
     private List<Card> cards = new ArrayList<>(Game.NB_CARDS_PLAYER);
     private Handler handler;
     private int id;
-    private Team team;
+    private Team team; // TODO : a supprimer
     private static int count = 1;
     private Game game;
     private String name;
@@ -62,6 +62,13 @@ public class Player {
         return cards;
     }
 
+    /**
+     * @return l'équipe du joueur
+     */
+    public Team getTeam() {
+        return team;
+    }
+
     // Setters
 
     /**
@@ -81,6 +88,15 @@ public class Player {
     public void setName(String name) {
         this.name = name;
     }
+
+    /**
+     * Définir l'équipre
+     * @param team équipe du joueur
+     */
+    public void setTeam(Team team) {
+        this.team = team;
+    }
+
 
     // Méthodes
 
@@ -105,13 +121,5 @@ public class Player {
             throw new IllegalArgumentException("Requête nulle");
 
         handler.sendRequest(request);
-    }
-
-    public Team getTeam() {
-        return team;
-    }
-
-    public void setTeam(Team team) {
-        this.team = team;
     }
 }

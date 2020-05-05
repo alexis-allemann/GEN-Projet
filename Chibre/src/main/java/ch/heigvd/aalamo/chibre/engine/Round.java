@@ -24,7 +24,7 @@ public class Round {
     private final CardCollection cardCollection = new CardCollection();
     private final Game game;
     private boolean isPlayed;
-    Player trumpPlayer;
+    private Player trumpPlayer;
 
     /**
      * Instancier un tour de jeu
