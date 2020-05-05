@@ -42,11 +42,12 @@ public class Game implements Runnable {
 
         this.id = count++;
         this.players = players;
-        setTeams();
-        this.table = new Table(this);
 
         for (Player player : this.players)
             player.setGame(this);
+
+        setTeams();
+        this.table = new Table(this);
     }
 
     // Getters
