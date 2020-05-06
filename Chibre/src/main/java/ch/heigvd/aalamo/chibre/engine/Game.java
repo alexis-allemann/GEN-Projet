@@ -8,61 +8,28 @@ Compilateur : javac 11.0.4
 --------------------------- */
 package ch.heigvd.aalamo.chibre.engine;
 
+import ch.heigvd.aalamo.chibre.network.objects.Request;
+import ch.heigvd.aalamo.chibre.network.objects.ServerAction;
+
 import java.util.*;
 
-public class Game {
-
-    /**
-     * Classe représentant une paire
-     */
-    private class Pair {
-        // Attibuts
-        private Player player;
-        private TablePosition tablePosition;
-
-        /**
-         * Instancier une paire
-         *
-         * @param player        joueur
-         * @param tablePosition position à la table
-         */
-        Pair(Player player, TablePosition tablePosition) {
-            this.player = player;
-            this.tablePosition = tablePosition;
-        }
-
-        /**
-         * @return le joueur
-         */
-        public Player getPlayer() {
-            return player;
-        }
-
-        /**
-         * @return la position à la table
-         */
-        public TablePosition getTablePosition() {
-            return tablePosition;
-        }
-    }
-
+public class Game implements Runnable {
     // Constantes globles du jeu
     public static final int NB_TEAMS = 2;
     public static final int NB_PLAYERS_TEAMS = 2;
     public static final int NB_CARDS = 36;
-    public static final int NB_CARDS_PLAYER = 9;
-    public static final int NB_PLAYERS = NB_TEAMS * NB_PLAYERS_TEAMS;
     public static final int WIN_POINTS = 1000;
-    public static final boolean CLOCKWISE = true;
+    public static final int NB_PLAYERS = NB_TEAMS * NB_PLAYERS_TEAMS;
+    public static final int NB_CARDS_PLAYER = NB_CARDS / NB_PLAYERS;
 
     // Attributs
-    private int id;
+    private final int id;
     private static int count = 1;
-    private Random random = new Random();
     private List<Player> players;
-    private List<Pair> table;
+    private final Table table;
     private List<Team> teams = new ArrayList<>(NB_TEAMS);
     private List<Round> rounds = new ArrayList<>();
+    private Player firstPlayerTrump;
 
     /**
      * Instancier une parte
@@ -75,41 +42,108 @@ public class Game {
 
         this.id = count++;
         this.players = players;
-        setTeams(players);
-        setTable(teams);
+
+        for (Player player : this.players)
+            player.setGame(this);
+
+        setTeams();
+        this.table = new Table(this);
     }
 
-    private void setTable(List<Team> teams) {
-        /*int teamPosition = random.nextInt(1);
-        for (Team team : teams) {
-            int playerPosition = random.nextInt(team.getMaxIDPlayer() - team.getMinIDPlayer()) +
-                    team.getMinIDPlayer();
-            if (TablePosition.TOP.getTeam() == teamPosition) {
-                if (playerPosition == team.getPlayers().get(0).getId()) {
-                    table.add(new Pair(team.getPlayers().get(0), TablePosition.TOP));
-                    table.add(new Pair(team.getPlayers().get(1), TablePosition.BOTTOM));
-                } else {
-                    table.add(new Pair(team.getPlayers().get(1), TablePosition.TOP));
-                    table.add(new Pair(team.getPlayers().get(0), TablePosition.BOTTOM));
-                }
-            } else {
-                if (playerPosition == team.getPlayers().get(0).getId()) {
-                    table.add(new Pair(team.getPlayers().get(0), TablePosition.RIGHT));
-                    table.add(new Pair(team.getPlayers().get(1), TablePosition.LEFT));
-                } else {
-                    table.add(new Pair(team.getPlayers().get(1), TablePosition.RIGHT));
-                    table.add(new Pair(team.getPlayers().get(0), TablePosition.LEFT));
-                }
-            }
-        }*/
+    // Getters
+
+    /**
+     * @return l'id de la partie
+     */
+    public int getId() {
+        return id;
+    }
+
+    /**
+     * @return la liste de joueurs de la partie
+     */
+    public List<Player> getPlayers() {
+        return players;
+    }
+
+    /**
+     * @return les équipes de la partie
+     */
+    public List<Team> getTeams() {
+        return teams;
+    }
+
+    /**
+     * @return le tour actuellement joué, null si aucun tour n'est joué
+     */
+    public Round getCurrentRound() {
+        Round round = null;
+        for (Round r : rounds)
+            if (r.isPlayed())
+                round = r;
+
+        return round;
+    }
+
+    /**
+     * @return la liste des tours de la partie
+     */
+    public List<Round> getRounds() {
+        return rounds;
+    }
+
+    /**
+     * @return la table de jeu de la partie
+     */
+    public Table getTable() {
+        return table;
+    }
+
+    /**
+     * @return le premier joueur qui doit faire atout
+     */
+    public Player getFirstPlayerTrump() {
+        return firstPlayerTrump;
+    }
+
+    // Setters
+
+    /**
+     * Définir le joueur qui fait atout en premier
+     *
+     * @param firstPlayerTrump joueur
+     */
+    public void setFirstPlayerTrump(Player firstPlayerTrump) {
+        this.firstPlayerTrump = firstPlayerTrump;
+    }
+
+    // Méthodes
+
+    /**
+     * Démarrage du thread de la partie et instanciation du premier tour
+     */
+    @Override
+    public void run() {
+        System.out.println("Début de la partie");
+
+        // Envoi du nom des joueurs
+        List<String> playerNames = new ArrayList<>(NB_PLAYERS);
+
+        for (Player player : this.players)
+            playerNames.add(player.getName());
+
+        sendToAllPlayers(new Request(ServerAction.SEND_PLAYER_NAMES, playerNames));
+
+        // Démarrage du premier tour
+        Round round = new Round(this);
+        rounds.add(round);
+        round.initRound();
     }
 
     /**
      * Définition des équipes à partir d'une liste de joueurs
-     *
-     * @param players les joueurs
      */
-    private void setTeams(List<Player> players) {
+    private void setTeams() {
         if (players.size() != NB_PLAYERS)
             throw new RuntimeException("Une partie ne peut pas être jouée à moins de " + NB_PLAYERS + " joueurs");
 
@@ -124,35 +158,22 @@ public class Game {
     }
 
     /**
-     * Démarrer la partie
+     * Instancier un nouveau tour de jeu
      */
-    public void startGame() {
-        // A implémenter. Ici, juste envoi d'une carte de test
-        // TODO : niveau conception, il faudrait dans le start game, créer un nouveau round au lieu de distribuer
-        //  les cartes et les distribuer dans le round (UML à modifier)
-
-
-        while (teams.get(0).getPoints() < WIN_POINTS && teams.get(1).getPoints() < WIN_POINTS) {
-            rounds.add(new Round(this));
+    public void newRound() {
+        if (teams.get(0).getPoints() < WIN_POINTS && teams.get(1).getPoints() < WIN_POINTS) {
+            Round round = new Round(this);
+            rounds.add(round);
+            round.initRound();
         }
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public List<Player> getPlayers() {
-        return players;
-    }
-
-    public List<Team> getTeams() {
-        return teams;
-    }
-
-    public Player getTrumpPlayer() {
-        if(rounds.size() == 1)
-            return null;
-        else
-            return null; // TODO : Ici faire le mécanisme que c'est le prochain joueur qui fait atout
+    /**
+     * Envoi d'une requête à tous les joueurs
+     * @param request la requête à envoyer
+     */
+    public void sendToAllPlayers(Request request){
+        for(Player player : players)
+            player.sendRequest(request);
     }
 }

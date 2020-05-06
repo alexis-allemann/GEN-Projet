@@ -8,6 +8,7 @@ Compilateur : javac 11.0.4
 --------------------------- */
 package ch.heigvd.aalamo.chibre.engine;
 
+import java.io.Serializable;
 import java.util.List;
 
 public class Team {
@@ -24,25 +25,52 @@ public class Team {
         if (players.size() != Game.NB_PLAYERS_TEAMS)
             throw new IllegalArgumentException("La liste de joueur ne contient pas deux joueurs pour créer l'équipe.");
         this.players = players;
+        for (Player player : players)
+            player.setTeam(this);
     }
 
+    // Getters
+
+    /**
+     * @return la liste des joueurs qui font partie de l'équipe
+     */
     public List<Player> getPlayers() {
         return players;
     }
 
-    public int getMaxIDPlayer() {
-        return Math.max(this.players.get(0).getId(), this.players.get(1).getId());
-    }
-
-    public int getMinIDPlayer() {
-        return Math.min(this.players.get(0).getId(), this.players.get(1).getId());
-    }
-
-    public void addPoints(int points){
-        this.points += points;
-    }
-
+    /**
+     * @return le nombre de points de l'équipe
+     */
     public int getPoints() {
         return points;
     }
+
+    // Méthodes
+
+    /**
+     * Ajouter des points l'équipe
+     *
+     * @param points le nombre de points à ajouter
+     */
+    public void addPoints(int points) {
+        this.points += points;
+    }
+
+    /**
+     * Retourne l'autre joueur de l'équipe que celui donné
+     *
+     * @param player joueur dont on veut le coéquipier
+     * @return le cohéquipier
+     * @throws RuntimeException si le joueur donné ne fait pas partie de l'équipe
+     */
+    public Player getOtherPlayer(Player player) {
+        if (!players.contains(player))
+            throw new RuntimeException("L'équipe ne contient pas le joueur donné");
+
+        int index = players.indexOf(player);
+        if (index == 0)
+            return players.get(1);
+        return players.get(0);
+    }
+
 }

@@ -21,5 +21,18 @@ public interface ChibreController {
     /**
      * Envoyer une carte au serveur
      */
-    void sendCard();
+    void sendCard(int index);
+
+    /**
+     * Envoyer la couleur atout choisie
+     *
+     * @param color couleur de l'atout
+     */
+    void chooseTrump(CardColor color);
+
+    /**
+     * Envoi du nom du joueur au serveur
+     * @param name nom du joueur
+     */
+    void sendPlayerName(String name);
 }

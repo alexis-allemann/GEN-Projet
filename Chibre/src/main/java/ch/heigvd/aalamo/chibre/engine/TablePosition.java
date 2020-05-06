@@ -9,29 +9,33 @@ Compilateur : javac 11.0.4
 package ch.heigvd.aalamo.chibre.engine;
 
 public enum TablePosition {
-    TOP(0),
-    RIGHT(1),
-    BOTTOM(0),
-    LEFT(1);
+    TOP(0, 0),
+    RIGHT(1, 1),
+    BOTTOM(2, 0),
+    LEFT(3, 1);
 
     // Attributs
-    private int team;
+    private final int index;
+    private final int teamIndex;
 
     /**
      * Instancier une position à la table
      *
      * @param team équipe
      */
-    TablePosition(int team) {
-        this.team = team;
+    TablePosition(int index, int team) {
+        this.index = index;
+        this.teamIndex = team;
     }
 
+    // Getters
+
     /**
-     * Obtenir l'équipe à la place
+     * Obtenir l'index de la position
      *
-     * @return l'équipe
+     * @return l'index de la position
      */
-    public int getTeam() {
-        return team;
+    public int getIndex() {
+        return index;
     }
 }

@@ -8,8 +8,12 @@ Compilateur : javac 11.0.4
 --------------------------- */
 package ch.heigvd.aalamo.chibre.network;
 
+import ch.heigvd.aalamo.chibre.CardColor;
 import ch.heigvd.aalamo.chibre.engine.Card;
 import ch.heigvd.aalamo.chibre.engine.Player;
+import ch.heigvd.aalamo.chibre.network.objects.Request;
+import ch.heigvd.aalamo.chibre.network.objects.Response;
+import ch.heigvd.aalamo.chibre.network.objects.ServerAction;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -39,29 +43,7 @@ public class Handler implements Runnable {
         new Thread(this).start();
     }
 
-    /**
-     * Méthode du thread qui écoute le réseau pour savoir si une carte est reçue
-     */
-    @Override
-    public void run() {
-        Card card;
-        try {
-            while ((card = (Card) in.readObject()) != null) {
-                // game.send(cardJPanel);
-            }
-        } catch (ClassNotFoundException | IOException e) {
-            e.printStackTrace();
-        }
-        try {
-            socket.close();
-            // Notifier le serveur que le joueur n'est plus disponible
-            if (player != null)
-                server.remove(player);
-            // TODO : voir si on notifie le player que le handler n'est plus disponible ou si on met un timer (par exemple)
-        } catch (IOException e1) {
-            e1.printStackTrace();
-        }
-    }
+    // Setters
 
     /**
      * Définir le joueur relié au handler
@@ -72,13 +54,69 @@ public class Handler implements Runnable {
         this.player = player;
     }
 
+    // Méthodes
+
     /**
-     * Envoi d'une carte sur le réseau
-     *
-     * @param card la carte
-     * @throws IOException s'il y a une erreur de donnée
+     * Méthode du thread qui écoute le réseau et qui envoie les données au server
      */
-    public void sendCard(Card card) throws IOException {
-        out.writeObject(card);
+    @Override
+    public void run() {
+        Response response;
+        try {
+            while ((response = (Response) in.readObject()) != null) {
+                // Selon le type d'action de la GUI
+                switch (response.getAction()) {
+                    case SEND_NAME:
+                        player.setName((String) response.getObject());
+                        if (player.getGame() != null)
+                            player.getGame().run();
+                        break;
+                    case SEND_ANNOUCEMENT:
+                        break;
+                    case PLAY_CARD:
+                        Card card = (Card) response.getObject();
+                        card.setPlayer(player);
+                        // TODO : serializer pour éviter de set le player relié à la carte ici
+                        player.getGame().getCurrentRound().getCurrentTurn().playCard(card);
+                        player.getGame().getCurrentRound().getCurrentTurn().pursueTurn();
+                        break;
+                    case SEND_TRUMP:
+                        CardColor color = (CardColor) response.getObject();
+                        if (color == null) {
+                            player.getTeam().getOtherPlayer(player).sendRequest(new Request(ServerAction.ASK_TRUMP));
+                        } else {
+                            player.getGame().getCurrentRound().setTrumpColor(color);
+                            player.getGame().getCurrentRound().initTurn();
+                        }
+                        break;
+                }
+            }
+        } catch (ClassNotFoundException | IOException e) {
+            e.printStackTrace();
+        }
+
+        // Lorsque le joueur se déconnecte
+        try {
+            socket.close();
+            // Notifier le serveur que le joueur n'est plus disponible
+            if (player != null)
+                server.remove(player);
+            // TODO : voir si on notifie le player que le handler n'est plus disponible ou si on met un timer (par exemple)
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Envoi d'une requête à la GUI
+     *
+     * @param request requête à envoyer
+     */
+    public void sendRequest(Request request) {
+        try {
+            out.writeObject(request);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -8,6 +8,11 @@ Compilateur : javac 11.0.4
 --------------------------- */
 package ch.heigvd.aalamo.chibre;
 
+import ch.heigvd.aalamo.chibre.engine.Card;
+import ch.heigvd.aalamo.chibre.view.gui.UserChoice;
+
+import java.util.List;
+
 public interface ChibreView {
 
     /**
@@ -30,19 +35,160 @@ public interface ChibreView {
      * @param title         titre de la fenêtre
      * @param question      la question
      * @param possibilities les options (liste déroulante)
-     * @param <T>           le type des choix
      * @return l'option choisie au type défini
      */
-    <T extends UserChoice> T askUser(String title, String question, T... possibilities);
-
+    UserChoice askUser(String title, String question, List<UserChoice> possibilities);
 
     /**
-     * Interface représentant un choix utilisateur
+     * Afficher un message à l'utilisateur
+     *
+     * @param title    titre du message
+     * @param question question à poser
+     * @return la réponse saisie
      */
-    interface UserChoice {
-        /**
-         * @return la valeur du choix au format texuel
-         */
-        String textValue();
-    }
+    String askUser(String title, String question);
+
+    /**
+     * Définir le nom de l'utilisateur en cours
+     *
+     * @param userName nom de l'utilisateur
+     */
+    void setUserName(String userName);
+
+    /**
+     * Définir le nom de l'utilisateur à droite
+     *
+     * @param userName nom de l'utilisateur
+     */
+    void setRightPlayerName(String userName);
+
+    /**
+     * Définir le nom de l'utilisateur en haut
+     *
+     * @param userName nom de l'utilisateur
+     */
+    void setTopPlayerName(String userName);
+
+    /**
+     * Définir le nom de l'utilisateur à gauche
+     *
+     * @param userName nom de l'utilisateur
+     */
+    void setLeftPlayerName(String userName);
+
+    /**
+     * Affichage du joueur 1 de l'équipe 1
+     *
+     * @param userName nom de l'utilisateur
+     */
+    void setTeam1Player1(String userName);
+
+    /**
+     * Affichage du joueur 2 de l'équipe 1
+     *
+     * @param userName nom de l'utilisateur
+     */
+    void setTeam1Player2(String userName);
+
+    /**
+     * Affichage du joueur 1 de l'équipe 2
+     *
+     * @param userName nom de l'utilisateur
+     */
+    void setTeam2Player1(String userName);
+
+    /**
+     * Affichage du joueur 2 de l'équipe 2
+     *
+     * @param userName nom de l'utilisateur
+     */
+    void setTeam2Player2(String userName);
+
+    /**
+     * Affichage du joueur qui fait atout
+     *
+     * @param userName nom de l'utilisateur
+     */
+    void setTrumpPlayer(String userName);
+
+    /**
+     * Affichage de la couleur atout
+     *
+     * @param trumpColor couleur atout
+     */
+    void setTrumpColor(CardColor trumpColor);
+
+    /**
+     * Affichage du joueur qui a le tour
+     *
+     * @param userName joueur qui a le tour
+     */
+    void setCurrentPlayer(String userName);
+
+    /**
+     * Afficher la carte jouée par le joueur en haut
+     *
+     * @param card carte à afficher
+     */
+    void setTopPlayerCard(Card card);
+
+    /**
+     * Afficher la carte jouée par le joueur à gauche
+     *
+     * @param card carte à afficher
+     */
+    void setLeftPlayerCard(Card card);
+
+    /**
+     * Afficher la carte jouée par le joueur à droite
+     *
+     * @param card carte à afficher
+     */
+    void setRightPlayerCard(Card card);
+
+    /**
+     * Afficher la carte jouée par le joueur en cours
+     *
+     * @param card carte à afficher
+     */
+    void setBottomPlayerCard(Card card);
+
+    /**
+     * Redéfinir la carte jouée à vide
+     */
+    void resetBottomPlayerCard();
+
+    /**
+     * Afficher un message à l'utilisateur
+     *
+     * @param title   titre de la popup
+     * @param message message à afficher
+     */
+    void showMessage(String title, String message);
+
+    /**
+     * Afficher les points de l'équipe 1 à l'utilisateur
+     *
+     * @param points points à afficher
+     */
+    void setPointsTeam1(int points);
+
+    /**
+     * Afficher les points de l'équipe 2 à l'utilisateur
+     *
+     * @param points points à afficher
+     */
+    void setPointsTeam2(int points);
+
+    /**
+     * Afficher l'équipe gagnante provisoire
+     *
+     * @param team team à afficher
+     */
+    void setWinningTeam(String team);
+
+    /**
+     * Permet d'enlever l'affichage des cartes jouées
+     */
+    void resetPlayedCards();
 }
