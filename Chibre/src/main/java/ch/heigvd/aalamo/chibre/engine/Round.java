@@ -94,6 +94,7 @@ public class Round {
      * Initialiser le tour
      */
     public void initRound() {
+        System.out.println("Début du round");
 
         for (Player player : game.getPlayers()) {
             if (cardCollection.distributeCards(player, Game.NB_CARDS_PLAYER) && game.getRounds().size() == 1)
@@ -150,12 +151,12 @@ public class Round {
     }
 
     /**
-     * Savoir si le tour de jeu est le premier de la partie
+     * Savoir si le tour de table est le premier du tour
      *
      * @return booléen si c'est le premier ou non
      */
-    public boolean isFirstRound() {
-        return id == 1;
+    public boolean isFirstTurn() {
+        return turns.size() == 1;
     }
 
     /**

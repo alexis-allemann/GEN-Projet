@@ -37,7 +37,7 @@ public class ChibreTest {
     @Test
     public void waitingUserTest() throws InterruptedException {
 
-        for(int i = 0; i < 3; ++i)
+        for (int i = 0; i < 3; ++i)
             new User();
 
         Thread.sleep(100);
@@ -47,7 +47,7 @@ public class ChibreTest {
     @Test
     public void gameCreationTest() throws InterruptedException {
 
-        for(int i = 0; i < 4; ++i)
+        for (int i = 0; i < 4; ++i)
             new User();
 
         Thread.sleep(100);
@@ -56,7 +56,7 @@ public class ChibreTest {
 
     @Test
     public void checkFourPlayersInGameTest() throws InterruptedException {
-        for(int i = 0; i < 4; ++i)
+        for (int i = 0; i < 4; ++i)
             new User();
         Thread.sleep(100);
         assertEquals(server.getGames().get(0).getPlayers().size(), 4);
@@ -64,7 +64,7 @@ public class ChibreTest {
 
     @Test
     public void checkTwoPlayerInEachTeam() throws InterruptedException {
-        for(int i = 0; i < 4; ++i)
+        for (int i = 0; i < 4; ++i)
             new User();
         Thread.sleep(100);
         boolean bothTeamHasTwoPlayers = true;
@@ -94,30 +94,44 @@ public class ChibreTest {
 
     @Test
     public void checkEachPlayerHasNineCards() throws InterruptedException {
-        for(int i = 0; i < 4; ++i)
-            new User();
+        List<User> users = new ArrayList<>(4);
+        for (int i = 0; i < 4; ++i) {
+            User currentUser = new User();
+            users.add(currentUser);
+            Thread.sleep(100);
+            currentUser.sendPlayerName("toto" + i);
+        }
+
         Thread.sleep(100);
+        System.out.println("test");
         boolean everyBodyHasNineCards = true;
-        for (Player player : server.getGames().get(0).getPlayers())
+        // TODO : voir pourquoi plusieurs games
+        for (Player player : server.getGames().get(1).getPlayers())
             if (player.getCards().size() != Game.NB_CARDS_PLAYER) {
                 everyBodyHasNineCards = false;
                 break;
             }
+
         assertTrue(everyBodyHasNineCards);
     }
 
     @Test
-    public void checkRoundStart() throws InterruptedException{
-        for(int i = 0; i < 4; ++i)
-            new User();
-        Thread.sleep(100);
+    public void checkRoundStart() throws InterruptedException {
+        List<User> users = new ArrayList<>(4);
+        for (int i = 0; i < 4; ++i) {
+            User currentUser = new User();
+            users.add(currentUser);
+            Thread.sleep(100);
+            currentUser.sendPlayerName("toto" + i);
+        }
 
-        assertNotNull(server.getGames().get(0).getCurrentRound());
+        // TODO : voir pourquoi plusieurs games
+        assertNotNull(server.getGames().get(1).getCurrentRound());
     }
 
     @Test
-    public void checkTableCreation() throws InterruptedException{
-        for(int i = 0; i < 4; ++i)
+    public void checkTableCreation() throws InterruptedException {
+        for (int i = 0; i < 4; ++i)
             new User();
 
         Thread.sleep(100);
@@ -125,7 +139,7 @@ public class ChibreTest {
         tablePositions.addAll(Arrays.asList(TablePosition.values()));
 
         Table table = server.getGames().get(0).getTable();
-        for(Player player : table.getPlayers()){
+        for (Player player : table.getPlayers()) {
             tablePositions.remove(table.getPositionByPlayer(player));
         }
 

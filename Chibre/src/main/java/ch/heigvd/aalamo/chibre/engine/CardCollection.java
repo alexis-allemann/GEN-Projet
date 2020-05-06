@@ -31,6 +31,7 @@ public class CardCollection {
      * @return true si le joueur a le 7 de carreau
      */
     public boolean distributeCards(Player player, int nb) {
+        System.out.println("Distribution des cartes");
         boolean hasDiamondSeven = false; // Pour savoir si le joueur fait atout au premier tour
         for (int i = 0; i < nb; ++i) {
             int cardIndex = random.nextInt(collection.size());

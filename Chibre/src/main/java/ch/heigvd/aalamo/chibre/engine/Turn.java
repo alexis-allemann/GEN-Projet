@@ -59,7 +59,7 @@ public class Turn {
      * Démarrer le tour de table
      */
     public void initTurn() {
-        if (round.isFirstRound())
+        if (round.isFirstTurn())
             firstPlayer = round.getTrumpPlayer();
         else if (lastTurn != null)
             firstPlayer = lastTurn.getWinner();
@@ -117,7 +117,12 @@ public class Turn {
             round.getGame().sendToAllPlayers(new Request(ServerAction.SEND_RESET_CARDS));
             newTurn();
         } else {
-            Player nextPlayer = round.getTable().getTrumpPlayer(firstPlayer, cards.size());
+            Player nextPlayer;
+            if (winner != null)
+                nextPlayer = round.getTable().getTrumpPlayer(winner, cards.size());
+            else
+                nextPlayer = round.getTable().getTrumpPlayer(firstPlayer, cards.size());
+
             round.getGame().sendToAllPlayers(new Request(ServerAction.SEND_CURRENT_PLAYER, nextPlayer.getName()));
             nextPlayer.sendRequest(new Request(ServerAction.ASK_CARD));
         }
@@ -128,6 +133,7 @@ public class Turn {
      */
     private void newTurn() {
         // TODO : voir si on peut démarrer un nouveau round dans game plutôt
+        isPlayed = false;
         if (round.playerCardsEmpty())
             round.getGame().newRound();
         else {
@@ -145,8 +151,8 @@ public class Turn {
     public void playCard(Card card) {
         cards.add(card);
         Card cardPlayed = null;
-        try{
-            cardPlayed = (Card)card.clone();
+        try {
+            cardPlayed = (Card) card.clone();
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();
         }

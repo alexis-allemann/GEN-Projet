@@ -68,7 +68,7 @@ public class Handler implements Runnable {
                 switch (response.getAction()) {
                     case SEND_NAME:
                         player.setName((String) response.getObject());
-                        if(player.getGame() != null)
+                        if (player.getGame() != null)
                             player.getGame().run();
                         break;
                     case SEND_ANNOUCEMENT:
@@ -82,9 +82,9 @@ public class Handler implements Runnable {
                         break;
                     case SEND_TRUMP:
                         CardColor color = (CardColor) response.getObject();
-                        if(color == null)
-                            player.sendRequest(new Request(ServerAction.ASK_TRUMP));
-                        else{
+                        if (color == null) {
+                            player.getTeam().getOtherPlayer(player).sendRequest(new Request(ServerAction.ASK_TRUMP));
+                        } else {
                             player.getGame().getCurrentRound().setTrumpColor(color);
                             player.getGame().getCurrentRound().initTurn();
                         }

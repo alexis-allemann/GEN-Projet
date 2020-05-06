@@ -108,6 +108,7 @@ public class Player {
     public void distributeCard(Card card) {
         if (card == null)
             throw new IllegalArgumentException("Carte nulle");
+        System.out.println("Ajout de la carte");
         cards.add(card);
     }
 
