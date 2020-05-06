@@ -15,12 +15,14 @@ import ch.heigvd.aalamo.chibre.engine.Card;
 import ch.heigvd.aalamo.chibre.engine.Game;
 import ch.heigvd.aalamo.chibre.network.objects.*;
 import ch.heigvd.aalamo.chibre.view.gui.GUIErrorFrame;
+import ch.heigvd.aalamo.chibre.view.gui.UserChoice;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class User implements ChibreController {
@@ -125,7 +127,9 @@ public class User implements ChibreController {
                         }
                         break;
                     case SEND_TRUMP_PLAYER:
-                        view.setTrumpPlayer((String) request.getObject());
+                        String trumpPlayerName = (String) request.getObject();
+                        view.setTrumpPlayer(trumpPlayerName);
+                        trumpPlayer = trumpPlayerName;
                         break;
                     case SEND_TRUMP_COLOR:
                         view.setTrumpColor((CardColor) request.getObject());
@@ -159,67 +163,20 @@ public class User implements ChibreController {
                         view.resetPlayedCards();
                         break;
                     case ASK_TRUMP:
-                        // TODO : empecher de chibrer si le joueur n'est pas le trump player
-                        ChibreView.UserChoice choice = view.askUser("Choix atout", "Quel couleur voulez-vous faire atout ?",
-                                new ChibreView.UserChoice() {
-                                    @Override
-                                    public Object value() {
-                                        return CardColor.DIAMOND;
-                                    }
+                        List<UserChoice> choices = new ArrayList<>();
+                        choices.add(new UserChoice("Carreau", CardColor.DIAMOND));
+                        choices.add(new UserChoice("Coeur", CardColor.HEART));
+                        choices.add(new UserChoice("Pique", CardColor.SPADE));
+                        choices.add(new UserChoice("Trèfle", CardColor.CLUB));
 
-                                    @Override
-                                    public String toString() {
-                                        return "Carreau";
-                                    }
-                                },
-                                new ChibreView.UserChoice() {
-                                    @Override
-                                    public Object value() {
-                                        return CardColor.HEART;
-                                    }
+                        // Le choix de chibre n'est disponible que si on est le joueur qui fait atout
+                        if(trumpPlayer != null && trumpPlayer.equals(playerName))
+                            choices.add(new UserChoice("Chibrer", null));
 
-                                    @Override
-                                    public String toString() {
-                                        return "Coeur";
-                                    }
-                                },
-                                new ChibreView.UserChoice() {
-                                    @Override
-                                    public Object value() {
-                                        return CardColor.SPADE;
-                                    }
-
-                                    @Override
-                                    public String toString() {
-                                        return "Pique";
-                                    }
-                                },
-                                new ChibreView.UserChoice() {
-                                    @Override
-                                    public Object value() {
-                                        return CardColor.CLUB;
-                                    }
-
-                                    @Override
-                                    public String toString() {
-                                        return "Trèfle";
-                                    }
-                                },
-
-                                new ChibreView.UserChoice() {
-                                    @Override
-                                    public Object value() {
-                                        return null;
-                                    }
-
-                                    @Override
-                                    public String toString() {
-                                        return "Chibrer";
-                                    }
-                                });
+                        UserChoice choice = view.askUser("Choix atout", "Quel couleur voulez-vous faire atout ?", choices);
 
                         // Envoi du choix de l'utilisateur qui fait atout
-                        chooseTrump((CardColor) choice.value());
+                        chooseTrump((CardColor) choice.getValue());
 
                     case ASK_ANNOUNCEMENT:
                 }

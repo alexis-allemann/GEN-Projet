@@ -9,6 +9,9 @@ Compilateur : javac 11.0.4
 package ch.heigvd.aalamo.chibre;
 
 import ch.heigvd.aalamo.chibre.engine.Card;
+import ch.heigvd.aalamo.chibre.view.gui.UserChoice;
+
+import java.util.List;
 
 public interface ChibreView {
 
@@ -32,20 +35,9 @@ public interface ChibreView {
      * @param title         titre de la fenêtre
      * @param question      la question
      * @param possibilities les options (liste déroulante)
-     * @param <T>           le type des choix
      * @return l'option choisie au type défini
      */
-    <T extends UserChoice> T askUser(String title, String question, T... possibilities);
-
-    /**
-     * Interface représentant un choix utilisateur
-     */
-    interface UserChoice {
-        /**
-         * @return l'objet représenté par la valeur
-         */
-        Object value();
-    }
+    UserChoice askUser(String title, String question, List<UserChoice> possibilities);
 
     /**
      * Afficher un message à l'utilisateur
@@ -168,25 +160,29 @@ public interface ChibreView {
 
     /**
      * Afficher un message à l'utilisateur
-     * @param title titre de la popup
+     *
+     * @param title   titre de la popup
      * @param message message à afficher
      */
     void showMessage(String title, String message);
 
     /**
      * Afficher les points de l'équipe 1 à l'utilisateur
+     *
      * @param points points à afficher
      */
     void setPointsTeam1(int points);
 
     /**
      * Afficher les points de l'équipe 2 à l'utilisateur
+     *
      * @param points points à afficher
      */
     void setPointsTeam2(int points);
 
     /**
      * Afficher l'équipe gagnante provisoire
+     *
      * @param team team à afficher
      */
     void setWinningTeam(String team);

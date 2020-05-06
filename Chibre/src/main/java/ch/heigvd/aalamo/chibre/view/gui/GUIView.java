@@ -189,15 +189,14 @@ public class GUIView extends BaseView<ImageIcon> {
      * @param title         titre de la fenêtre
      * @param question      la question
      * @param possibilities les options (liste déroulante)
-     * @param <T>           type des options
      * @return l'option choisie dans le type donné
      */
     @Override
-    public <T extends UserChoice> T askUser(String title, String question, T... possibilities) {
-        T result = possibilities.length > 0 ? possibilities[0] : null;
-        if (possibilities.length > 1) {
-            result = (T) JOptionPane.showInputDialog(null,
-                    question, title, JOptionPane.QUESTION_MESSAGE, null, possibilities, result);
+    public UserChoice askUser(String title, String question, List<UserChoice> possibilities) {
+        UserChoice result = possibilities.size() > 0 ? possibilities.get(0) : null;
+        if (possibilities.size() > 1) {
+            result = (UserChoice) JOptionPane.showInputDialog(null,
+                    question, title, JOptionPane.QUESTION_MESSAGE, null, possibilities.toArray(), result);
         }
         return result;
     }
