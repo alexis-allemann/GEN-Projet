@@ -10,6 +10,7 @@ package ch.heigvd.aalamo.chibre.engine;
 
 import ch.heigvd.aalamo.chibre.CardColor;
 import ch.heigvd.aalamo.chibre.CardType;
+import ch.heigvd.aalamo.chibre.network.objects.CardDTO;
 
 import java.io.Serializable;
 
@@ -68,5 +69,9 @@ public class Card implements Serializable, Cloneable {
 
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
+    }
+
+    CardDTO serialize(){
+        return new CardDTO(this.cardColor, this.cardType);
     }
 }

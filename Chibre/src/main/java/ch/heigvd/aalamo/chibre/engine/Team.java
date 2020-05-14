@@ -8,13 +8,19 @@ Compilateur : javac 11.0.4
 --------------------------- */
 package ch.heigvd.aalamo.chibre.engine;
 
+import ch.heigvd.aalamo.chibre.network.objects.PlayerDTO;
+import ch.heigvd.aalamo.chibre.network.objects.TeamDTO;
+
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Team {
     // Attributs
     private List<Player> players;
     private int points;
+    private int id;
+    private static int count = 1;
 
     /**
      * Instanciation d'une équipe
@@ -27,6 +33,7 @@ public class Team {
         this.players = players;
         for (Player player : players)
             player.setTeam(this);
+        this.id = count++;
     }
 
     // Getters
@@ -44,6 +51,7 @@ public class Team {
     public int getPoints() {
         return points;
     }
+
 
     // Méthodes
 
@@ -73,4 +81,11 @@ public class Team {
         return players.get(0);
     }
 
+    public TeamDTO serialize(){
+        List<PlayerDTO> playersDto = new ArrayList<>(Game.NB_PLAYERS_TEAMS);
+        for(Player player : players)
+            playersDto.add(player.serialize());
+
+        return new TeamDTO(this.id, this.points, playersDto);
+    }
 }
