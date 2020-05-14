@@ -21,9 +21,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class User implements ChibreController {
     // Attributs
@@ -42,6 +40,7 @@ public class User implements ChibreController {
     private int pointsTeam1;
     private int pointsTeam2;
     private int points;
+    private Timer timer;
 
     /**
      * Instancier un utilisateur de l'application
@@ -140,11 +139,11 @@ public class User implements ChibreController {
                         break;
                     case SEND_CARD_PLAYED:
                         Card card = (Card) request.getObject();
-                        if(currentPlayer.equals(topPlayer))
+                        if (currentPlayer.equals(topPlayer))
                             view.setTopPlayerCard(card);
-                        else if(currentPlayer.equals(leftPlayer))
+                        else if (currentPlayer.equals(leftPlayer))
                             view.setLeftPlayerCard(card);
-                        else if(currentPlayer.equals(rightPlayer))
+                        else if (currentPlayer.equals(rightPlayer))
                             view.setRightPlayerCard(card);
                         break;
                     case SEND_POINTS_TEAM1:
@@ -160,7 +159,14 @@ public class User implements ChibreController {
                         setWinningTeam();
                         break;
                     case SEND_RESET_CARDS:
-                        view.resetPlayedCards();
+                        // Attente de 5 secondes puis réinitalisation du tapis de jeu
+                        timer = new Timer();
+                        timer.schedule(new TimerTask() {
+                            @Override
+                            public void run() {
+                                view.resetPlayedCards();
+                            }
+                        }, 5000);
                         break;
                     case ASK_TRUMP:
                         List<UserChoice> choices = new ArrayList<>();
@@ -170,7 +176,7 @@ public class User implements ChibreController {
                         choices.add(new UserChoice("Trèfle", CardColor.CLUB));
 
                         // Le choix de chibre n'est disponible que si on est le joueur qui fait atout
-                        if(trumpPlayer != null && trumpPlayer.equals(playerName))
+                        if (trumpPlayer != null && trumpPlayer.equals(playerName))
                             choices.add(new UserChoice("Chibrer", null));
 
                         UserChoice choice = view.askUser("Choix atout", "Quel couleur voulez-vous faire atout ?", choices);
@@ -229,15 +235,14 @@ public class User implements ChibreController {
         if (index >= cards.size())
             throw new IndexOutOfBoundsException("index plus grand que le nombre de cartes");
 
-        if(! currentPlayer.equals(playerName)){
+        if (!currentPlayer.equals(playerName)) {
             view.showMessage("Ce n'est pas votre tour", "C'est le tour de " + currentPlayer);
-            if(lastCardPlayed != null)
+            if (lastCardPlayed != null)
                 view.setBottomPlayerCard(cards.get(cards.indexOf(lastCardPlayed)));
             else
                 view.resetBottomPlayerCard();
             view.addCard(cards.get(index).getCardType(), cards.get(index).getCardColor(), index);
-        }
-        else{
+        } else {
             try {
                 out.writeObject(new Response(UserAction.PLAY_CARD, cards.get(index)));
                 lastCardPlayed = cards.get(index);
@@ -263,10 +268,10 @@ public class User implements ChibreController {
         System.out.println("Choix atout envoyé");
     }
 
-    private void setWinningTeam(){
-        if(pointsTeam1 > pointsTeam2)
+    private void setWinningTeam() {
+        if (pointsTeam1 > pointsTeam2)
             view.setWinningTeam("Equipe 1");
-        else if(pointsTeam1 < pointsTeam2)
+        else if (pointsTeam1 < pointsTeam2)
             view.setWinningTeam("Equipe 2");
         else
             view.setWinningTeam("");
