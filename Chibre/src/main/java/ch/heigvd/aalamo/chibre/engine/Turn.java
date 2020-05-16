@@ -87,7 +87,7 @@ public class Turn {
                 points += card.getCardType().getValueOfTrump();
             else
                 points += card.getCardType().getValue();
-
+        System.out.println("Points : " + points);
         return points;
     }
 
@@ -100,8 +100,6 @@ public class Turn {
         if (cards.size() == Game.NB_PLAYERS) {
             System.out.println("Le tour est fini.");
             defineWinner();
-            System.out.println("Définition du gagnant : " + winner.getUsername());
-            System.out.println("Points : " + getTotalPoints());
             this.winner.getTeam().addPoints(getTotalPoints());
             // Suppression des cartes
             // TODO refactor après serialization
@@ -125,7 +123,7 @@ public class Turn {
         System.out.println("Nouveau tour dans le round id#"+round.getId());
         // TODO : voir si on peut démarrer un nouveau round dans game plutôt
         isPlayed = false;
-        if (round.playerCardsEmpty())
+        if (round.getTurns().size() == Game.NB_CARDS_PLAYER)
             round.getGame().newRound();
         else {
             Turn turn = new Turn(round, this);
@@ -169,10 +167,10 @@ public class Turn {
             ||
             (card.getCardColor() == round.getTrumpColor() &&
                 winningCard.getCardColor() == round.getTrumpColor() &&
-                card.getCardType().getValueOfTrump() > winningCard.getCardType().getValueOfTrump())
+                card.getCardType().getOrderOfTrump() > winningCard.getCardType().getOrderOfTrump())
             ||
             (card.getCardColor() == winningCard.getCardColor() &&
-                card.getCardType().getValue() > winningCard.getCardType().getValue())
+                card.getCardType().getOrder() > winningCard.getCardType().getOrder())
             )
             {
                 winningCard = card;
@@ -181,6 +179,8 @@ public class Turn {
         }
 
         this.winner = winningCard.getPlayer();
+        System.out.print("Le gagnant du tour est : " + winner.getUsername());
+        System.out.println("Avec la carte <"+winningCard.getCardColor().toString()+"><"+winningCard.getCardType().toString()+">");
     }
 }
 
