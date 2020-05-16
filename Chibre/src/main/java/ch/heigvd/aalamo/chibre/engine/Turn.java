@@ -16,12 +16,12 @@ import java.util.List;
 
 public class Turn {
     // Attributs
-    private List<Card> cards = new ArrayList<>(Game.NB_PLAYERS);
+    private final List<Card> cards = new ArrayList<>(Game.NB_PLAYERS);
     private final Round round;
     private boolean isPlayed;
     private Player firstPlayer;
     private Player winner;
-    private Turn lastTurn;
+    private final Turn lastTurn;
 
     /**
      * Instanciation d'un tour de table
@@ -33,15 +33,6 @@ public class Turn {
         this.round = round;
         this.lastTurn = lastTurn;
         this.isPlayed = true;
-        //TODO :
-        // 1. Récupérer le joueur qui doit jouer
-        // 2. Lui demander de jouer une carte
-        // 3. Faire ça pour les 3 autres joueur
-        // 4. Regarder qui a remporter la mise
-        // 5. Calculer les points
-        // 6. Attribuer les points à la bonne équipe
-        // 7. Enlever les cartes de la main des joueurs
-        // 8. Recréer un tour si ils restent des cartes, sinon créer un nouveau round
     }
 
     // Getters
@@ -59,11 +50,18 @@ public class Turn {
      * Démarrer le tour de table
      */
     public void initTurn() {
-        if (round.isFirstTurn())
+        System.out.println("Début du tour");
+        if (round.isFirstTurn()){
+            System.out.println("<Tour 1> Premier joueur a le 7 de carreau");
             firstPlayer = round.getTrumpPlayer();
-        else if (lastTurn != null)
+        }
+        else{
+            System.out.println("<Tour "+ round.getTurns().size() +"> Premier joueur est le vainqueur du tour d'avant");
             firstPlayer = lastTurn.getWinner();
+        }
 
+
+        System.out.println("Demande la carte à " + firstPlayer.getUsername());
         firstPlayer.sendRequest(new Request(ServerAction.ASK_CARD));
 
         // TODO : Renvoyez une erreur au client ?
@@ -96,19 +94,12 @@ public class Turn {
      */
     public void pursueTurn() {
 
-        //TODO :
-        // 1. Si la mise est pleine on calcule les points et
-        // on les attribue à l'équipe du joueur qui remporte la main
-        // 1.1. Si les joueurs n'ont plus du cartes, on crée un nouveau tour
-        // 2. Sinon on demande au joueur suivant de jouer
-
+        // Si le tour est fini car chaque joueur à poser une carte
         if (cards.size() == Game.NB_PLAYERS) {
-            // TODO
-            //  1. Calcul des points
-            //  2. Définir le joueur gagant
-            //  3. Ajout des points à l'équipe du joueur gagnant
-            //  4. Suppression des cartes jouées aux joueurs
+            System.out.println("Le tour est fini.");
             defineWinner();
+            System.out.println("Définition du gagnant : " + winner.getUsername());
+            System.out.println("Points : " + getTotalPoints());
             this.winner.getTeam().addPoints(getTotalPoints());
             // Suppression des cartes
             // TODO refactor après serialization
@@ -117,12 +108,9 @@ public class Turn {
             round.getGame().sendToAllPlayers(new Request(ServerAction.SEND_RESET_CARDS));
             newTurn();
         } else {
-            Player nextPlayer;
-            if (winner != null)
-                nextPlayer = round.getTable().getTrumpPlayer(winner, cards.size());
-            else
-                nextPlayer = round.getTable().getTrumpPlayer(firstPlayer, cards.size());
 
+            Player nextPlayer = round.getTable().getTrumpPlayer(firstPlayer, cards.size());
+            System.out.println("Prochain joueur : " + nextPlayer.getUsername());
             round.getGame().sendToAllPlayers(new Request(ServerAction.SEND_CURRENT_PLAYER, nextPlayer.getUsername()));
             nextPlayer.sendRequest(new Request(ServerAction.ASK_CARD));
         }
@@ -132,6 +120,7 @@ public class Turn {
      * Démarer un nouveau tour de table
      */
     private void newTurn() {
+        System.out.println("Nouveau tour dans le round id#"+round.getId());
         // TODO : voir si on peut démarrer un nouveau round dans game plutôt
         isPlayed = false;
         if (round.playerCardsEmpty())
@@ -139,8 +128,13 @@ public class Turn {
         else {
             Turn turn = new Turn(round, this);
             round.addTurn(turn);
+
             turn.initTurn();
         }
+    }
+
+    public void setWinner(Player winner) {
+        this.winner = winner;
     }
 
     /**

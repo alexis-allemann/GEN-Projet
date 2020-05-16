@@ -76,6 +76,17 @@ public class Round {
         return null;
     }
 
+    /**
+     * @return l'id du round
+     */
+    public int getId() {
+        return id;
+    }
+
+    public List<Turn> getTurns() {
+        return turns;
+    }
+
     // Setters
 
     /**
@@ -94,7 +105,7 @@ public class Round {
      * Initialiser le tour
      */
     public void initRound() {
-        System.out.println("Début du round");
+        System.out.println("Début du round id#"+id);
 
         for (Player player : game.getPlayers()) {
             if (cardCollection.distributeCards(player, Game.NB_CARDS_PLAYER) && game.getRounds().size() == 1)

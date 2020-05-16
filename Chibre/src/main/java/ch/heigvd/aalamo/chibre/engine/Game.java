@@ -124,7 +124,7 @@ public class Game implements Runnable {
      */
     @Override
     public void run() {
-        System.out.println("Début de la partie");
+        System.out.println("Début de la partie id#"+id);
 
         // Envoi du nom des joueurs
         List<String> playerNames = new ArrayList<>(NB_PLAYERS);

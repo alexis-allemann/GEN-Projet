@@ -78,7 +78,8 @@ public class User implements ChibreController {
                         break;
                     case AUTHENTICATION_SUCCEED:
                         view.authenticationSucceed();
-                        view.setUserName(((PlayerDTO) request.getObject()).getUsername());
+                        playerName = ((PlayerDTO) request.getObject()).getUsername();
+                        view.setUserName(playerName);
                         break;
                     case CREATE_USER_FAILED:
                         view.createUserFailed();
