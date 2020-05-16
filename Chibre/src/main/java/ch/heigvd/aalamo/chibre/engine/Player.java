@@ -17,12 +17,11 @@ import ch.heigvd.aalamo.chibre.network.objects.TeamDTO;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Player implements Serializable {
+public class Player {
     // Attributs
     private List<Card> cards = new ArrayList<>(Game.NB_CARDS_PLAYER);
     private Handler handler;
     private Team team; // TODO : a supprimer
-    private static int count = 1;
     private Game game;
     private String username;
     private String password;
@@ -75,14 +74,7 @@ public class Player implements Serializable {
         return team;
     }
 
-    /**
-     * @return l'id du joueur
-     */
-    public int getId() {
-        return id;
-    }
-
-// Setters
+    // Setters
 
     /**
      * Définir le handler du joueur
@@ -148,11 +140,11 @@ public class Player implements Serializable {
         handler.sendRequest(request);
     }
 
-    PlayerDTO serialize() {
+    public PlayerDTO serialize() {
         List<CardDTO> cardsDto = new ArrayList<>(Game.NB_CARDS_PLAYER);
-        for(Card card : cards)
+        for (Card card : cards)
             cardsDto.add(new CardDTO(card.getCardColor(), card.getCardType()));
 
-        return new PlayerDTO(this.id, this.name, cardsDto);
+        return new PlayerDTO(username, cardsDto);
     }
 }

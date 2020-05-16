@@ -74,6 +74,7 @@ public class User implements ChibreController {
                         break;
                     case AUTHENTICATION_SUCCEED:
                         view.authenticationSucceed();
+                        view.setUserName(((PlayerDTO) request.getObject()).getUsername());
                         break;
                     case SEND_PLAYER_NAMES:
                         // Affichage des joueurs

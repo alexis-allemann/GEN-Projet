@@ -34,6 +34,7 @@ public class GUIAuthentication {
     private final ChibreController controller;
     private static final int WINDOW_WIDTH = 350;
     private static final int WINDOW_HEIGHT = 200;
+    private static final int WINDOW_ERROR_HEIGHT = 250;
 
     /**
      * Instanciation de la vue d'authentification
@@ -79,6 +80,8 @@ public class GUIAuthentication {
         gui.setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         gui.setLocation(dim.width / 2 - WINDOW_WIDTH / 2, dim.height / 2 - WINDOW_HEIGHT / 2);
+        JRootPane rootPane = SwingUtilities.getRootPane(btnConnect);
+        rootPane.setDefaultButton(btnConnect);
 
         // Masquer le message d'erreur
         lblErrorMessage.setVisible(false);
@@ -89,6 +92,9 @@ public class GUIAuthentication {
      */
     public void displayErrorMessage() {
         lblErrorMessage.setVisible(true);
+        gui.setSize(WINDOW_WIDTH, WINDOW_ERROR_HEIGHT);
+        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+        gui.setLocation(dim.width / 2 - WINDOW_WIDTH / 2, dim.height / 2 - WINDOW_HEIGHT / 2);
         tbxUsername.grabFocus();
         tbxPassword.setText("");
     }

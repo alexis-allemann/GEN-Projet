@@ -11,6 +11,7 @@ package ch.heigvd.aalamo.chibre.network;
 import ch.heigvd.aalamo.chibre.engine.Game;
 import ch.heigvd.aalamo.chibre.engine.Player;
 import ch.heigvd.aalamo.chibre.network.objects.AuthenticationDTO;
+import ch.heigvd.aalamo.chibre.network.objects.PlayerDTO;
 import ch.heigvd.aalamo.chibre.network.objects.Request;
 import ch.heigvd.aalamo.chibre.network.objects.ServerAction;
 import org.json.simple.JSONArray;
@@ -149,7 +150,7 @@ public class Server extends Thread {
 
                 // On envoie à la GUI le joueur qui s'est connecté
                 player.setHandler(handler);
-                player.sendRequest(new Request(ServerAction.AUTHENTICATION_SUCCEED));
+                player.sendRequest(new Request(ServerAction.AUTHENTICATION_SUCCEED, player.serialize()));
 
                 // S'il y a assez de joueurs en attente, on crée une partie
                 if (waitingPlayers.size() == Game.NB_PLAYERS)
