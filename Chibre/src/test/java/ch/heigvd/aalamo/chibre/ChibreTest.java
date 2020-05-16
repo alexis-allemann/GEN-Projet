@@ -99,7 +99,7 @@ public class ChibreTest {
             User currentUser = new User();
             users.add(currentUser);
             Thread.sleep(100);
-            currentUser.sendPlayerName("toto" + i);
+            //currentUser.sendPlayerName("toto" + i);
         }
 
         Thread.sleep(100);
@@ -122,7 +122,7 @@ public class ChibreTest {
             User currentUser = new User();
             users.add(currentUser);
             Thread.sleep(100);
-            currentUser.sendPlayerName("toto" + i);
+            //currentUser.sendPlayerName("toto" + i);
         }
 
         // TODO : voir pourquoi plusieurs games

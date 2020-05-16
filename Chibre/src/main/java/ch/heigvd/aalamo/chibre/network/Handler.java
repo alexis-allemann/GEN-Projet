@@ -11,6 +11,7 @@ package ch.heigvd.aalamo.chibre.network;
 import ch.heigvd.aalamo.chibre.CardColor;
 import ch.heigvd.aalamo.chibre.engine.Card;
 import ch.heigvd.aalamo.chibre.engine.Player;
+import ch.heigvd.aalamo.chibre.network.objects.AuthenticationDTO;
 import ch.heigvd.aalamo.chibre.network.objects.Request;
 import ch.heigvd.aalamo.chibre.network.objects.Response;
 import ch.heigvd.aalamo.chibre.network.objects.ServerAction;
@@ -66,10 +67,8 @@ public class Handler implements Runnable {
             while ((response = (Response) in.readObject()) != null) {
                 // Selon le type d'action de la GUI
                 switch (response.getAction()) {
-                    case SEND_NAME:
-                        player.setName((String) response.getObject());
-                        if (player.getGame() != null)
-                            player.getGame().run();
+                    case AUTHENTICATION:
+                        server.authenticate(this, (AuthenticationDTO) response.getObject());
                         break;
                     case SEND_ANNOUCEMENT:
                         break;

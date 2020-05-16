@@ -69,6 +69,12 @@ public class User implements ChibreController {
             while ((request = (Request) in.readObject()) != null) {
                 // Selon le type de requête du serveur
                 switch (request.getAction()) {
+                    case AUTHENTICATION_FAILED:
+                        view.authenticationFailed();
+                        break;
+                    case AUTHENTICATION_SUCCEED:
+                        view.authenticationSucceed();
+                        break;
                     case SEND_PLAYER_NAMES:
                         // Affichage des joueurs
                         if (request.getObject() instanceof List) {
@@ -192,6 +198,18 @@ public class User implements ChibreController {
         }
     }
 
+    /**
+     * Définir l'équipe qui gagne provisoirement
+     */
+    private void setWinningTeam() {
+        if (pointsTeam1 > pointsTeam2)
+            view.setWinningTeam("Equipe 1");
+        else if (pointsTeam1 < pointsTeam2)
+            view.setWinningTeam("Equipe 2");
+        else
+            view.setWinningTeam("");
+    }
+
     // Méthodes du controlleur
 
     /**
@@ -205,26 +223,8 @@ public class User implements ChibreController {
             throw new RuntimeException("La vue est requise");
 
         this.view = view;
-        String playerName = view.askUser("Identification", "Quel est votre nom : ");
-        view.setUserName(playerName);
-        sendPlayerName(playerName);
+        view.displayAuthentication();
         receive();
-    }
-
-    /**
-     * Envoi du nom du joueur
-     *
-     * @param name nom du joueur
-     */
-    @Override
-    public void sendPlayerName(String name) {
-        try {
-            playerName = name;
-            out.writeObject(new Response(UserAction.SEND_NAME, name));
-        } catch (IOException exception) {
-            exception.printStackTrace();
-        }
-        System.out.println("Nom envoyé");
     }
 
     /**
@@ -243,14 +243,15 @@ public class User implements ChibreController {
                 view.resetBottomPlayerCard();
             view.addCard(cards.get(index).getCardType(), cards.get(index).getCardColor(), index);
         } else {
-            try {
-                out.writeObject(new Response(UserAction.PLAY_CARD, cards.get(index)));
-                lastCardPlayed = cards.get(index);
-            } catch (IOException exception) {
-                exception.printStackTrace();
-            }
+            sendResponse(new Response(UserAction.PLAY_CARD, cards.get(index)));
             System.out.println("Carte envoyée");
         }
+    }
+
+    @Override
+    public void sendAuthentication(String username, String hashedPassword) {
+        sendResponse(new Response(UserAction.AUTHENTICATION, new AuthenticationDTO(username, hashedPassword)));
+        System.out.println("Authentification envoyée");
     }
 
     /**
@@ -260,20 +261,28 @@ public class User implements ChibreController {
      */
     @Override
     public void chooseTrump(CardColor color) {
-        try {
-            out.writeObject(new Response(UserAction.SEND_TRUMP, color));
-        } catch (IOException exception) {
-            exception.printStackTrace();
-        }
+        sendResponse(new Response(UserAction.SEND_TRUMP, color));
         System.out.println("Choix atout envoyé");
     }
 
-    private void setWinningTeam() {
-        if (pointsTeam1 > pointsTeam2)
-            view.setWinningTeam("Equipe 1");
-        else if (pointsTeam1 < pointsTeam2)
-            view.setWinningTeam("Equipe 2");
-        else
-            view.setWinningTeam("");
+    /**
+     * Fermeture de la GUI
+     */
+    @Override
+    public void quit() {
+        view.quit();
+    }
+
+    /**
+     * Envoi d'une réponse au serveur
+     *
+     * @param response à envoyer
+     */
+    private void sendResponse(Response response) {
+        try {
+            out.writeObject(response);
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
     }
 }

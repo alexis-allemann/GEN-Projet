@@ -16,6 +16,21 @@ import java.util.List;
 public interface ChibreView {
 
     /**
+     * Afficher la fenêtre d'authentification
+     */
+    void displayAuthentication();
+
+    /**
+     * Afficher le message d'erreur d'authentification
+     */
+    void authenticationFailed();
+
+    /**
+     * Action lorsque l'authentification est correcte
+     */
+    void authenticationSucceed();
+
+    /**
      * Action à effectuer lorsque la fenêtre est fermée
      */
     void quit();

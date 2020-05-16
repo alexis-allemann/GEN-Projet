@@ -130,7 +130,7 @@ public class Game implements Runnable {
         List<String> playerNames = new ArrayList<>(NB_PLAYERS);
 
         for (Player player : this.players)
-            playerNames.add(player.getName());
+            playerNames.add(player.getUsername());
 
         sendToAllPlayers(new Request(ServerAction.SEND_PLAYER_NAMES, playerNames));
 

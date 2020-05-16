@@ -62,6 +62,7 @@ public class GUIView extends BaseView<ImageIcon> {
 
     // Attributs
     JFrame gui = new JFrame("Chibre");
+    GUIAuthentication guiAuthentication;
     private static final int WINDOW_WIDTH = 1260;
     private static final int WINDOW_HEIGHT = 850;
     private List<JLabel> cards = new ArrayList<>(9);
@@ -145,7 +146,7 @@ public class GUIView extends BaseView<ImageIcon> {
             if (e.getPropertyName().equals("icon") && dragSource != null)
                 dragSource.setIcon(null);
 
-            if(e.getNewValue() != dropIcon)
+            if (e.getNewValue() != dropIcon)
                 controller.sendCard(cards.indexOf(dragSource));
         });
     }
@@ -153,10 +154,37 @@ public class GUIView extends BaseView<ImageIcon> {
     // Implémentation des méthodes de la vue
 
     /**
+     * Afficher la fenêtre d'authentification
+     */
+    @Override
+    public void displayAuthentication() {
+        guiAuthentication = new GUIAuthentication(controller);
+    }
+
+    /**
+     * Afficher le message d'erreur d'authentification
+     */
+    @Override
+    public void authenticationFailed() {
+        guiAuthentication.displayErrorMessage();
+    }
+
+    /**
+     * Action lorsque l'authentification est correcte
+     */
+    @Override
+    public void authenticationSucceed() {
+        guiAuthentication.close();
+        guiAuthentication = null;
+    }
+
+    /**
      * Action à effectuer lorsque la fenêtre est fermée
      */
     @Override
     public void quit() {
+        if (guiAuthentication != null)
+            guiAuthentication.close();
         System.exit(0);
     }
 
@@ -363,7 +391,7 @@ public class GUIView extends BaseView<ImageIcon> {
      * @param card carte à afficher
      */
     @Override
-    public void setBottomPlayerCard(Card card){
+    public void setBottomPlayerCard(Card card) {
         lblCardPlayedPlayerBottom.setIcon(loadResourceFor(card.getCardType(), card.getCardColor(), UNKNOWN_ICON));
     }
 
@@ -388,28 +416,31 @@ public class GUIView extends BaseView<ImageIcon> {
 
     /**
      * Afficher les points de l'équipe 1 à l'utilisateur
+     *
      * @param points points à afficher
      */
     @Override
-    public void setPointsTeam1(int points){
+    public void setPointsTeam1(int points) {
         lblTeam1Points.setText(String.valueOf(points));
     }
 
     /**
      * Afficher les points de l'équipe 2 à l'utilisateur
+     *
      * @param points points à afficher
      */
     @Override
-    public void setPointsTeam2(int points){
+    public void setPointsTeam2(int points) {
         lblTeam2Points.setText(String.valueOf(points));
     }
 
     /**
      * Afficher l'équipe gagnante provisoire
+     *
      * @param team team à afficher
      */
     @Override
-    public void setWinningTeam(String team){
+    public void setWinningTeam(String team) {
         lblWinningTeam.setText(team);
     }
 
@@ -417,7 +448,7 @@ public class GUIView extends BaseView<ImageIcon> {
      * Permet d'enlever l'affichage des cartes jouées
      */
     @Override
-    public void resetPlayedCards(){
+    public void resetPlayedCards() {
         lblCardPlayedPlayerTop.setIcon(dropIcon);
         lblCardPlayedPlayerRight.setIcon(dropIcon);
         lblCardPlayedPlayerBottom.setIcon(dropIcon);

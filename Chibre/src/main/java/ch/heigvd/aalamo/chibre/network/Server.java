@@ -10,8 +10,16 @@ package ch.heigvd.aalamo.chibre.network;
 
 import ch.heigvd.aalamo.chibre.engine.Game;
 import ch.heigvd.aalamo.chibre.engine.Player;
-import ch.heigvd.aalamo.chibre.network.Handler;
+import ch.heigvd.aalamo.chibre.network.objects.AuthenticationDTO;
+import ch.heigvd.aalamo.chibre.network.objects.Request;
+import ch.heigvd.aalamo.chibre.network.objects.ServerAction;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -19,8 +27,19 @@ import java.util.*;
 
 public class Server extends Thread {
     // Attributs
+    private static final String PLAYERS_FILE = "json/players.json";
+    private List<Player> players = new ArrayList<>();
     private List<Game> games = new ArrayList<>();
     private List<Player> waitingPlayers = new ArrayList<>();
+    private List<Handler> authenticatingHandlers = new ArrayList<>();
+
+    /**
+     * Instanciation du serveur
+     */
+    public Server() {
+        // Chargement des joueurs depuis le fichier JSON
+        loadPlayers();
+    }
 
     // Getters
 
@@ -62,13 +81,87 @@ public class Server extends Thread {
         while (true) {
             Socket socket = serverSocket.accept();
             Handler newHandler = new Handler(socket, this);
-            Player newPlayer = new Player(newHandler);
-            waitingPlayers.add(newPlayer);
-
-            // S'il y a assez de joueurs en attente, on crée un partie
-            if (waitingPlayers.size() == Game.NB_PLAYERS)
-                createNewGame();
+            authenticatingHandlers.add(newHandler);
         }
+    }
+
+    /**
+     * Supprimer le handler d'un utilisateur si sa session à été fermée
+     *
+     * @param player le joueur
+     */
+    public void remove(Player player) {
+        waitingPlayers.remove(player);
+    }
+
+    /**
+     * Chargement des joueurs du serveur depuis un fichier JSON
+     */
+    private void loadPlayers() {
+        // JSON parser object pour lire le fichier des joueurs
+        JSONParser jsonParser = new JSONParser();
+
+        // Lecture du fichier
+        try (FileReader reader = new FileReader(PLAYERS_FILE)) {
+            System.out.println("Lecture du fichier " + PLAYERS_FILE);
+
+            // Si le fichier n'est pas vide
+            File file = new File(PLAYERS_FILE);
+            if (file.length() != 0) {
+                // Lecture de l'objet JSON global
+                Object obj = jsonParser.parse(reader);
+
+                // Récupérer le tableau de joueurs
+                JSONArray players = (JSONArray) obj;
+
+                // Parcours du tableau de joueurs pour parsing
+                players.forEach(country -> parsePlayerObject((JSONObject) country));
+            }
+        } catch (IOException | ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Parsing de l'objet JSON en joueur pour enregistrement sur le serveur
+     *
+     * @param player l'objet JSON représentant le joueur à parser
+     */
+    private void parsePlayerObject(JSONObject player) {
+        String username = (String) player.get("username");
+        String password = (String) player.get("password");
+        players.add(new Player(username, password));
+    }
+
+    /**
+     * Authentifiacation d'une GUI à un joueur enregistré sur le serveur
+     *
+     * @param handler           reliée à la GUI qui essaie de s'authentifier
+     * @param authenticationDTO objet de transfert de données pour l'authentification
+     */
+    public void authenticate(Handler handler, AuthenticationDTO authenticationDTO) {
+        // Parcours de joueurs enregistrés
+        for (Player player : players) {
+            // Si on trouve une correspondance entre l'authentification et un joueur
+            if (player.getUsername().equals(authenticationDTO.getUserName()) && player.getPassword().equals(authenticationDTO.getPassword())) {
+                // Le joueur passe dans la liste d'attente des joueurs du serveur
+                waitingPlayers.add(player);
+
+                // On envoie à la GUI le joueur qui s'est connecté
+                player.setHandler(handler);
+                player.sendRequest(new Request(ServerAction.AUTHENTICATION_SUCCEED));
+
+                // S'il y a assez de joueurs en attente, on crée une partie
+                if (waitingPlayers.size() == Game.NB_PLAYERS)
+                    createNewGame();
+
+                // On stop la boucle
+                return;
+            }
+        }
+
+        // Envoi de l'échec d'authentification à la GUI
+        handler.sendRequest(new Request(ServerAction.AUTHENTICATION_FAILED));
     }
 
     /**
@@ -83,14 +176,6 @@ public class Server extends Thread {
         }
         Game game = new Game(players);
         games.add(game);
-    }
-
-    /**
-     * Supprimer le handler d'un utilisateur si sa session à été fermée
-     *
-     * @param player le joueur
-     */
-    public void remove(Player player) {
-        waitingPlayers.remove(player);
+        game.run();
     }
 }

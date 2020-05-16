@@ -9,7 +9,14 @@ Compilateur : javac 11.0.4
 package ch.heigvd.aalamo.chibre;
 
 public interface ChibreController {
-    // Ici on aura les actions envoyée de la GUI au controlleur
+
+    /**
+     * Envoi de l'authentification au serveur
+     *
+     * @param username       nom de l'utilisateur
+     * @param hashedPassword mot de passe haché
+     */
+    void sendAuthentication(String username, String hashedPassword);
 
     /**
      * Démarrer la GUI
@@ -31,8 +38,7 @@ public interface ChibreController {
     void chooseTrump(CardColor color);
 
     /**
-     * Envoi du nom du joueur au serveur
-     * @param name nom du joueur
+     * Fermeture de la GUI
      */
-    void sendPlayerName(String name);
+    void quit();
 }

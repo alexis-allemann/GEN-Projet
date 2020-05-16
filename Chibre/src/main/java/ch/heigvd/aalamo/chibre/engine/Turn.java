@@ -123,7 +123,7 @@ public class Turn {
             else
                 nextPlayer = round.getTable().getTrumpPlayer(firstPlayer, cards.size());
 
-            round.getGame().sendToAllPlayers(new Request(ServerAction.SEND_CURRENT_PLAYER, nextPlayer.getName()));
+            round.getGame().sendToAllPlayers(new Request(ServerAction.SEND_CURRENT_PLAYER, nextPlayer.getUsername()));
             nextPlayer.sendRequest(new Request(ServerAction.ASK_CARD));
         }
     }

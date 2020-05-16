@@ -11,7 +11,6 @@ package ch.heigvd.aalamo.chibre.engine;
 import ch.heigvd.aalamo.chibre.network.Handler;
 import ch.heigvd.aalamo.chibre.network.objects.Request;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,24 +18,21 @@ public class Player {
     // Attributs
     private List<Card> cards = new ArrayList<>(Game.NB_CARDS_PLAYER);
     private Handler handler;
-    private int id;
     private Team team; // TODO : a supprimer
     private static int count = 1;
     private Game game;
-    private String name;
+    private String username;
+    private String password;
 
     /**
      * Instancier un joueur
      *
-     * @param handler handler relié
+     * @param username nom d'utilisateur
+     * @param password mot de passe
      */
-    public Player(Handler handler) {
-        if (handler == null)
-            throw new IllegalArgumentException("Handler nul");
-
-        this.handler = handler;
-        this.id = count++;
-        handler.setPlayer(this);
+    public Player(String username, String password) {
+        this.username = username;
+        this.password = password;
     }
 
     // Getters
@@ -44,8 +40,15 @@ public class Player {
     /**
      * @return le nom du joueur
      */
-    public String getName() {
-        return name;
+    public String getUsername() {
+        return username;
+    }
+
+    /**
+     * @return le mot de passe haché de l'utilisateur
+     */
+    public String getPassword() {
+        return password;
     }
 
     /**
@@ -72,6 +75,16 @@ public class Player {
     // Setters
 
     /**
+     * Définir le handler du joueur
+     *
+     * @param handler relié au joueur
+     */
+    public void setHandler(Handler handler) {
+        this.handler = handler;
+        handler.setPlayer(this);
+    }
+
+    /**
      * Définir la partie dans lequel le joueur joue
      *
      * @param game la partie à laquelle il joue
@@ -83,14 +96,15 @@ public class Player {
     /**
      * Définir le nom du joueur
      *
-     * @param name nom du joueur
+     * @param username nom du joueur
      */
-    public void setName(String name) {
-        this.name = name;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     /**
      * Définir l'équipre
+     *
      * @param team équipe du joueur
      */
     public void setTeam(Team team) {

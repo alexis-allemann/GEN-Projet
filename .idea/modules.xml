@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Chibre/Chibre.iml" filepath="$PROJECT_DIR$/Chibre/Chibre.iml" />
-      <module fileurl="file://$PROJECT_DIR$/lecteursredacteurs/lecteursredacteurs.iml" filepath="$PROJECT_DIR$/lecteursredacteurs/lecteursredacteurs.iml" />
     </modules>
   </component>
 </project>

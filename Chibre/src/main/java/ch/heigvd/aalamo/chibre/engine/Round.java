@@ -105,9 +105,9 @@ public class Round {
         this.trumpPlayer = game.getTable().nextTrumpPlayer(id, game.getTable().getPositionByPlayer(game.getFirstPlayerTrump()));
 
 
-        game.sendToAllPlayers(new Request(ServerAction.SEND_TRUMP_PLAYER, trumpPlayer.getName()));
+        game.sendToAllPlayers(new Request(ServerAction.SEND_TRUMP_PLAYER, trumpPlayer.getUsername()));
 
-        game.sendToAllPlayers(new Request(ServerAction.SEND_CURRENT_PLAYER, trumpPlayer.getName()));
+        game.sendToAllPlayers(new Request(ServerAction.SEND_CURRENT_PLAYER, trumpPlayer.getUsername()));
 
         trumpPlayer.sendRequest(new Request(ServerAction.ASK_TRUMP));
     }
