@@ -8,6 +8,7 @@ Compilateur : javac 11.0.4
 --------------------------- */
 package ch.heigvd.aalamo.chibre.engine;
 
+import ch.heigvd.aalamo.chibre.CardColor;
 import ch.heigvd.aalamo.chibre.network.objects.Request;
 import ch.heigvd.aalamo.chibre.network.objects.ServerAction;
 
@@ -159,23 +160,27 @@ public class Turn {
      * Définir le joueur qui a posé la meilleure carte
      */
     private void defineWinner() {
-        Card winningCard = null;
-        for (Card card : cards) {
-            if (winningCard == null)
+        Card winningCard = cards.get(0);
+
+        for(Card card : cards){
+            if(
+            (card.getCardColor() == round.getTrumpColor() &&
+                winningCard.getCardColor() != round.getTrumpColor())
+            ||
+            (card.getCardColor() == round.getTrumpColor() &&
+                winningCard.getCardColor() == round.getTrumpColor() &&
+                card.getCardType().getValueOfTrump() > winningCard.getCardType().getValueOfTrump())
+            ||
+            (card.getCardColor() == winningCard.getCardColor() &&
+                card.getCardType().getValue() > winningCard.getCardType().getValue())
+            )
+            {
                 winningCard = card;
-            else if (card.getCardColor() != round.getTrumpColor()) {
-                if (winningCard.getCardColor() != round.getTrumpColor() &&
-                        card.getCardType().getOrder() > winningCard.getCardType().getOrder()) {
-                    winningCard = card;
-                }
-            } else {
-                if (card.getCardType().getOrderOfTrump() > winningCard.getCardType().getOrder())
-                    winningCard = card;
             }
+
         }
 
-        if (winningCard != null)
-            this.winner = winningCard.getPlayer();
+        this.winner = winningCard.getPlayer();
     }
 }
 
