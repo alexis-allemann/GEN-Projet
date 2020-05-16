@@ -20,7 +20,11 @@ import ch.heigvd.aalamo.chibre.view.gui.UserChoice;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.math.BigInteger;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
 public class User implements ChibreController {
@@ -75,6 +79,9 @@ public class User implements ChibreController {
                     case AUTHENTICATION_SUCCEED:
                         view.authenticationSucceed();
                         view.setUserName(((PlayerDTO) request.getObject()).getUsername());
+                        break;
+                    case CREATE_USER_FAILED:
+                        view.createUserFailed();
                         break;
                     case SEND_PLAYER_NAMES:
                         // Affichage des joueurs
@@ -211,6 +218,42 @@ public class User implements ChibreController {
             view.setWinningTeam("");
     }
 
+    /**
+     * Hachage d'un texte donné
+     *
+     * @param input le texte à hacher
+     * @return le tableau de bytes du hachage
+     */
+    public static byte[] getSHA(String input) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            return md.digest(input.getBytes(StandardCharsets.UTF_8));
+        } catch (NoSuchAlgorithmException exception) {
+            exception.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * Obtenir le hash en string
+     *
+     * @param hash tableau de bytes à convertir en string
+     * @return la string du hachage
+     */
+    public static String toHexString(byte[] hash) {
+        // Conversion du tableau de byte en numérique
+        BigInteger number = new BigInteger(1, hash);
+
+        // Conversion du message en hexadécimal
+        StringBuilder hexString = new StringBuilder(number.toString(16));
+
+        // Ajout des zéros significatifs
+        while (hexString.length() < 32)
+            hexString.insert(0, '0');
+
+        return hexString.toString();
+    }
+
     // Méthodes du controlleur
 
     /**
@@ -224,7 +267,7 @@ public class User implements ChibreController {
             throw new RuntimeException("La vue est requise");
 
         this.view = view;
-        view.displayAuthentication();
+        displayAuthentication();
         receive();
     }
 
@@ -249,10 +292,35 @@ public class User implements ChibreController {
         }
     }
 
+    /**
+     * Affichage de l'authentification
+     */
     @Override
-    public void sendAuthentication(String username, String hashedPassword) {
-        sendResponse(new Response(UserAction.AUTHENTICATION, new AuthenticationDTO(username, hashedPassword)));
+    public void displayAuthentication() {
+        view.displayAuthentication();
+    }
+
+    /**
+     * Envoi de l'authentification au serveur
+     *
+     * @param username nom de l'utilisateur
+     * @param password mot de passe haché
+     */
+    @Override
+    public void sendAuthentication(String username, String password) {
+        sendResponse(new Response(UserAction.AUTHENTICATION, new AuthenticationDTO(username, toHexString(getSHA(password)))));
         System.out.println("Authentification envoyée");
+    }
+
+    /**
+     * Méthode pour créer un utilisateur
+     *
+     * @param username nom de l'utilisateur
+     * @param password mot de passe
+     */
+    @Override
+    public void sendCreateUser(String username, String password) {
+        sendResponse(new Response(UserAction.CREATE_USER, new AuthenticationDTO(username, toHexString(getSHA(password)))));
     }
 
     /**

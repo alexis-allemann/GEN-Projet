@@ -13,5 +13,6 @@ public enum UserAction {
     PLAY_CARD,
     SEND_ANNOUCEMENT,
     SEND_NAME,
-    AUTHENTICATION
+    AUTHENTICATION,
+    CREATE_USER
 }

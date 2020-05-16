@@ -14,6 +14,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -35,6 +37,7 @@ public class GUIAuthentication {
     private static final int WINDOW_WIDTH = 350;
     private static final int WINDOW_HEIGHT = 200;
     private static final int WINDOW_ERROR_HEIGHT = 250;
+    GUICreateUser guiCreateUser;
 
     /**
      * Instanciation de la vue d'authentification
@@ -55,13 +58,20 @@ public class GUIAuthentication {
                 if (tbxPassword.getText().isEmpty() || tbxUsername.getText().isEmpty())
                     displayErrorMessage();
                 else
-                    controller.sendAuthentication(tbxUsername.getText(), toHexString(getSHA(tbxPassword.getText())));
+                    controller.sendAuthentication(tbxUsername.getText(), tbxPassword.getText());
             }
         });
         btnCancel.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 controller.quit();
+            }
+        });
+        lblNewPlayer.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                guiCreateUser = new GUICreateUser(controller);
+                gui.setVisible(false);
             }
         });
     }
@@ -92,7 +102,7 @@ public class GUIAuthentication {
      */
     public void displayErrorMessage() {
         lblErrorMessage.setVisible(true);
-        gui.setSize(WINDOW_WIDTH, WINDOW_ERROR_HEIGHT);
+        gui.setSize(WINDOW_WIDTH, WINDOW_ERROR_HEIGHT + 40);
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         gui.setLocation(dim.width / 2 - WINDOW_WIDTH / 2, dim.height / 2 - WINDOW_HEIGHT / 2);
         tbxUsername.grabFocus();
@@ -103,42 +113,15 @@ public class GUIAuthentication {
      * Fermeture de la fenêtre
      */
     public void close() {
+        if(guiCreateUser != null)
+            guiCreateUser.close();
         gui.dispose();
     }
 
     /**
-     * Hachage d'un texte donné
-     *
-     * @param input le texte à hacher
-     * @return le tableau de bytes du hachage
+     * Afficher l'erreur lors de l'erreur de création d'un utilisateur
      */
-    public static byte[] getSHA(String input) {
-        try {
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
-            return md.digest(input.getBytes(StandardCharsets.UTF_8));
-        } catch (NoSuchAlgorithmException exception) {
-            exception.printStackTrace();
-        }
-        return null;
-    }
-
-    /**
-     * Obtenir le hash en string
-     *
-     * @param hash tableau de bytes à convertir en string
-     * @return la string du hachage
-     */
-    public static String toHexString(byte[] hash) {
-        // Conversion du tableau de byte en numérique
-        BigInteger number = new BigInteger(1, hash);
-
-        // Conversion du message en hexadécimal
-        StringBuilder hexString = new StringBuilder(number.toString(16));
-
-        // Ajout des zéros significatifs
-        while (hexString.length() < 32)
-            hexString.insert(0, '0');
-
-        return hexString.toString();
+    public void displayCreateUserError() {
+        guiCreateUser.displayErrorMessage("Le nom d'utilisateur est déjà utilisé");
     }
 }

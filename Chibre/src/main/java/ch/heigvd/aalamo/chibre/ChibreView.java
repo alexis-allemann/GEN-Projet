@@ -31,6 +31,11 @@ public interface ChibreView {
     void authenticationSucceed();
 
     /**
+     * Action lors de l'erreur de création d'un utilisateur sur le serveur
+     */
+    void createUserFailed();
+
+    /**
      * Action à effectuer lorsque la fenêtre est fermée
      */
     void quit();

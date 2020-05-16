@@ -170,6 +170,14 @@ public class GUIView extends BaseView<ImageIcon> {
     }
 
     /**
+     * Action lors de l'erreur de création d'un utilisateur sur le serveur
+     */
+    @Override
+    public void createUserFailed(){
+        guiAuthentication.displayCreateUserError();
+    }
+
+    /**
      * Action lorsque l'authentification est correcte
      */
     @Override

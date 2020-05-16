@@ -11,7 +11,6 @@ package ch.heigvd.aalamo.chibre.network;
 import ch.heigvd.aalamo.chibre.engine.Game;
 import ch.heigvd.aalamo.chibre.engine.Player;
 import ch.heigvd.aalamo.chibre.network.objects.AuthenticationDTO;
-import ch.heigvd.aalamo.chibre.network.objects.PlayerDTO;
 import ch.heigvd.aalamo.chibre.network.objects.Request;
 import ch.heigvd.aalamo.chibre.network.objects.ServerAction;
 import org.json.simple.JSONArray;
@@ -145,24 +144,53 @@ public class Server extends Thread {
         for (Player player : players) {
             // Si on trouve une correspondance entre l'authentification et un joueur
             if (player.getUsername().equals(authenticationDTO.getUserName()) && player.getPassword().equals(authenticationDTO.getPassword())) {
-                // Le joueur passe dans la liste d'attente des joueurs du serveur
-                waitingPlayers.add(player);
-
-                // On envoie à la GUI le joueur qui s'est connecté
                 player.setHandler(handler);
-                player.sendRequest(new Request(ServerAction.AUTHENTICATION_SUCCEED, player.serialize()));
-
-                // S'il y a assez de joueurs en attente, on crée une partie
-                if (waitingPlayers.size() == Game.NB_PLAYERS)
-                    createNewGame();
-
-                // On stop la boucle
+                addPlayerToWaitingList(player);
                 return;
             }
         }
 
         // Envoi de l'échec d'authentification à la GUI
         handler.sendRequest(new Request(ServerAction.AUTHENTICATION_FAILED));
+    }
+
+    /**
+     * Ajout d'un joueur sur le serveur
+     *
+     * @param handler           reliée à la GUI qui essaie de s'authentifier
+     * @param authenticationDTO objet de transfert de données pour l'authentification
+     */
+    public void createUser(Handler handler, AuthenticationDTO authenticationDTO) {
+        Player newPlayer = new Player(authenticationDTO.getUserName(), authenticationDTO.getPassword());
+
+        // On vérifie que aucun joueur n'a déjà le même nom d'utilisateur
+        for (Player player : players) {
+            if (player.getUsername().equals(authenticationDTO.getUserName())) {
+                handler.sendRequest(new Request(ServerAction.CREATE_USER_FAILED));
+                return;
+            }
+        }
+
+        players.add(newPlayer);
+        newPlayer.setHandler(handler);
+        addPlayerToWaitingList(newPlayer);
+    }
+
+    /**
+     * Ajout d'un joueur à la file d'attente
+     *
+     * @param player le joueur
+     */
+    private void addPlayerToWaitingList(Player player) {
+        // Le joueur passe dans la liste d'attente des joueurs du serveur
+        waitingPlayers.add(player);
+
+        // On envoie à la GUI le joueur qui s'est connecté
+        player.sendRequest(new Request(ServerAction.AUTHENTICATION_SUCCEED, player.serialize()));
+
+        // S'il y a assez de joueurs en attente, on crée une partie
+        if (waitingPlayers.size() == Game.NB_PLAYERS)
+            createNewGame();
     }
 
     /**

@@ -11,12 +11,25 @@ package ch.heigvd.aalamo.chibre;
 public interface ChibreController {
 
     /**
+     * Affichage de l'authentification
+     */
+    void displayAuthentication();
+
+    /**
      * Envoi de l'authentification au serveur
      *
-     * @param username       nom de l'utilisateur
-     * @param hashedPassword mot de passe haché
+     * @param username nom de l'utilisateur
+     * @param password mot de passe haché
      */
-    void sendAuthentication(String username, String hashedPassword);
+    void sendAuthentication(String username, String password);
+
+    /**
+     * Méthode pour créer un utilisateur
+     *
+     * @param username nom de l'utilisateur
+     * @param password     mot de passe
+     */
+    void sendCreateUser(String username, String password);
 
     /**
      * Démarrer la GUI

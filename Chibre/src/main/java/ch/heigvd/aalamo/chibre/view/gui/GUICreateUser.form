@@ -8,15 +8,6 @@
     <properties/>
     <border type="none"/>
     <children>
-      <component id="3561b" class="javax.swing.JLabel">
-        <constraints>
-          <grid row="0" column="0" row-span="1" col-span="3" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties>
-          <font size="18"/>
-          <text value="Création d'un joueur"/>
-        </properties>
-      </component>
       <component id="1a0d4" class="javax.swing.JLabel">
         <constraints>
           <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
@@ -79,6 +70,15 @@
         </constraints>
         <properties>
           <text value="Annuler"/>
+        </properties>
+      </component>
+      <component id="de9fb" class="javax.swing.JLabel" binding="lblErrorMessage">
+        <constraints>
+          <grid row="0" column="0" row-span="1" col-span="3" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <foreground color="-6602946"/>
+          <text value="Message erreur"/>
         </properties>
       </component>
     </children>

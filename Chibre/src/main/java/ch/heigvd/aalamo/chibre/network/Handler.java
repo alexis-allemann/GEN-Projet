@@ -70,6 +70,9 @@ public class Handler implements Runnable {
                     case AUTHENTICATION:
                         server.authenticate(this, (AuthenticationDTO) response.getObject());
                         break;
+                    case CREATE_USER:
+                        server.createUser(this, (AuthenticationDTO) response.getObject());
+                        break;
                     case SEND_ANNOUCEMENT:
                         break;
                     case PLAY_CARD:
