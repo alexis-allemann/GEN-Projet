@@ -9,12 +9,15 @@ Compilateur : javac 11.0.4
 package ch.heigvd.aalamo.chibre.engine;
 
 import ch.heigvd.aalamo.chibre.network.Handler;
+import ch.heigvd.aalamo.chibre.network.objects.CardDTO;
+import ch.heigvd.aalamo.chibre.network.objects.PlayerDTO;
 import ch.heigvd.aalamo.chibre.network.objects.Request;
+import ch.heigvd.aalamo.chibre.network.objects.TeamDTO;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Player {
+public class Player implements Serializable {
     // Attributs
     private List<Card> cards = new ArrayList<>(Game.NB_CARDS_PLAYER);
     private Handler handler;
@@ -72,7 +75,14 @@ public class Player {
         return team;
     }
 
-    // Setters
+    /**
+     * @return l'id du joueur
+     */
+    public int getId() {
+        return id;
+    }
+
+// Setters
 
     /**
      * Définir le handler du joueur
@@ -136,5 +146,13 @@ public class Player {
             throw new IllegalArgumentException("Requête nulle");
 
         handler.sendRequest(request);
+    }
+
+    PlayerDTO serialize() {
+        List<CardDTO> cardsDto = new ArrayList<>(Game.NB_CARDS_PLAYER);
+        for(Card card : cards)
+            cardsDto.add(new CardDTO(card.getCardColor(), card.getCardType()));
+
+        return new PlayerDTO(this.id, this.name, cardsDto);
     }
 }
