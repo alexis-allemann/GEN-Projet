@@ -52,19 +52,20 @@ public class Turn {
     public void initTurn() {
         System.out.println("Début du tour");
         if (round.isFirstTurn()){
-            System.out.println("<Tour 1> Premier joueur a le 7 de carreau");
             firstPlayer = round.getTrumpPlayer();
+            System.out.print("<Tour 1> Premier joueur a le 7 de carreau");
         }
         else{
-            System.out.println("<Tour "+ round.getTurns().size() +"> Premier joueur est le vainqueur du tour d'avant");
+            System.out.print("<Tour "+ round.getTurns().size() +"> Premier joueur est le vainqueur du tour d'avant");
             firstPlayer = lastTurn.getWinner();
         }
+        System.out.println(" : " + firstPlayer.getUsername());
 
+        round.getGame().sendToAllPlayers(new Request(ServerAction.SEND_CURRENT_PLAYER, firstPlayer.getUsername()));
 
         System.out.println("Demande la carte à " + firstPlayer.getUsername());
         firstPlayer.sendRequest(new Request(ServerAction.ASK_CARD));
 
-        // TODO : Renvoyez une erreur au client ?
     }
 
     /**
@@ -133,10 +134,6 @@ public class Turn {
         }
     }
 
-    public void setWinner(Player winner) {
-        this.winner = winner;
-    }
-
     /**
      * Jouer une carte
      *
@@ -150,7 +147,9 @@ public class Turn {
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();
         }
-
+        System.out.print("<"+cardPlayed.getCardColor().toString()+">");
+        System.out.print("<"+cardPlayed.getCardType().toString()+">");
+        System.out.println(" joué par "+cardPlayed.getPlayer().getUsername());
         // TODO : décommenter si sérialization
         cardPlayed.setPlayer(null);
         round.getGame().sendToAllPlayers(new Request(ServerAction.SEND_CARD_PLAYED, cardPlayed));
@@ -170,13 +169,8 @@ public class Turn {
                     winningCard = card;
                 }
             } else {
-                if (winningCard.getCardColor() != round.getTrumpColor()) {
-                    if (card.getCardType().getOrderOfTrump() > winningCard.getCardType().getOrder())
-                        winningCard = card;
-                } else {
-                    if (card.getCardType().getOrderOfTrump() > winningCard.getCardType().getOrder())
-                        winningCard = card;
-                }
+                if (card.getCardType().getOrderOfTrump() > winningCard.getCardType().getOrder())
+                    winningCard = card;
             }
         }
 

@@ -124,7 +124,8 @@ public class Player {
     public void distributeCard(Card card) {
         if (card == null)
             throw new IllegalArgumentException("Carte nulle");
-        System.out.println("Ajout de la carte <"+ card.getCardColor().toString() +"><"+card.getCardType().toString()+">");
+        System.out.print("Distribue <"+ card.getCardColor().toString() +"><"+card.getCardType().toString()+">");
+        System.out.println(" à "+ username);
         cards.add(card);
     }
 
