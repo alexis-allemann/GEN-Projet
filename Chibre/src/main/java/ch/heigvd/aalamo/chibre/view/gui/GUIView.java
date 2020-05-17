@@ -7,6 +7,8 @@ import ch.heigvd.aalamo.chibre.assets.GuiAssets;
 import ch.heigvd.aalamo.chibre.engine.Card;
 import ch.heigvd.aalamo.chibre.engine.Player;
 import ch.heigvd.aalamo.chibre.network.objects.CardDTO;
+import ch.heigvd.aalamo.chibre.network.objects.PlayerDTO;
+import ch.heigvd.aalamo.chibre.network.objects.TeamDTO;
 import ch.heigvd.aalamo.chibre.view.BaseView;
 import ch.heigvd.aalamo.chibre.view.DrawableRessource;
 
@@ -174,7 +176,7 @@ public class GUIView extends BaseView<ImageIcon> {
      * Action lors de l'erreur de création d'un utilisateur sur le serveur
      */
     @Override
-    public void createUserFailed(){
+    public void createUserFailed() {
         guiAuthentication.displayCreateUserError();
     }
 
@@ -185,6 +187,47 @@ public class GUIView extends BaseView<ImageIcon> {
     public void authenticationSucceed() {
         guiAuthentication.close();
         guiAuthentication = null;
+    }
+
+    /**
+     * Afficher les équipes et les joueurs de la partie
+     */
+    @Override
+    public void displayTeams(TeamDTO team1, TeamDTO team2) {
+        lblTeam1Player1.setText(team1.getPlayers().get(0).getUsername());
+        lblTeam1Player2.setText(team1.getPlayers().get(1).getUsername());
+        lblTeam2Player1.setText(team2.getPlayers().get(0).getUsername());
+        lblTeam2Player2.setText(team2.getPlayers().get(1).getUsername());
+    }
+
+    /**
+     * Afficher les joueurs autour du tapis de jeu
+     *
+     * @param players            les joueurs
+     * @param currentPlayerIndex l'index du joueur qui joue sur la GUI
+     */
+    @Override
+    public void displayPlayers(List<PlayerDTO> players, int currentPlayerIndex) {
+        lblTableRightName.setText(players.get((currentPlayerIndex + 1) % players.size()).getUsername());
+        lblTableTopName.setText(players.get((currentPlayerIndex + 2) % players.size()).getUsername());
+        lblTableLeftName.setText(players.get((currentPlayerIndex + 3) % players.size()).getUsername());
+    }
+
+    /**
+     * Afficher la carte jouée par un joueur
+     *
+     * @param card   la carte à afficher
+     * @param player le joueur qui à jouer la carte
+     */
+    @Override
+    public void displayCardPlayed(CardDTO card, PlayerDTO player) {
+        Icon icon = loadResourceFor(card.getCardType(), card.getCardColor(), UNKNOWN_ICON);
+        if (lblTableTopName.getText().equals(player.getUsername()))
+            lblCardPlayedPlayerTop.setIcon(icon);
+        else if (lblTableLeftName.getText().equals(player.getUsername()))
+            lblCardPlayedPlayerLeft.setIcon(icon);
+        else if (lblTableRightName.getText().equals(player.getUsername()))
+            lblCardPlayedPlayerRight.setIcon(icon);
     }
 
     /**
@@ -239,16 +282,6 @@ public class GUIView extends BaseView<ImageIcon> {
     }
 
     /**
-     * Demander une saisie à l'utilisateur
-     *
-     * @param title titre du message
-     */
-    @Override
-    public String askUser(String title, String question) {
-        return JOptionPane.showInputDialog(null, question, title, JOptionPane.QUESTION_MESSAGE);
-    }
-
-    /**
      * Définir le nom de l'utilisateur en cours
      *
      * @param userName nom de l'utilisateur
@@ -256,76 +289,6 @@ public class GUIView extends BaseView<ImageIcon> {
     @Override
     public void setUserName(String userName) {
         lblTableBottomName.setText(userName);
-    }
-
-    /**
-     * Définir le nom de l'utilisateur à droite
-     *
-     * @param userName nom de l'utilisateur
-     */
-    @Override
-    public void setRightPlayerName(String userName) {
-        lblTableRightName.setText(userName);
-    }
-
-    /**
-     * Définir le nom de l'utilisateur en haut
-     *
-     * @param userName nom de l'utilisateur
-     */
-    @Override
-    public void setTopPlayerName(String userName) {
-        lblTableTopName.setText(userName);
-    }
-
-    /**
-     * Définir le nom de l'utilisateur à gauche
-     *
-     * @param userName nom de l'utilisateur
-     */
-    @Override
-    public void setLeftPlayerName(String userName) {
-        lblTableLeftName.setText(userName);
-    }
-
-    /**
-     * Affichage du joueur 1 de l'équipe 1
-     *
-     * @param userName nom de l'utilisateur
-     */
-    @Override
-    public void setTeam1Player1(String userName) {
-        lblTeam1Player1.setText(userName);
-    }
-
-    /**
-     * Affichage du joueur 2 de l'équipe 1
-     *
-     * @param userName nom de l'utilisateur
-     */
-    @Override
-    public void setTeam1Player2(String userName) {
-        lblTeam1Player2.setText(userName);
-    }
-
-    /**
-     * Affichage du joueur 1 de l'équipe 2
-     *
-     * @param userName nom de l'utilisateur
-     */
-    @Override
-    public void setTeam2Player1(String userName) {
-        lblTeam2Player1.setText(userName);
-    }
-
-    /**
-     * Affichage du joueur 2 de l'équipe 2
-     *
-     * @param userName nom de l'utilisateur
-     */
-    @Override
-    public void setTeam2Player2(String userName) {
-        lblTeam2Player2.setText(userName);
     }
 
     /**
@@ -362,36 +325,6 @@ public class GUIView extends BaseView<ImageIcon> {
     @Override
     public void setCurrentPlayer(String userName) {
         lblCurrentPlayer.setText("C'est au tour de " + userName + ", temps restant :");
-    }
-
-    /**
-     * Afficher la carte jouée par le joueur en haut
-     *
-     * @param card carte à afficher
-     */
-    @Override
-    public void setTopPlayerCard(CardDTO card) {
-        lblCardPlayedPlayerTop.setIcon(loadResourceFor(card.getCardType(), card.getCardColor(), UNKNOWN_ICON));
-    }
-
-    /**
-     * Afficher la carte jouée par le joueur à gauche
-     *
-     * @param card carte à afficher
-     */
-    @Override
-    public void setLeftPlayerCard(CardDTO card) {
-        lblCardPlayedPlayerLeft.setIcon(loadResourceFor(card.getCardType(), card.getCardColor(), UNKNOWN_ICON));
-    }
-
-    /**
-     * Afficher la carte jouée par le joueur à droite
-     *
-     * @param card carte à afficher
-     */
-    @Override
-    public void setRightPlayerCard(CardDTO card) {
-        lblCardPlayedPlayerRight.setIcon(loadResourceFor(card.getCardType(), card.getCardColor(), UNKNOWN_ICON));
     }
 
     /**

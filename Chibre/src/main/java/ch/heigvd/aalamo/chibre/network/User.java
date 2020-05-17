@@ -13,6 +13,8 @@ import ch.heigvd.aalamo.chibre.ChibreController;
 import ch.heigvd.aalamo.chibre.ChibreView;
 import ch.heigvd.aalamo.chibre.engine.Card;
 import ch.heigvd.aalamo.chibre.engine.Game;
+import ch.heigvd.aalamo.chibre.engine.Player;
+import ch.heigvd.aalamo.chibre.engine.Team;
 import ch.heigvd.aalamo.chibre.network.objects.*;
 import ch.heigvd.aalamo.chibre.view.gui.GUIErrorFrame;
 import ch.heigvd.aalamo.chibre.view.gui.UserChoice;
@@ -33,14 +35,11 @@ public class User implements ChibreController {
     private Socket socket;
     private ObjectOutputStream out;
     private ObjectInputStream in;
-    private List<Card> cards = new ArrayList<>(Game.NB_CARDS_PLAYER);
+    private List<CardDTO> cards = new ArrayList<>(Game.NB_CARDS_PLAYER);
     private Card lastCardPlayed;
-    private String playerName;
-    private String currentPlayer;
-    private String topPlayer;
-    private String rightPlayer;
-    private String leftPlayer;
-    private String trumpPlayer;
+    private PlayerDTO currentPlayer;
+    private PlayerDTO hasTurnPlayer;
+    private PlayerDTO trumpPlayer;
     private int pointsTeam1;
     private int pointsTeam2;
     private int points;
@@ -48,8 +47,6 @@ public class User implements ChibreController {
 
     /**
      * Instancier un utilisateur de l'application
-     *
-     * @throws RuntimeException si aucun serveur n'est disponible sur le réseau
      */
     public User() {
         try {
@@ -78,88 +75,42 @@ public class User implements ChibreController {
                         break;
                     case AUTHENTICATION_SUCCEED:
                         view.authenticationSucceed();
-                        playerName = ((PlayerDTO) request.getObject()).getUsername();
-                        view.setUserName(playerName);
+                        currentPlayer = (PlayerDTO) request.getObject();
+                        view.setUserName(currentPlayer.getUsername());
                         break;
                     case CREATE_USER_FAILED:
                         view.createUserFailed();
                         break;
-                    case SEND_PLAYER_NAMES:
-                        // Affichage des joueurs
-                        if (request.getObject() instanceof List) {
-                            List<String> names = (List<String>) request.getObject();
-                            int index = names.indexOf(playerName);
-                            if (index >= 2) {
-                                if (index == 2) {
-                                    view.setTopPlayerName(names.get(3));
-                                    view.setRightPlayerName(names.get(1));
-                                    view.setLeftPlayerName(names.get(0));
-                                    topPlayer = names.get(3);
-                                    rightPlayer = names.get(1);
-                                    leftPlayer = names.get(0);
-                                }
-                                if (index == 3) {
-                                    view.setTopPlayerName(names.get(2));
-                                    view.setRightPlayerName(names.get(0));
-                                    view.setLeftPlayerName(names.get(1));
-                                    topPlayer = names.get(2);
-                                    rightPlayer = names.get(0);
-                                    leftPlayer = names.get(1);
-                                }
-                            } else {
-                                if (index == 0) {
-                                    view.setTopPlayerName(names.get(1));
-                                    view.setRightPlayerName(names.get(2));
-                                    view.setLeftPlayerName(names.get(3));
-                                    topPlayer = names.get(1);
-                                    rightPlayer = names.get(2);
-                                    leftPlayer = names.get(3);
-                                }
-                                if (index == 1) {
-                                    view.setTopPlayerName(names.get(0));
-                                    view.setRightPlayerName(names.get(3));
-                                    view.setLeftPlayerName(names.get(2));
-                                    topPlayer = names.get(0);
-                                    rightPlayer = names.get(3);
-                                    leftPlayer = names.get(2);
-                                }
-                            }
-                            view.setTeam1Player1(names.get(0));
-                            view.setTeam1Player2(names.get(1));
-                            view.setTeam2Player1(names.get(2));
-                            view.setTeam2Player2(names.get(3));
-                        }
+                    case SEND_TEAMS:
+                        List<TeamDTO> teams = (List<TeamDTO>) request.getObject();
+                        view.displayTeams(teams.get(0), teams.get(1));
+                        List<PlayerDTO> players = new ArrayList<>();
+                        players.add(teams.get(0).getPlayers().get(0));
+                        players.add(teams.get(1).getPlayers().get(0));
+                        players.add(teams.get(0).getPlayers().get(1));
+                        players.add(teams.get(1).getPlayers().get(1));
+                        view.displayPlayers(players, players.indexOf(currentPlayer));
                         break;
                     case SEND_CARDS:
-                        // Affichage des cartes reçues
-                        if (request.getObject() instanceof List) {
-                            cards = new ArrayList<>(Game.NB_CARDS_PLAYER);
-                            for (Card card : (List<Card>) request.getObject()) {
-                                view.addCard(card.getCardType(), card.getCardColor(), cards.size());
-                                cards.add(card);
-                            }
-                        }
+                        CardDTO card = (CardDTO) request.getObject();
+                        view.addCard(card.getCardType(), card.getCardColor(), cards.size());
+                        cards.add(card);
                         break;
                     case SEND_TRUMP_PLAYER:
-                        String trumpPlayerName = (String) request.getObject();
-                        view.setTrumpPlayer(trumpPlayerName);
+                        PlayerDTO trumpPlayerName = (PlayerDTO) request.getObject();
+                        view.setTrumpPlayer(trumpPlayerName.getUsername());
                         trumpPlayer = trumpPlayerName;
                         break;
                     case SEND_TRUMP_COLOR:
                         view.setTrumpColor((CardColor) request.getObject());
                         break;
                     case SEND_CURRENT_PLAYER:
-                        currentPlayer = (String) request.getObject();
-                        view.setCurrentPlayer(currentPlayer);
+                        hasTurnPlayer = (PlayerDTO) request.getObject();
+                        view.setCurrentPlayer(hasTurnPlayer.getUsername());
                         break;
                     case SEND_CARD_PLAYED:
-                        CardDTO card = (CardDTO) request.getObject();
-                        if (currentPlayer.equals(topPlayer))
-                            view.setTopPlayerCard(card);
-                        else if (currentPlayer.equals(leftPlayer))
-                            view.setLeftPlayerCard(card);
-                        else if (currentPlayer.equals(rightPlayer))
-                            view.setRightPlayerCard(card);
+                        CardDTO cardPlayed = (CardDTO) request.getObject();
+                        view.displayCardPlayed(cardPlayed, hasTurnPlayer);
                         break;
                     case SEND_POINTS_TEAM1:
                         points = (int) request.getObject();
@@ -191,7 +142,7 @@ public class User implements ChibreController {
                         choices.add(new UserChoice("Trèfle", CardColor.CLUB));
 
                         // Le choix de chibre n'est disponible que si on est le joueur qui fait atout
-                        if (trumpPlayer != null && trumpPlayer.equals(playerName))
+                        if (trumpPlayer != null && trumpPlayer.equals(currentPlayer))
                             choices.add(new UserChoice("Chibrer", null));
 
                         UserChoice choice = view.askUser("Choix atout", "Quel couleur voulez-vous faire atout ?", choices);
@@ -202,9 +153,11 @@ public class User implements ChibreController {
                     case ASK_ANNOUNCEMENT:
                 }
             }
-        } catch (IOException | ClassNotFoundException e) {
+        } catch (IOException |
+                ClassNotFoundException e) {
             e.printStackTrace();
         }
+
     }
 
     /**
@@ -280,15 +233,14 @@ public class User implements ChibreController {
         if (index >= cards.size())
             throw new IndexOutOfBoundsException("index plus grand que le nombre de cartes");
 
-        if (!currentPlayer.equals(playerName)) {
-            view.showMessage("Ce n'est pas votre tour", "C'est le tour de " + currentPlayer);
+        if (!hasTurnPlayer.equals(currentPlayer)) {
+            view.showMessage("Ce n'est pas votre tour", "C'est le tour de " + hasTurnPlayer.getUsername());
             if (lastCardPlayed != null)
-                view.setBottomPlayerCard(cards.get(cards.indexOf(lastCardPlayed)).serialize());
+                view.setBottomPlayerCard(cards.get(cards.indexOf(lastCardPlayed)));
             else
                 view.resetBottomPlayerCard();
             view.addCard(cards.get(index).getCardType(), cards.get(index).getCardColor(), index);
         } else {
-            // TODO passer en DTO
             sendResponse(new Response(UserAction.PLAY_CARD, cards.get(index)));
             System.out.println("Carte envoyée");
         }

@@ -8,8 +8,9 @@ Compilateur : javac 11.0.4
 --------------------------- */
 package ch.heigvd.aalamo.chibre;
 
-import ch.heigvd.aalamo.chibre.engine.Card;
 import ch.heigvd.aalamo.chibre.network.objects.CardDTO;
+import ch.heigvd.aalamo.chibre.network.objects.PlayerDTO;
+import ch.heigvd.aalamo.chibre.network.objects.TeamDTO;
 import ch.heigvd.aalamo.chibre.view.gui.UserChoice;
 
 import java.util.List;
@@ -61,69 +62,11 @@ public interface ChibreView {
     UserChoice askUser(String title, String question, List<UserChoice> possibilities);
 
     /**
-     * Afficher un message à l'utilisateur
-     *
-     * @param title    titre du message
-     * @param question question à poser
-     * @return la réponse saisie
-     */
-    String askUser(String title, String question);
-
-    /**
      * Définir le nom de l'utilisateur en cours
      *
      * @param userName nom de l'utilisateur
      */
     void setUserName(String userName);
-
-    /**
-     * Définir le nom de l'utilisateur à droite
-     *
-     * @param userName nom de l'utilisateur
-     */
-    void setRightPlayerName(String userName);
-
-    /**
-     * Définir le nom de l'utilisateur en haut
-     *
-     * @param userName nom de l'utilisateur
-     */
-    void setTopPlayerName(String userName);
-
-    /**
-     * Définir le nom de l'utilisateur à gauche
-     *
-     * @param userName nom de l'utilisateur
-     */
-    void setLeftPlayerName(String userName);
-
-    /**
-     * Affichage du joueur 1 de l'équipe 1
-     *
-     * @param userName nom de l'utilisateur
-     */
-    void setTeam1Player1(String userName);
-
-    /**
-     * Affichage du joueur 2 de l'équipe 1
-     *
-     * @param userName nom de l'utilisateur
-     */
-    void setTeam1Player2(String userName);
-
-    /**
-     * Affichage du joueur 1 de l'équipe 2
-     *
-     * @param userName nom de l'utilisateur
-     */
-    void setTeam2Player1(String userName);
-
-    /**
-     * Affichage du joueur 2 de l'équipe 2
-     *
-     * @param userName nom de l'utilisateur
-     */
-    void setTeam2Player2(String userName);
 
     /**
      * Affichage du joueur qui fait atout
@@ -145,27 +88,6 @@ public interface ChibreView {
      * @param userName joueur qui a le tour
      */
     void setCurrentPlayer(String userName);
-
-    /**
-     * Afficher la carte jouée par le joueur en haut
-     *
-     * @param card carte à afficher
-     */
-    void setTopPlayerCard(CardDTO card);
-
-    /**
-     * Afficher la carte jouée par le joueur à gauche
-     *
-     * @param card carte à afficher
-     */
-    void setLeftPlayerCard(CardDTO card);
-
-    /**
-     * Afficher la carte jouée par le joueur à droite
-     *
-     * @param card carte à afficher
-     */
-    void setRightPlayerCard(CardDTO card);
 
     /**
      * Afficher la carte jouée par le joueur en cours
@@ -212,4 +134,25 @@ public interface ChibreView {
      * Permet d'enlever l'affichage des cartes jouées
      */
     void resetPlayedCards();
+
+    /**
+     * Afficher les équipes et les joueurs de la partie
+     */
+    void displayTeams(TeamDTO team1, TeamDTO team2);
+
+    /**
+     * Afficher les joueurs autour du tapis de jeu
+     *
+     * @param players            les joueurs
+     * @param currentPlayerIndex l'index du joueur qui joue sur la GUI
+     */
+    void displayPlayers(List<PlayerDTO> players, int currentPlayerIndex);
+
+    /**
+     * Afficher la carte jouée par un joueur
+     *
+     * @param card   la carte à afficher
+     * @param player le joueur qui à jouer la carte
+     */
+    void displayCardPlayed(CardDTO card, PlayerDTO player);
 }

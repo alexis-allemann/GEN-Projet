@@ -11,7 +11,10 @@ package ch.heigvd.aalamo.chibre.network.objects;
 import java.io.Serializable;
 
 public enum ServerAction implements Serializable {
-    SEND_PLAYER_NAMES,
+    AUTHENTICATION_FAILED,
+    AUTHENTICATION_SUCCEED,
+    CREATE_USER_FAILED,
+    SEND_TEAMS,
     SEND_CARDS,
     ASK_TRUMP,
     ASK_ANNOUNCEMENT,
@@ -22,8 +25,5 @@ public enum ServerAction implements Serializable {
     SEND_CURRENT_PLAYER,
     SEND_POINTS_TEAM1,
     SEND_POINTS_TEAM2,
-    SEND_RESET_CARDS,
-    AUTHENTICATION_FAILED,
-    AUTHENTICATION_SUCCEED,
-    CREATE_USER_FAILED
+    SEND_RESET_CARDS
 }

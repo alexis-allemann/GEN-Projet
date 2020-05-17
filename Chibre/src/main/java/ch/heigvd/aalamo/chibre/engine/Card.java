@@ -13,22 +13,26 @@ import ch.heigvd.aalamo.chibre.CardType;
 import ch.heigvd.aalamo.chibre.network.objects.CardDTO;
 
 import java.io.Serializable;
+import java.util.Objects;
 
-public class Card implements Serializable, Cloneable {
+public class Card {
     // Attributs
     private CardType cardType;
     private CardColor cardColor;
     private Player player;
+    private int id;
 
     /**
      * Instanciation d'une carte
      *
      * @param cardType  type de la carte
      * @param cardColor couleur de la carte
+     * @param id        identifiant de la carte
      */
-    public Card(CardType cardType, CardColor cardColor) {
+    public Card(CardType cardType, CardColor cardColor, int id) {
         this.cardType = cardType;
         this.cardColor = cardColor;
+        this.id = id;
     }
 
     // Getters
@@ -54,6 +58,10 @@ public class Card implements Serializable, Cloneable {
         return player;
     }
 
+    public int getId() {
+        return id;
+    }
+
     // Setters
 
     /**
@@ -65,13 +73,13 @@ public class Card implements Serializable, Cloneable {
         this.player = player;
     }
 
-    //Method
+    // Méthodes
 
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
     }
 
-    public CardDTO serialize(){
-        return new CardDTO(this.cardColor, this.cardType);
+    public CardDTO serialize() {
+        return new CardDTO(cardColor, cardType, id);
     }
 }

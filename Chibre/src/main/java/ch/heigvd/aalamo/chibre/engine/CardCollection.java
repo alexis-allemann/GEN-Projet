@@ -2,6 +2,8 @@ package ch.heigvd.aalamo.chibre.engine;
 
 import ch.heigvd.aalamo.chibre.CardColor;
 import ch.heigvd.aalamo.chibre.CardType;
+import ch.heigvd.aalamo.chibre.network.objects.Request;
+import ch.heigvd.aalamo.chibre.network.objects.ServerAction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +20,7 @@ public class CardCollection {
     public CardCollection() {
         for (CardColor color : CardColor.values())
             for (CardType type : CardType.values())
-                collection.add(new Card(type, color));
+                collection.add(new Card(type, color, collection.size()));
     }
 
     // Méthodes
@@ -42,9 +44,8 @@ public class CardCollection {
                 hasDiamondSeven = true;
 
             player.distributeCard(currentCard);
-
-            // TODO décommenter lors de la serialization
-            //currentCard.setPlayer(player);
+            currentCard.setPlayer(player);
+            player.sendRequest(new Request(ServerAction.SEND_CARDS, currentCard.serialize()));
 
             collection.remove(cardIndex);
         }

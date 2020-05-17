@@ -105,20 +105,18 @@ public class Round {
      * Initialiser le tour
      */
     public void initRound() {
-        System.out.println("Début du round id#"+id);
+        System.out.println("Début du round id#" + id);
 
         for (Player player : game.getPlayers()) {
             if (cardCollection.distributeCards(player, Game.NB_CARDS_PLAYER) && game.getRounds().size() == 1)
                 game.setFirstPlayerTrump(player);
-            player.sendRequest(new Request(ServerAction.SEND_CARDS, player.getCards()));
         }
 
         this.trumpPlayer = game.getTable().nextTrumpPlayer(id, game.getTable().getPositionByPlayer(game.getFirstPlayerTrump()));
 
+        game.sendToAllPlayers(new Request(ServerAction.SEND_TRUMP_PLAYER, trumpPlayer.serialize()));
 
-        game.sendToAllPlayers(new Request(ServerAction.SEND_TRUMP_PLAYER, trumpPlayer.getUsername()));
-
-        game.sendToAllPlayers(new Request(ServerAction.SEND_CURRENT_PLAYER, trumpPlayer.getUsername()));
+        game.sendToAllPlayers(new Request(ServerAction.SEND_CURRENT_PLAYER, trumpPlayer.serialize()));
 
         trumpPlayer.sendRequest(new Request(ServerAction.ASK_TRUMP));
     }

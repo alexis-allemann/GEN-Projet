@@ -11,10 +11,7 @@ package ch.heigvd.aalamo.chibre.network;
 import ch.heigvd.aalamo.chibre.CardColor;
 import ch.heigvd.aalamo.chibre.engine.Card;
 import ch.heigvd.aalamo.chibre.engine.Player;
-import ch.heigvd.aalamo.chibre.network.objects.AuthenticationDTO;
-import ch.heigvd.aalamo.chibre.network.objects.Request;
-import ch.heigvd.aalamo.chibre.network.objects.Response;
-import ch.heigvd.aalamo.chibre.network.objects.ServerAction;
+import ch.heigvd.aalamo.chibre.network.objects.*;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -76,9 +73,9 @@ public class Handler implements Runnable {
                     case SEND_ANNOUCEMENT:
                         break;
                     case PLAY_CARD:
-                        Card card = (Card) response.getObject();
-                        // TODO : serializer pour éviter de set le player relié à la carte ici
-                        player.getGame().getCurrentRound().getCurrentTurn().playCard(card);
+                        CardDTO card = (CardDTO) response.getObject();
+                        Card cardPlayed = player.getCardWithId(card.getId());
+                        player.getGame().getCurrentRound().getCurrentTurn().playCard(cardPlayed);
                         player.getGame().getCurrentRound().getCurrentTurn().pursueTurn();
                         break;
                     case SEND_TRUMP:

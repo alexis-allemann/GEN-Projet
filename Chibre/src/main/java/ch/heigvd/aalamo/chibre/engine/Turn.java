@@ -9,6 +9,7 @@ Compilateur : javac 11.0.4
 package ch.heigvd.aalamo.chibre.engine;
 
 import ch.heigvd.aalamo.chibre.CardColor;
+import ch.heigvd.aalamo.chibre.network.objects.CardDTO;
 import ch.heigvd.aalamo.chibre.network.objects.Request;
 import ch.heigvd.aalamo.chibre.network.objects.ServerAction;
 
@@ -52,17 +53,16 @@ public class Turn {
      */
     public void initTurn() {
         System.out.println("Début du tour");
-        if (round.isFirstTurn()){
+        if (round.isFirstTurn()) {
             firstPlayer = round.getTrumpPlayer();
             System.out.print("<Tour 1> Premier joueur a le 7 de carreau");
-        }
-        else{
-            System.out.print("<Tour "+ round.getTurns().size() +"> Premier joueur est le vainqueur du tour d'avant");
+        } else {
+            System.out.print("<Tour " + round.getTurns().size() + "> Premier joueur est le vainqueur du tour d'avant");
             firstPlayer = lastTurn.getWinner();
         }
         System.out.println(" : " + firstPlayer.getUsername());
 
-        round.getGame().sendToAllPlayers(new Request(ServerAction.SEND_CURRENT_PLAYER, firstPlayer.getUsername()));
+        round.getGame().sendToAllPlayers(new Request(ServerAction.SEND_CURRENT_PLAYER, firstPlayer.serialize()));
 
         System.out.println("Demande la carte à " + firstPlayer.getUsername());
         firstPlayer.sendRequest(new Request(ServerAction.ASK_CARD));
@@ -111,7 +111,7 @@ public class Turn {
 
             Player nextPlayer = round.getTable().getTrumpPlayer(firstPlayer, cards.size());
             System.out.println("Prochain joueur : " + nextPlayer.getUsername());
-            round.getGame().sendToAllPlayers(new Request(ServerAction.SEND_CURRENT_PLAYER, nextPlayer.getUsername()));
+            round.getGame().sendToAllPlayers(new Request(ServerAction.SEND_CURRENT_PLAYER, nextPlayer.serialize()));
             nextPlayer.sendRequest(new Request(ServerAction.ASK_CARD));
         }
     }
@@ -120,7 +120,7 @@ public class Turn {
      * Démarer un nouveau tour de table
      */
     private void newTurn() {
-        System.out.println("Nouveau tour dans le round id#"+round.getId());
+        System.out.println("Nouveau tour dans le round id#" + round.getId());
         // TODO : voir si on peut démarrer un nouveau round dans game plutôt
         isPlayed = false;
         if (round.getTurns().size() == Game.NB_CARDS_PLAYER)
@@ -140,17 +140,12 @@ public class Turn {
      */
     public void playCard(Card card) {
         cards.add(card);
-        Card cardPlayed = null;
-        try {
-            cardPlayed = (Card) card.clone();
-        } catch (CloneNotSupportedException e) {
-            e.printStackTrace();
-        }
-        System.out.print("<"+cardPlayed.getCardColor().toString()+">");
-        System.out.print("<"+cardPlayed.getCardType().toString()+">");
-        System.out.println(" joué par "+cardPlayed.getPlayer().getUsername());
 
-        round.getGame().sendToAllPlayers(new Request(ServerAction.SEND_CARD_PLAYED, cardPlayed.serialize()));
+        System.out.print("<" + card.getCardColor().toString() + ">");
+        System.out.print("<" + card.getCardType().toString() + ">");
+        System.out.println(" joué par " + card.getPlayer().getUsername());
+
+        round.getGame().sendToAllPlayers(new Request(ServerAction.SEND_CARD_PLAYED, card.serialize()));
     }
 
     /**
@@ -159,19 +154,18 @@ public class Turn {
     private void defineWinner() {
         Card winningCard = cards.get(0);
 
-        for(Card card : cards){
-            if(
-            (card.getCardColor() == round.getTrumpColor() &&
-                winningCard.getCardColor() != round.getTrumpColor())
-            ||
-            (card.getCardColor() == round.getTrumpColor() &&
-                winningCard.getCardColor() == round.getTrumpColor() &&
-                card.getCardType().getOrderOfTrump() > winningCard.getCardType().getOrderOfTrump())
-            ||
-            (card.getCardColor() == winningCard.getCardColor() &&
-                card.getCardType().getOrder() > winningCard.getCardType().getOrder())
-            )
-            {
+        for (Card card : cards) {
+            if (
+                    (card.getCardColor() == round.getTrumpColor() &&
+                            winningCard.getCardColor() != round.getTrumpColor())
+                            ||
+                            (card.getCardColor() == round.getTrumpColor() &&
+                                    winningCard.getCardColor() == round.getTrumpColor() &&
+                                    card.getCardType().getOrderOfTrump() > winningCard.getCardType().getOrderOfTrump())
+                            ||
+                            (card.getCardColor() == winningCard.getCardColor() &&
+                                    card.getCardType().getOrder() > winningCard.getCardType().getOrder())
+            ) {
                 winningCard = card;
             }
 
@@ -179,7 +173,7 @@ public class Turn {
 
         this.winner = winningCard.getPlayer();
         System.out.print("Le gagnant du tour est : " + winner.getUsername());
-        System.out.println("Avec la carte <"+winningCard.getCardColor().toString()+"><"+winningCard.getCardType().toString()+">");
+        System.out.println("Avec la carte <" + winningCard.getCardColor().toString() + "><" + winningCard.getCardType().toString() + ">");
     }
 }
 

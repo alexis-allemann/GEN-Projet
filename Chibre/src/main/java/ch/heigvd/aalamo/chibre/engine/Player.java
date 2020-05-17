@@ -74,6 +74,13 @@ public class Player {
         return team;
     }
 
+    public Card getCardWithId(int id) {
+        for (Card card : cards)
+            if (card.getId() == id)
+                return card;
+        return null;
+    }
+
     // Setters
 
     /**
@@ -124,8 +131,8 @@ public class Player {
     public void distributeCard(Card card) {
         if (card == null)
             throw new IllegalArgumentException("Carte nulle");
-        System.out.print("Distribue <"+ card.getCardColor().toString() +"><"+card.getCardType().toString()+">");
-        System.out.println(" à "+ username);
+        System.out.print("Distribue <" + card.getCardColor().toString() + "><" + card.getCardType().toString() + ">");
+        System.out.println(" à " + username);
         cards.add(card);
     }
 
@@ -144,7 +151,7 @@ public class Player {
     public PlayerDTO serialize() {
         List<CardDTO> cardsDto = new ArrayList<>(Game.NB_CARDS_PLAYER);
         for (Card card : cards)
-            cardsDto.add(new CardDTO(card.getCardColor(), card.getCardType()));
+            cardsDto.add(new CardDTO(card.getCardColor(), card.getCardType(), card.getId()));
 
         return new PlayerDTO(username, cardsDto);
     }

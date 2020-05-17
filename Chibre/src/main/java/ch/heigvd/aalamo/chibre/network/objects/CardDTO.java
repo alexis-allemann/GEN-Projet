@@ -8,10 +8,12 @@ import java.io.Serializable;
 public class CardDTO implements DTO {
     private CardColor cardColor;
     private CardType cardType;
+    private int id;
 
-    public CardDTO(CardColor cardColor, CardType cardType) {
+    public CardDTO(CardColor cardColor, CardType cardType, int id) {
         this.cardColor = cardColor;
         this.cardType = cardType;
+        this.id = id;
     }
 
     public CardColor getCardColor() {
@@ -22,4 +24,7 @@ public class CardDTO implements DTO {
         return cardType;
     }
 
+    public int getId() {
+        return id;
+    }
 }

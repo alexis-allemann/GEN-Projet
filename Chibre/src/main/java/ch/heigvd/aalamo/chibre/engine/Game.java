@@ -10,6 +10,7 @@ package ch.heigvd.aalamo.chibre.engine;
 
 import ch.heigvd.aalamo.chibre.network.objects.Request;
 import ch.heigvd.aalamo.chibre.network.objects.ServerAction;
+import ch.heigvd.aalamo.chibre.network.objects.TeamDTO;
 
 import java.util.*;
 
@@ -124,15 +125,13 @@ public class Game implements Runnable {
      */
     @Override
     public void run() {
-        System.out.println("Début de la partie id#"+id);
+        System.out.println("Début de la partie id#" + id);
 
-        // Envoi du nom des joueurs
-        List<String> playerNames = new ArrayList<>(NB_PLAYERS);
-
-        for (Player player : this.players)
-            playerNames.add(player.getUsername());
-
-        sendToAllPlayers(new Request(ServerAction.SEND_PLAYER_NAMES, playerNames));
+        // Envoi des équipes aux GUI
+        sendToAllPlayers(new Request(ServerAction.SEND_TEAMS, new ArrayList<>(Arrays.asList(
+                teams.get(0).serialize(),
+                teams.get(1).serialize()
+        ))));
 
         // Démarrage du premier tour
         Round round = new Round(this);
@@ -170,10 +169,11 @@ public class Game implements Runnable {
 
     /**
      * Envoi d'une requête à tous les joueurs
+     *
      * @param request la requête à envoyer
      */
-    public void sendToAllPlayers(Request request){
-        for(Player player : players)
+    public void sendToAllPlayers(Request request) {
+        for (Player player : players)
             player.sendRequest(request);
     }
 }
