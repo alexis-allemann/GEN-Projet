@@ -153,7 +153,7 @@ public class User implements ChibreController {
                         view.setCurrentPlayer(currentPlayer);
                         break;
                     case SEND_CARD_PLAYED:
-                        Card card = (Card) request.getObject();
+                        CardDTO card = (CardDTO) request.getObject();
                         if (currentPlayer.equals(topPlayer))
                             view.setTopPlayerCard(card);
                         else if (currentPlayer.equals(leftPlayer))
@@ -283,11 +283,12 @@ public class User implements ChibreController {
         if (!currentPlayer.equals(playerName)) {
             view.showMessage("Ce n'est pas votre tour", "C'est le tour de " + currentPlayer);
             if (lastCardPlayed != null)
-                view.setBottomPlayerCard(cards.get(cards.indexOf(lastCardPlayed)));
+                view.setBottomPlayerCard(cards.get(cards.indexOf(lastCardPlayed)).serialize());
             else
                 view.resetBottomPlayerCard();
             view.addCard(cards.get(index).getCardType(), cards.get(index).getCardColor(), index);
         } else {
+            // TODO passer en DTO
             sendResponse(new Response(UserAction.PLAY_CARD, cards.get(index)));
             System.out.println("Carte envoyée");
         }

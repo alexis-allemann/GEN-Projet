@@ -9,6 +9,7 @@ Compilateur : javac 11.0.4
 package ch.heigvd.aalamo.chibre;
 
 import ch.heigvd.aalamo.chibre.engine.Card;
+import ch.heigvd.aalamo.chibre.network.objects.CardDTO;
 import ch.heigvd.aalamo.chibre.view.gui.UserChoice;
 
 import java.util.List;
@@ -150,28 +151,28 @@ public interface ChibreView {
      *
      * @param card carte à afficher
      */
-    void setTopPlayerCard(Card card);
+    void setTopPlayerCard(CardDTO card);
 
     /**
      * Afficher la carte jouée par le joueur à gauche
      *
      * @param card carte à afficher
      */
-    void setLeftPlayerCard(Card card);
+    void setLeftPlayerCard(CardDTO card);
 
     /**
      * Afficher la carte jouée par le joueur à droite
      *
      * @param card carte à afficher
      */
-    void setRightPlayerCard(Card card);
+    void setRightPlayerCard(CardDTO card);
 
     /**
      * Afficher la carte jouée par le joueur en cours
      *
      * @param card carte à afficher
      */
-    void setBottomPlayerCard(Card card);
+    void setBottomPlayerCard(CardDTO card);
 
     /**
      * Redéfinir la carte jouée à vide

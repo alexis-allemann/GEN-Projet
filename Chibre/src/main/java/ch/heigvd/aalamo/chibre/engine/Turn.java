@@ -149,9 +149,8 @@ public class Turn {
         System.out.print("<"+cardPlayed.getCardColor().toString()+">");
         System.out.print("<"+cardPlayed.getCardType().toString()+">");
         System.out.println(" joué par "+cardPlayed.getPlayer().getUsername());
-        // TODO : décommenter si sérialization
-        cardPlayed.setPlayer(null);
-        round.getGame().sendToAllPlayers(new Request(ServerAction.SEND_CARD_PLAYED, cardPlayed));
+
+        round.getGame().sendToAllPlayers(new Request(ServerAction.SEND_CARD_PLAYED, cardPlayed.serialize()));
     }
 
     /**

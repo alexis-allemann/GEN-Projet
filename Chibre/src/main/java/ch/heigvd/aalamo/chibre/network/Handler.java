@@ -77,7 +77,6 @@ public class Handler implements Runnable {
                         break;
                     case PLAY_CARD:
                         Card card = (Card) response.getObject();
-                        card.setPlayer(player);
                         // TODO : serializer pour éviter de set le player relié à la carte ici
                         player.getGame().getCurrentRound().getCurrentTurn().playCard(card);
                         player.getGame().getCurrentRound().getCurrentTurn().pursueTurn();

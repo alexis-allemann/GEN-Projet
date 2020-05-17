@@ -6,6 +6,7 @@ import ch.heigvd.aalamo.chibre.ChibreController;
 import ch.heigvd.aalamo.chibre.assets.GuiAssets;
 import ch.heigvd.aalamo.chibre.engine.Card;
 import ch.heigvd.aalamo.chibre.engine.Player;
+import ch.heigvd.aalamo.chibre.network.objects.CardDTO;
 import ch.heigvd.aalamo.chibre.view.BaseView;
 import ch.heigvd.aalamo.chibre.view.DrawableRessource;
 
@@ -369,7 +370,7 @@ public class GUIView extends BaseView<ImageIcon> {
      * @param card carte à afficher
      */
     @Override
-    public void setTopPlayerCard(Card card) {
+    public void setTopPlayerCard(CardDTO card) {
         lblCardPlayedPlayerTop.setIcon(loadResourceFor(card.getCardType(), card.getCardColor(), UNKNOWN_ICON));
     }
 
@@ -379,7 +380,7 @@ public class GUIView extends BaseView<ImageIcon> {
      * @param card carte à afficher
      */
     @Override
-    public void setLeftPlayerCard(Card card) {
+    public void setLeftPlayerCard(CardDTO card) {
         lblCardPlayedPlayerLeft.setIcon(loadResourceFor(card.getCardType(), card.getCardColor(), UNKNOWN_ICON));
     }
 
@@ -389,7 +390,7 @@ public class GUIView extends BaseView<ImageIcon> {
      * @param card carte à afficher
      */
     @Override
-    public void setRightPlayerCard(Card card) {
+    public void setRightPlayerCard(CardDTO card) {
         lblCardPlayedPlayerRight.setIcon(loadResourceFor(card.getCardType(), card.getCardColor(), UNKNOWN_ICON));
     }
 
@@ -399,7 +400,7 @@ public class GUIView extends BaseView<ImageIcon> {
      * @param card carte à afficher
      */
     @Override
-    public void setBottomPlayerCard(Card card) {
+    public void setBottomPlayerCard(CardDTO card) {
         lblCardPlayedPlayerBottom.setIcon(loadResourceFor(card.getCardType(), card.getCardColor(), UNKNOWN_ICON));
     }
 

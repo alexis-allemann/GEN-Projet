@@ -71,7 +71,7 @@ public class Card implements Serializable, Cloneable {
         return super.clone();
     }
 
-    CardDTO serialize(){
+    public CardDTO serialize(){
         return new CardDTO(this.cardColor, this.cardType);
     }
 }
