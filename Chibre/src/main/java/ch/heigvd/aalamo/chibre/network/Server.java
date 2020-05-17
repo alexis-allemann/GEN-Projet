@@ -20,6 +20,7 @@ import org.json.simple.parser.ParseException;
 
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -95,9 +96,11 @@ public class Server extends Thread {
     }
 
     /**
-     * Chargement des joueurs du serveur depuis un fichier JSON
+     * Récupérer un tableau de joueurs au format JSON
+     *
+     * @return le tableau des joueurs au format JSON
      */
-    private void loadPlayers() {
+    private JSONArray readPlayersFromJSON() {
         // JSON parser object pour lire le fichier des joueurs
         JSONParser jsonParser = new JSONParser();
 
@@ -112,12 +115,48 @@ public class Server extends Thread {
                 Object obj = jsonParser.parse(reader);
 
                 // Récupérer le tableau de joueurs
-                JSONArray players = (JSONArray) obj;
-
-                // Parcours du tableau de joueurs pour parsing
-                players.forEach(country -> parsePlayerObject((JSONObject) country));
+                return (JSONArray) obj;
             }
         } catch (IOException | ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * Chargement des joueurs du serveur depuis un fichier JSON
+     */
+    private void loadPlayers() {
+        JSONArray players = readPlayersFromJSON();
+
+        // Parcours du tableau de joueurs pour parsing
+        players.forEach(country -> parsePlayerObject((JSONObject) country));
+    }
+
+    /**
+     * Ajout d'un joueur dans le fichier JSON
+     *
+     * @param player joueur à ajouter
+     */
+    private void addPlayerToJSONFile(Player player) {
+        JSONArray players = readPlayersFromJSON();
+
+        // Création du nouvel objet avec le joueur à ajouter
+        JSONObject newPlayer = new JSONObject();
+        newPlayer.put("username", player.getUsername());
+        newPlayer.put("password", player.getPassword());
+
+        players.add(newPlayer);
+
+        // Ecriture du fichier JSON
+        try (FileWriter file = new FileWriter(PLAYERS_FILE)) {
+            System.out.println("Ecriture du fichier " + PLAYERS_FILE);
+
+            // Recupération de la liste des continents et écriture
+            file.write(players.toJSONString());
+            file.flush();
+
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -160,7 +199,7 @@ public class Server extends Thread {
      * @param handler           reliée à la GUI qui essaie de s'authentifier
      * @param authenticationDTO objet de transfert de données pour l'authentification
      */
-    public void createUser(Handler handler, AuthenticationDTO authenticationDTO) {
+    public void createPlayer(Handler handler, AuthenticationDTO authenticationDTO) {
         Player newPlayer = new Player(authenticationDTO.getUserName(), authenticationDTO.getPassword());
 
         // On vérifie que aucun joueur n'a déjà le même nom d'utilisateur
@@ -174,6 +213,7 @@ public class Server extends Thread {
         players.add(newPlayer);
         newPlayer.setHandler(handler);
         addPlayerToWaitingList(newPlayer);
+        addPlayerToJSONFile(newPlayer);
     }
 
     /**

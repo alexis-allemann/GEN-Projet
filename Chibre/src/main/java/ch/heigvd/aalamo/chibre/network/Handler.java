@@ -71,7 +71,7 @@ public class Handler implements Runnable {
                         server.authenticate(this, (AuthenticationDTO) response.getObject());
                         break;
                     case CREATE_USER:
-                        server.createUser(this, (AuthenticationDTO) response.getObject());
+                        server.createPlayer(this, (AuthenticationDTO) response.getObject());
                         break;
                     case SEND_ANNOUCEMENT:
                         break;
