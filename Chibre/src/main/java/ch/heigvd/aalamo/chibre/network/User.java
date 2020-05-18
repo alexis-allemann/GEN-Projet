@@ -9,8 +9,10 @@ Compilateur : javac 11.0.4
 package ch.heigvd.aalamo.chibre.network;
 
 import ch.heigvd.aalamo.chibre.CardColor;
+import ch.heigvd.aalamo.chibre.CardType;
 import ch.heigvd.aalamo.chibre.ChibreController;
 import ch.heigvd.aalamo.chibre.ChibreView;
+import ch.heigvd.aalamo.chibre.engine.Card;
 import ch.heigvd.aalamo.chibre.engine.Game;
 import ch.heigvd.aalamo.chibre.engine.Player;
 import ch.heigvd.aalamo.chibre.network.objects.*;
@@ -38,9 +40,12 @@ public class User implements ChibreController {
     private ObjectOutputStream out;
     private ObjectInputStream in;
     private List<CardDTO> cards = new ArrayList<>(Game.NB_CARDS_PLAYER);
+    private List<Boolean> markedCards = new ArrayList<>(Arrays.asList(false, false, false, false, false, false, false, false, false));
     private PlayerDTO currentPlayer;
     private PlayerDTO hasTurnPlayer;
     private PlayerDTO trumpPlayer;
+    private CardColor trumpColor;
+    private CardColor firstCardColor = null;
     private CardDTO lastCardPlayed;
 
     /**
@@ -105,7 +110,8 @@ public class User implements ChibreController {
                         view.setInfoMessage(this.trumpPlayer.getUsername() + " a chibré, " + trumpPlayer.getUsername() + " choisi l'atout");
                         break;
                     case SEND_TRUMP_COLOR:
-                        view.setTrumpColor((CardColor) request.getObject());
+                        trumpColor = (CardColor) request.getObject();
+                        view.setTrumpColor(trumpColor);
                         break;
                     case SEND_CURRENT_PLAYER:
                         hasTurnPlayer = (PlayerDTO) request.getObject();
@@ -114,12 +120,15 @@ public class User implements ChibreController {
                     case SEND_CARD_PLAYED:
                         CardDTO cardPlayed = (CardDTO) request.getObject();
                         view.displayCardPlayed(cardPlayed, hasTurnPlayer);
+                        if (firstCardColor == null)
+                            firstCardColor = cardPlayed.getCardColor();
                         break;
                     case SEND_POINTS:
                         teams = (List<TeamDTO>) request.getObject();
                         view.setPoints(teams.get(0).getPoints(), teams.get(1).getPoints());
                         break;
                     case SEND_RESET_CARDS:
+                        firstCardColor = null;
                         view.resetPlayedCards();
                         break;
                     case SEND_WINNING_PLAYER:
@@ -149,6 +158,7 @@ public class User implements ChibreController {
                         break;
                     case END_ROUND:
                         cards.clear();
+                        markedCards = new ArrayList<>(Arrays.asList(false, false, false, false, false, false, false, false, false));
                         break;
                     case ASK_ANNOUNCEMENT:
                         break;
@@ -223,15 +233,42 @@ public class User implements ChibreController {
 
         if (hasTurnPlayer == null || !hasTurnPlayer.equals(currentPlayer)) {
             view.showMessage("Ce n'est pas votre tour", hasTurnPlayer != null ? "C'est le tour de " + hasTurnPlayer.getUsername() : "La carte ne peut pas être jouée maintenant");
-            if (lastCardPlayed != null)
-                view.setBottomPlayerCard(cards.get(cards.indexOf(lastCardPlayed)));
-            else
-                view.resetBottomPlayerCard();
-            view.addCard(cards.get(index).getCardType(), cards.get(index).getCardColor(), index);
+            resetCard(index);
         } else {
-            sendResponse(new Response(UserAction.PLAY_CARD, cards.get(index)));
-            System.out.println("Carte envoyée");
+            CardColor playedColor = cards.get(index).getCardColor();
+            boolean isCardValid = true;
+            if (firstCardColor != null && playedColor != firstCardColor && playedColor != trumpColor) {
+                for (int i = 0; i < cards.size() && isCardValid; ++i)
+                    if (!markedCards.get(i) && cards.get(i).getCardColor() == firstCardColor) {
+                        if (firstCardColor == trumpColor && cards.get(i).getCardType() != CardType.JACK)
+                            isCardValid = false;
+                        else if (firstCardColor != trumpColor)
+                            isCardValid = false;
+                    }
+            }
+
+            if (!isCardValid) {
+                view.showMessage("La carte ne peut pas être jouée", "Carte jouée invalide");
+                resetCard(index);
+            } else {
+                sendResponse(new Response(UserAction.PLAY_CARD, cards.get(index)));
+                markedCards.set(index, true);
+                System.out.println("Carte envoyée");
+            }
         }
+    }
+
+    /**
+     * Remettre la carte jouée à vide car elle n'est pas valide
+     *
+     * @param index de la carte jouée
+     */
+    private void resetCard(int index) {
+        if (lastCardPlayed != null)
+            view.setBottomPlayerCard(cards.get(cards.indexOf(lastCardPlayed)));
+        else
+            view.resetBottomPlayerCard();
+        view.addCard(cards.get(index).getCardType(), cards.get(index).getCardColor(), index);
     }
 
     /**
