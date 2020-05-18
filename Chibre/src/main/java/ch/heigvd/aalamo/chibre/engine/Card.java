@@ -12,7 +12,7 @@ import ch.heigvd.aalamo.chibre.CardColor;
 import ch.heigvd.aalamo.chibre.CardType;
 import ch.heigvd.aalamo.chibre.network.objects.DTOs.CardDTO;
 
-public class Card {
+public class Card implements Comparable<Card>{
     // Attributs
     private CardType cardType;
     private CardColor cardColor;
@@ -78,5 +78,10 @@ public class Card {
 
     public CardDTO serialize() {
         return new CardDTO(cardColor, cardType, id);
+    }
+
+    @Override
+    public int compareTo(Card o) {
+        return id - o.getId();
     }
 }

@@ -8,12 +8,14 @@ Compilateur : javac 11.0.4
 --------------------------- */
 package ch.heigvd.aalamo.chibre.engine;
 
+import ch.heigvd.aalamo.chibre.network.objects.DTOs.AnnouncementDTO;
+
 public class Announcement {
     // Attributs
+    private Round round;
     private Player player;
-    BonusType bonusType;
-    Round round;
-    Team team;
+    private BonusType bonusType;
+    private Card bestCard;
 
     /**
      * Instanciation d'une annonce
@@ -21,12 +23,16 @@ public class Announcement {
      * @param player    Joueur qui annonce
      * @param bonusType Type de l'annonce
      * @param round     Tour durant lequel a lieu l'annonce
-     * @param team      Equipe qui remporte les points de l'annonce
      */
-    public Announcement(Player player, BonusType bonusType, Round round, Team team) {
+    public Announcement(Player player, BonusType bonusType, Round round, Card bestCard) {
         this.player = player;
         this.bonusType = bonusType;
         this.round = round;
-        this.team = team;
+        this.bestCard = bestCard;
+    }
+
+
+    public AnnouncementDTO serialize() {
+        return new AnnouncementDTO();
     }
 }

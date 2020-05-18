@@ -8,12 +8,16 @@ Compilateur : javac 11.0.4
 --------------------------- */
 package ch.heigvd.aalamo.chibre.engine;
 
+import ch.heigvd.aalamo.chibre.CardType;
 import ch.heigvd.aalamo.chibre.network.Handler;
 import ch.heigvd.aalamo.chibre.network.objects.DTOs.CardDTO;
 import ch.heigvd.aalamo.chibre.network.objects.DTOs.PlayerDTO;
 import ch.heigvd.aalamo.chibre.network.objects.Request;
+import ch.heigvd.aalamo.chibre.network.objects.ServerAction;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public class Player {
@@ -144,5 +148,110 @@ public class Player {
             cardsDto.add(new CardDTO(card.getCardColor(), card.getCardType(), card.getId()));
 
         return new PlayerDTO(username, cardsDto);
+    }
+
+    public void sendAnnoucements() {
+        List<Announcement> announcements = threeCardsAnnouncement();
+        if(!announcements.isEmpty())
+            for(Announcement announcement : announcements)
+                sendRequest(new Request(ServerAction.SEND_ANNOUCEMENTS, announcement.serialize()));
+
+        announcements = fourCardsAnnouncement();
+        if(!announcements.isEmpty())
+            for(Announcement announcement : announcements)
+                sendRequest(new Request(ServerAction.SEND_ANNOUCEMENTS, announcement.serialize()));
+
+        announcements = squareCardsAnnouncement();
+        if(!announcements.isEmpty())
+            for(Announcement announcement : announcements)
+                sendRequest(new Request(ServerAction.SEND_ANNOUCEMENTS, announcement.serialize()));
+
+        announcements = suiteAnnouncement();
+        if(!announcements.isEmpty())
+            for(Announcement announcement : announcements)
+                sendRequest(new Request(ServerAction.SEND_ANNOUCEMENTS, announcement.serialize()));
+
+        if(squareNineAnnouncement() != null)
+            sendRequest(new Request(ServerAction.SEND_ANNOUCEMENTS, squareNineAnnouncement().serialize()));
+
+        if(squareJackAnnouncement() != null)
+            sendRequest(new Request(ServerAction.SEND_ANNOUCEMENTS, squareJackAnnouncement().serialize()));
+    }
+
+    private Announcement squareJackAnnouncement() {
+        return squareCards(CardType.JACK);
+    }
+
+    private Announcement squareNineAnnouncement() {
+        return squareCards(CardType.NINE);
+    }
+
+    private Announcement squareCards(CardType type) {
+        List<Card> square = new ArrayList<>();
+        for(Card card : cards)
+            if(card.getCardType() == type)
+                square.add(card);
+
+        if(square.size() == 4)
+            return new Announcement(this, BonusType.SQUARE_CARDS, game.getCurrentRound(), null);
+        else
+            return null;
+    }
+
+    private List<Announcement> suiteAnnouncement() {
+        List<Announcement> announcements = new ArrayList<>();
+        for(int i = cards.size() - 1; i > 4; --i){
+            if(cards.get(i).getCardColor() == cards.get(i - 1).getCardColor() &&
+                    cards.get(i - 1).getCardColor() == cards.get(i - 2).getCardColor() &&
+                    cards.get(i - 2).getCardColor() == cards.get(i - 3).getCardColor() &&
+                    cards.get(i - 3).getCardColor() == cards.get(i - 4).getCardColor() &&
+                    cards.get(i).getCardType().getOrder() == cards.get(i - 1).getCardType().getOrder() - 1 &&
+                    cards.get(i - 1).getCardType().getOrder() == cards.get(i - 2).getCardType().getOrder() - 1 &&
+                    cards.get(i - 2).getCardType().getOrder() == cards.get(i - 3).getCardType().getOrder() - 1 &&
+                    cards.get(i - 3).getCardType().getOrder() == cards.get(i - 4).getCardType().getOrder() - 1)
+                announcements.add(new Announcement(
+                        this,BonusType.SUITE, game.getCurrentRound(), cards.get(i)
+                ));
+        }
+        return announcements;
+    }
+
+    private List<Announcement> squareCardsAnnouncement() {
+        List<Announcement> announcements = new ArrayList<>();
+        for(CardType type : CardType.values())
+            if(type != CardType.JACK && type != CardType.NINE)
+                announcements.add(squareCards(type));
+
+        return announcements;
+    }
+
+    private List<Announcement> fourCardsAnnouncement() {
+        List<Announcement> announcements = new ArrayList<>();
+        for(int i = cards.size() - 1; i > 3; --i){
+            if(cards.get(i).getCardColor() == cards.get(i - 1).getCardColor() &&
+                    cards.get(i - 1).getCardColor() == cards.get(i - 2).getCardColor() &&
+                    cards.get(i - 2).getCardColor() == cards.get(i - 3).getCardColor() &&
+                    cards.get(i).getCardType().getOrder() == cards.get(i - 1).getCardType().getOrder() - 1 &&
+                    cards.get(i - 1).getCardType().getOrder() == cards.get(i - 2).getCardType().getOrder() - 1 &&
+                    cards.get(i - 2).getCardType().getOrder() == cards.get(i - 3).getCardType().getOrder() - 1)
+                announcements.add(new Announcement(
+                        this,BonusType.FOUR_CARDS, game.getCurrentRound(), cards.get(i)
+                ));
+        }
+        return announcements;
+    }
+
+    private List<Announcement> threeCardsAnnouncement() {
+        List<Announcement> announcements = new ArrayList<>();
+        for(int i = cards.size() - 1; i > 2; --i){
+            if(cards.get(i).getCardColor() == cards.get(i - 1).getCardColor() &&
+                    cards.get(i - 1).getCardColor() == cards.get(i - 2).getCardColor() &&
+                    cards.get(i).getCardType().getOrder() == cards.get(i - 1).getCardType().getOrder() - 1 &&
+                    cards.get(i - 1).getCardType().getOrder() == cards.get(i - 2).getCardType().getOrder() - 1)
+                announcements.add(new Announcement(
+                        this,BonusType.THREE_CARDS, game.getCurrentRound(), cards.get(i)
+                ));
+        }
+        return announcements;
     }
 }

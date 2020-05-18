@@ -64,7 +64,6 @@ public class Turn {
         round.getGame().sendToAllPlayers(new Request(ServerAction.SEND_CURRENT_PLAYER, firstPlayer.serialize()));
 
         System.out.println("Demande la carte à " + firstPlayer.getUsername());
-        firstPlayer.sendRequest(new Request(ServerAction.ASK_CARD));
 
     }
 
@@ -126,7 +125,6 @@ public class Turn {
             Player nextPlayer = round.getTable().getTrumpPlayer(firstPlayer, cards.size());
             System.out.println("Prochain joueur : " + nextPlayer.getUsername());
             round.getGame().sendToAllPlayers(new Request(ServerAction.SEND_CURRENT_PLAYER, nextPlayer.serialize()));
-            nextPlayer.sendRequest(new Request(ServerAction.ASK_CARD));
         }
     }
 

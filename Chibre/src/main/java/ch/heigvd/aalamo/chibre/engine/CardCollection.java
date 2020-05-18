@@ -6,6 +6,7 @@ import ch.heigvd.aalamo.chibre.network.objects.Request;
 import ch.heigvd.aalamo.chibre.network.objects.ServerAction;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -49,6 +50,9 @@ public class CardCollection {
 
             collection.remove(cardIndex);
         }
+
+        // Permet un affichage plus harmonieux et facilite le calcul des annonces
+        Collections.sort(player.getCards());
 
         return hasDiamondSeven;
     }

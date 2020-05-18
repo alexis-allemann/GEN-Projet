@@ -9,6 +9,7 @@ Compilateur : javac 11.0.4
 package ch.heigvd.aalamo.chibre.engine;
 
 import ch.heigvd.aalamo.chibre.CardColor;
+import ch.heigvd.aalamo.chibre.network.objects.DTOs.AnnouncementDTO;
 import ch.heigvd.aalamo.chibre.network.objects.Request;
 import ch.heigvd.aalamo.chibre.network.objects.ServerAction;
 
@@ -153,5 +154,10 @@ public class Round {
      */
     public void addTurn(Turn turn) {
         turns.add(turn);
+    }
+
+    public void initAnnoucement(){
+        for(Player player : game.getPlayers())
+            player.sendAnnoucements();
     }
 }

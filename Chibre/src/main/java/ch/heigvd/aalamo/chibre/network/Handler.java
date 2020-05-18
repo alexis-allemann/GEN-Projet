@@ -86,7 +86,8 @@ public class Handler implements Runnable {
                             player.getTeam().getOtherPlayer(player).sendRequest(new Request(ServerAction.ASK_TRUMP));
                         } else {
                             player.getGame().getCurrentRound().setTrumpColor(color);
-                            player.getGame().getCurrentRound().initTurn();
+                            player.getGame().getCurrentRound().initAnnoucement();
+                            //player.getGame().getCurrentRound().initTurn();
                         }
                         break;
                 }
