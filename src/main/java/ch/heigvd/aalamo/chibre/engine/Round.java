@@ -199,6 +199,7 @@ public class Round {
                 bestAnnouncement = announcement;
         }
 
+        // TODO A check si on doit vraiment faire comme ça
         if(bestAnnouncement != null){
             if(bestAnnouncement.getPlayer().getTeam() == game.getTeams().get(0)){
                 if(pointsTeam1 != 0)
