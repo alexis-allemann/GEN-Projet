@@ -100,11 +100,7 @@ public class Turn {
             defineWinner();
             winner.getTeam().addPoints(getTotalPoints());
 
-            // Envoi des équipes pour mise à jour des points sur la GUI
-            round.getGame().sendToAllPlayers(new Request(ServerAction.SEND_POINTS, new ArrayList<>(Arrays.asList(
-                    round.getGame().getTeams().get(0).serialize(),
-                    round.getGame().getTeams().get(1).serialize()
-            ))));
+            sendPoints();
 
             // Envoi de l'équipe qui a remporté la plie
             round.getGame().sendToAllPlayers(new Request(ServerAction.SEND_WINNING_PLAYER, winner.serialize()));
@@ -131,11 +127,12 @@ public class Turn {
      */
     private void newTurn() {
         isPlayed = false;
-        if (round.getTurns().size() == Game.NB_CARDS_PLAYER){
+        if (round.getTurns().size() == Game.NB_CARDS_PLAYER) {
+            winner.getTeam().addPoints(5);
+            sendPoints();
             round.getGame().sendToAllPlayers(new Request(ServerAction.END_ROUND));
             round.getGame().newRound();
-        }
-        else {
+        } else {
             System.out.println("Nouveau tour dans le round id#" + round.getId());
             Turn turn = new Turn(round, this);
             round.addTurn(turn);
@@ -182,6 +179,17 @@ public class Turn {
         this.winner = winningCard.getPlayer();
         System.out.print("Le gagnant du tour est : " + winner.getUsername());
         System.out.println(" avec la carte <" + winningCard.getCardColor().toString() + "><" + winningCard.getCardType().toString() + ">");
+    }
+
+    /**
+     * Envoi des points aux équipes
+     */
+    private void sendPoints() {
+        // Envoi des équipes pour mise à jour des points sur la GUI
+        round.getGame().sendToAllPlayers(new Request(ServerAction.SEND_POINTS, new ArrayList<>(Arrays.asList(
+                round.getGame().getTeams().get(0).serialize(),
+                round.getGame().getTeams().get(1).serialize()
+        ))));
     }
 }
 
