@@ -10,7 +10,7 @@ package ch.heigvd.aalamo.chibre.network;
 
 import ch.heigvd.aalamo.chibre.engine.Game;
 import ch.heigvd.aalamo.chibre.engine.Player;
-import ch.heigvd.aalamo.chibre.network.objects.AuthenticationDTO;
+import ch.heigvd.aalamo.chibre.network.objects.DTOs.AuthenticationDTO;
 import ch.heigvd.aalamo.chibre.network.objects.Request;
 import ch.heigvd.aalamo.chibre.network.objects.ServerAction;
 import org.json.simple.JSONArray;
@@ -173,7 +173,7 @@ public class Server extends Thread {
     }
 
     /**
-     * Authentifiacation d'une GUI à un joueur enregistré sur le serveur
+     * Authentification d'une GUI à un joueur enregistré sur le serveur
      *
      * @param handler           reliée à la GUI qui essaie de s'authentifier
      * @param authenticationDTO objet de transfert de données pour l'authentification

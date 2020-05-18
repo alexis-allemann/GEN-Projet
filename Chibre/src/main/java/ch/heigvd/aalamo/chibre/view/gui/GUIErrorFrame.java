@@ -1,8 +1,15 @@
+/* ---------------------------
+Projet de Génie Logiciel (GEN) - HEIG-VD
+Fichier :     GUIErrorFrame.java
+Auteur(s) :   Alexis Allemann, Alexandre Mottier
+Date :        01.04.2020 - 11.06.2020
+But : GUI pour afficher une erreur
+Compilateur : javac 11.0.4
+--------------------------- */
 package ch.heigvd.aalamo.chibre.view.gui;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.image.ImageObserver;
 
 public class GUIErrorFrame {
     // Composants

@@ -10,7 +10,6 @@ package ch.heigvd.aalamo.chibre.engine;
 
 import ch.heigvd.aalamo.chibre.network.objects.Request;
 import ch.heigvd.aalamo.chibre.network.objects.ServerAction;
-import ch.heigvd.aalamo.chibre.network.objects.TeamDTO;
 
 import java.util.*;
 

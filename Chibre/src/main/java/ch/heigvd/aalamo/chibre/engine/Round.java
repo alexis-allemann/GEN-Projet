@@ -131,32 +131,12 @@ public class Round {
     }
 
     /**
-     * Définir que le tour est terminé
-     */
-    public void endRound() {
-        isPlayed = false;
-    }
-
-    /**
      * Démarrer un tour de table
      */
     public void initTurn() {
         Turn turn = new Turn(this, null);
         turns.add(turn);
         turn.initTurn();
-    }
-
-    /**
-     * Savoir si les joueurs ont encore des cartes à jouer dans le tour
-     *
-     * @return booléen si les joueurs ont des cartes ou non
-     */
-    public boolean playerCardsEmpty() {
-        for (Player player : game.getPlayers()) {
-            if (player.getCards().size() > 1)
-                return false;
-        }
-        return true;
     }
 
     /**

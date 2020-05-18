@@ -20,9 +20,16 @@ public abstract class BaseView<Resource> implements ChibreView {
     private final HashMap<CardType, HashMap<CardColor, DrawableRessource<Resource>>> resources = new HashMap<>();
     protected final ChibreController controller;
 
+    /**
+     * Instanciation d'une vue
+     *
+     * @param controller relié à la vue
+     */
     public BaseView(ChibreController controller) {
         this.controller = controller;
     }
+
+    // Méthodes
 
     /**
      * Enregistrement des ressources

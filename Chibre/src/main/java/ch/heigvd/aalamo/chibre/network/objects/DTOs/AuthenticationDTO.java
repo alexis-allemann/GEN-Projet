@@ -6,7 +6,7 @@ Date :        01.04.2020 - 11.06.2020
 But : Objet de transfert de données pour l'authetification
 Compilateur : javac 11.0.4
 --------------------------- */
-package ch.heigvd.aalamo.chibre.network.objects;
+package ch.heigvd.aalamo.chibre.network.objects.DTOs;
 
 import java.io.Serializable;
 
@@ -16,7 +16,7 @@ public class AuthenticationDTO implements Serializable {
     private String password;
 
     /**
-     * Instaciation d'un DTO d'authentificatino
+     * Instaciation d'un DTO d'authentification
      *
      * @param userName nom d'utilisateur
      * @param password mot de passe

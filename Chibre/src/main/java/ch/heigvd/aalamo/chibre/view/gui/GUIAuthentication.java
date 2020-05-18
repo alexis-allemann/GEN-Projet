@@ -3,7 +3,7 @@ Projet de Génie Logiciel (GEN) - HEIG-VD
 Fichier :     GUIAuthentication.java
 Auteur(s) :   Alexis Allemann, Alexandre Mottier
 Date :        01.04.2020 - 11.06.2020
-But : Fenêtre d'authentification de l'utilisateur
+But : GUI d'authentification de l'utilisateur
 Compilateur : javac 11.0.4
 --------------------------- */
 package ch.heigvd.aalamo.chibre.view.gui;
@@ -16,10 +16,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.math.BigInteger;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 
 public class GUIAuthentication {
     // Composants
@@ -37,7 +33,7 @@ public class GUIAuthentication {
     private static final int WINDOW_WIDTH = 350;
     private static final int WINDOW_HEIGHT = 200;
     private static final int WINDOW_ERROR_HEIGHT = 250;
-    GUICreateUser guiCreateUser;
+    GUICreatePlayer guiCreateUser;
 
     /**
      * Instanciation de la vue d'authentification
@@ -70,7 +66,7 @@ public class GUIAuthentication {
         lblNewPlayer.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
-                guiCreateUser = new GUICreateUser(controller);
+                guiCreateUser = new GUICreatePlayer(controller);
                 gui.setVisible(false);
             }
         });
@@ -113,7 +109,7 @@ public class GUIAuthentication {
      * Fermeture de la fenêtre
      */
     public void close() {
-        if(guiCreateUser != null)
+        if (guiCreateUser != null)
             guiCreateUser.close();
         gui.dispose();
     }

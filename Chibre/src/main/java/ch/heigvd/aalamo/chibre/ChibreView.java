@@ -8,9 +8,9 @@ Compilateur : javac 11.0.4
 --------------------------- */
 package ch.heigvd.aalamo.chibre;
 
-import ch.heigvd.aalamo.chibre.network.objects.CardDTO;
-import ch.heigvd.aalamo.chibre.network.objects.PlayerDTO;
-import ch.heigvd.aalamo.chibre.network.objects.TeamDTO;
+import ch.heigvd.aalamo.chibre.network.objects.DTOs.CardDTO;
+import ch.heigvd.aalamo.chibre.network.objects.DTOs.PlayerDTO;
+import ch.heigvd.aalamo.chibre.network.objects.DTOs.TeamDTO;
 import ch.heigvd.aalamo.chibre.view.gui.UserChoice;
 
 import java.util.List;
@@ -36,11 +36,6 @@ public interface ChibreView {
      * Action lors de l'erreur de création d'un utilisateur sur le serveur
      */
     void createUserFailed();
-
-    /**
-     * Action à effectuer lorsque la fenêtre est fermée
-     */
-    void quit();
 
     /**
      * Afficher une carte sur la vue
@@ -110,27 +105,6 @@ public interface ChibreView {
     void showMessage(String title, String message);
 
     /**
-     * Afficher les points de l'équipe 1 à l'utilisateur
-     *
-     * @param points points à afficher
-     */
-    void setPointsTeam1(int points);
-
-    /**
-     * Afficher les points de l'équipe 2 à l'utilisateur
-     *
-     * @param points points à afficher
-     */
-    void setPointsTeam2(int points);
-
-    /**
-     * Afficher l'équipe gagnante provisoire
-     *
-     * @param team team à afficher
-     */
-    void setWinningTeam(String team);
-
-    /**
      * Permet d'enlever l'affichage des cartes jouées
      */
     void resetPlayedCards();
@@ -155,4 +129,17 @@ public interface ChibreView {
      * @param player le joueur qui à jouer la carte
      */
     void displayCardPlayed(CardDTO card, PlayerDTO player);
+
+    /**
+     * Affichage des points des équipes
+     *
+     * @param pointsTeam1 points de l'équipe 1
+     * @param pointsTeam2 points de l'équipe 2
+     */
+    void setPoints(int pointsTeam1, int pointsTeam2);
+
+    /**
+     * Action à effectuer lorsque la fenêtre est fermée
+     */
+    void quit();
 }

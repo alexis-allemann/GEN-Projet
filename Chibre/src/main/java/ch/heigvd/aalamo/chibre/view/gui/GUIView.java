@@ -1,14 +1,20 @@
+/* ---------------------------
+Projet de Génie Logiciel (GEN) - HEIG-VD
+Fichier :     GUIView.java
+Auteur(s) :   Alexis Allemann, Alexandre Mottier
+Date :        01.04.2020 - 11.06.2020
+But : Classe de la GUI du Chibre
+Compilateur : javac 11.0.4
+--------------------------- */
 package ch.heigvd.aalamo.chibre.view.gui;
 
 import ch.heigvd.aalamo.chibre.CardColor;
 import ch.heigvd.aalamo.chibre.CardType;
 import ch.heigvd.aalamo.chibre.ChibreController;
 import ch.heigvd.aalamo.chibre.assets.GuiAssets;
-import ch.heigvd.aalamo.chibre.engine.Card;
-import ch.heigvd.aalamo.chibre.engine.Player;
-import ch.heigvd.aalamo.chibre.network.objects.CardDTO;
-import ch.heigvd.aalamo.chibre.network.objects.PlayerDTO;
-import ch.heigvd.aalamo.chibre.network.objects.TeamDTO;
+import ch.heigvd.aalamo.chibre.network.objects.DTOs.CardDTO;
+import ch.heigvd.aalamo.chibre.network.objects.DTOs.PlayerDTO;
+import ch.heigvd.aalamo.chibre.network.objects.DTOs.TeamDTO;
 import ch.heigvd.aalamo.chibre.view.BaseView;
 import ch.heigvd.aalamo.chibre.view.DrawableRessource;
 
@@ -149,6 +155,7 @@ public class GUIView extends BaseView<ImageIcon> {
             if (e.getPropertyName().equals("icon") && dragSource != null)
                 dragSource.setIcon(null);
 
+            // Envoi de la carte par le controlleur
             if (e.getNewValue() != dropIcon)
                 controller.sendCard(cards.indexOf(dragSource));
         });
@@ -231,13 +238,21 @@ public class GUIView extends BaseView<ImageIcon> {
     }
 
     /**
-     * Action à effectuer lorsque la fenêtre est fermée
+     * Affichage des points des équipes
+     *
+     * @param pointsTeam1 points de l'équipe 1
+     * @param pointsTeam2 points de l'équipe 2
      */
     @Override
-    public void quit() {
-        if (guiAuthentication != null)
-            guiAuthentication.close();
-        System.exit(0);
+    public void setPoints(int pointsTeam1, int pointsTeam2) {
+        lblTeam1Points.setText(Integer.toString(pointsTeam1));
+        lblTeam2Points.setText(Integer.toString(pointsTeam2));
+        if (pointsTeam1 > pointsTeam2)
+            lblWinningTeam.setText("Equipe 1");
+        else if (pointsTeam2 > pointsTeam1)
+            lblWinningTeam.setText("Equipe 2");
+        else
+            lblWinningTeam.setText("Egalité");
     }
 
     /**
@@ -357,36 +372,6 @@ public class GUIView extends BaseView<ImageIcon> {
     }
 
     /**
-     * Afficher les points de l'équipe 1 à l'utilisateur
-     *
-     * @param points points à afficher
-     */
-    @Override
-    public void setPointsTeam1(int points) {
-        lblTeam1Points.setText(String.valueOf(points));
-    }
-
-    /**
-     * Afficher les points de l'équipe 2 à l'utilisateur
-     *
-     * @param points points à afficher
-     */
-    @Override
-    public void setPointsTeam2(int points) {
-        lblTeam2Points.setText(String.valueOf(points));
-    }
-
-    /**
-     * Afficher l'équipe gagnante provisoire
-     *
-     * @param team team à afficher
-     */
-    @Override
-    public void setWinningTeam(String team) {
-        lblWinningTeam.setText(team);
-    }
-
-    /**
      * Permet d'enlever l'affichage des cartes jouées
      */
     @Override
@@ -395,6 +380,16 @@ public class GUIView extends BaseView<ImageIcon> {
         lblCardPlayedPlayerRight.setIcon(dropIcon);
         lblCardPlayedPlayerBottom.setIcon(dropIcon);
         lblCardPlayedPlayerLeft.setIcon(dropIcon);
+    }
+
+    /**
+     * Action à effectuer lorsque la fenêtre est fermée
+     */
+    @Override
+    public void quit() {
+        if (guiAuthentication != null)
+            guiAuthentication.close();
+        System.exit(0);
     }
 
     // Instanciation des ressources graphiques

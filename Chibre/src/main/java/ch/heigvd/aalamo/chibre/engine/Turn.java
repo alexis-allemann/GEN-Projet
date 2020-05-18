@@ -8,12 +8,11 @@ Compilateur : javac 11.0.4
 --------------------------- */
 package ch.heigvd.aalamo.chibre.engine;
 
-import ch.heigvd.aalamo.chibre.CardColor;
-import ch.heigvd.aalamo.chibre.network.objects.CardDTO;
 import ch.heigvd.aalamo.chibre.network.objects.Request;
 import ch.heigvd.aalamo.chibre.network.objects.ServerAction;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Turn {
@@ -101,14 +100,15 @@ public class Turn {
             System.out.println("Le tour est fini.");
             defineWinner();
             this.winner.getTeam().addPoints(getTotalPoints());
-            // Suppression des cartes
-            // TODO refactor après serialization
-            round.getGame().sendToAllPlayers(new Request(ServerAction.SEND_POINTS_TEAM1, round.getGame().getTeams().get(0).getPoints()));
-            round.getGame().sendToAllPlayers(new Request(ServerAction.SEND_POINTS_TEAM2, round.getGame().getTeams().get(1).getPoints()));
+
+            // Envoi des équipes pour mise à jour des points sur la GUI
+            round.getGame().sendToAllPlayers(new Request(ServerAction.SEND_POINTS, new ArrayList<>(Arrays.asList(
+                    round.getGame().getTeams().get(0).serialize(),
+                    round.getGame().getTeams().get(1).serialize()
+            ))));
             round.getGame().sendToAllPlayers(new Request(ServerAction.SEND_RESET_CARDS));
             newTurn();
         } else {
-
             Player nextPlayer = round.getTable().getTrumpPlayer(firstPlayer, cards.size());
             System.out.println("Prochain joueur : " + nextPlayer.getUsername());
             round.getGame().sendToAllPlayers(new Request(ServerAction.SEND_CURRENT_PLAYER, nextPlayer.serialize()));
@@ -121,7 +121,6 @@ public class Turn {
      */
     private void newTurn() {
         System.out.println("Nouveau tour dans le round id#" + round.getId());
-        // TODO : voir si on peut démarrer un nouveau round dans game plutôt
         isPlayed = false;
         if (round.getTurns().size() == Game.NB_CARDS_PLAYER)
             round.getGame().newRound();
@@ -168,7 +167,6 @@ public class Turn {
             ) {
                 winningCard = card;
             }
-
         }
 
         this.winner = winningCard.getPlayer();

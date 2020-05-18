@@ -12,7 +12,6 @@ public enum UserAction {
     SEND_TRUMP,
     PLAY_CARD,
     SEND_ANNOUCEMENT,
-    SEND_NAME,
     AUTHENTICATION,
     CREATE_USER
 }

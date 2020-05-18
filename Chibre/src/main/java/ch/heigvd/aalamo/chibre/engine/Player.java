@@ -9,10 +9,9 @@ Compilateur : javac 11.0.4
 package ch.heigvd.aalamo.chibre.engine;
 
 import ch.heigvd.aalamo.chibre.network.Handler;
-import ch.heigvd.aalamo.chibre.network.objects.CardDTO;
-import ch.heigvd.aalamo.chibre.network.objects.PlayerDTO;
+import ch.heigvd.aalamo.chibre.network.objects.DTOs.CardDTO;
+import ch.heigvd.aalamo.chibre.network.objects.DTOs.PlayerDTO;
 import ch.heigvd.aalamo.chibre.network.objects.Request;
-import ch.heigvd.aalamo.chibre.network.objects.TeamDTO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -100,15 +99,6 @@ public class Player {
      */
     public void setGame(Game game) {
         this.game = game;
-    }
-
-    /**
-     * Définir le nom du joueur
-     *
-     * @param username nom du joueur
-     */
-    public void setUsername(String username) {
-        this.username = username;
     }
 
     /**

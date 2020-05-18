@@ -8,10 +8,9 @@ Compilateur : javac 11.0.4
 --------------------------- */
 package ch.heigvd.aalamo.chibre.engine;
 
-import ch.heigvd.aalamo.chibre.network.objects.PlayerDTO;
-import ch.heigvd.aalamo.chibre.network.objects.TeamDTO;
+import ch.heigvd.aalamo.chibre.network.objects.DTOs.PlayerDTO;
+import ch.heigvd.aalamo.chibre.network.objects.DTOs.TeamDTO;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -81,9 +80,14 @@ public class Team {
         return players.get(0);
     }
 
-    public TeamDTO serialize(){
+    /**
+     * Sérialisation d'une équipe en DTO
+     *
+     * @return l'objet DTO de l'équipe
+     */
+    public TeamDTO serialize() {
         List<PlayerDTO> playersDto = new ArrayList<>(Game.NB_PLAYERS_TEAMS);
-        for(Player player : players)
+        for (Player player : players)
             playersDto.add(player.serialize());
 
         return new TeamDTO(this.id, this.points, playersDto);

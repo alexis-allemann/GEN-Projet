@@ -1,3 +1,11 @@
+/* ---------------------------
+Projet de Génie Logiciel (GEN) - HEIG-VD
+Fichier :     GUICreatePlayer.java
+Auteur(s) :   Alexis Allemann, Alexandre Mottier
+Date :        01.04.2020 - 11.06.2020
+But : GUI pour la création d'un joueur
+Compilateur : javac 11.0.4
+--------------------------- */
 package ch.heigvd.aalamo.chibre.view.gui;
 
 import ch.heigvd.aalamo.chibre.ChibreController;
@@ -7,7 +15,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class GUICreateUser {
+public class GUICreatePlayer {
     // Composants
     private JTextField tbxUsername;
     private JPasswordField pwdPassword1;
@@ -26,7 +34,7 @@ public class GUICreateUser {
     /**
      * Instanciation de la vue d'authentification
      */
-    public GUICreateUser(ChibreController controller) {
+    public GUICreatePlayer(ChibreController controller) {
         this.controller = controller;
         try {
             UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
@@ -66,6 +74,8 @@ public class GUICreateUser {
             }
         });
     }
+
+    // Méthodes
 
     /**
      * Instanciation de la fenêtre avant affichage

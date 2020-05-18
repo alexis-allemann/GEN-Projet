@@ -40,6 +40,8 @@ public enum CardType {
         this.valueOfTrump = valueOfTrump;
     }
 
+    // Getters
+
     /**
      * @return l'ordre standard
      */

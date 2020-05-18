@@ -27,12 +27,16 @@ public class UserChoice {
         this.value = value;
     }
 
+    // Getters
+
     /**
      * @return l'objet représenté par la valeur
      */
     public Object getValue() {
         return value;
     }
+
+    // Méthodes
 
     /**
      * Affichage du choix

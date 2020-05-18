@@ -10,10 +10,7 @@ package ch.heigvd.aalamo.chibre.engine;
 
 import ch.heigvd.aalamo.chibre.CardColor;
 import ch.heigvd.aalamo.chibre.CardType;
-import ch.heigvd.aalamo.chibre.network.objects.CardDTO;
-
-import java.io.Serializable;
-import java.util.Objects;
+import ch.heigvd.aalamo.chibre.network.objects.DTOs.CardDTO;
 
 public class Card {
     // Attributs

@@ -1,6 +1,6 @@
 /* ---------------------------
 Projet de Génie Logiciel (GEN) - HEIG-VD
-Fichier :     ChibreUser.java
+Fichier :     User.java
 Auteur(s) :   Alexis Allemann, Alexandre Mottier
 Date :        01.04.2020 - 11.06.2020
 But : Classe représentant un utilisateur du chibre
@@ -11,11 +11,12 @@ package ch.heigvd.aalamo.chibre.network;
 import ch.heigvd.aalamo.chibre.CardColor;
 import ch.heigvd.aalamo.chibre.ChibreController;
 import ch.heigvd.aalamo.chibre.ChibreView;
-import ch.heigvd.aalamo.chibre.engine.Card;
 import ch.heigvd.aalamo.chibre.engine.Game;
-import ch.heigvd.aalamo.chibre.engine.Player;
-import ch.heigvd.aalamo.chibre.engine.Team;
 import ch.heigvd.aalamo.chibre.network.objects.*;
+import ch.heigvd.aalamo.chibre.network.objects.DTOs.AuthenticationDTO;
+import ch.heigvd.aalamo.chibre.network.objects.DTOs.CardDTO;
+import ch.heigvd.aalamo.chibre.network.objects.DTOs.PlayerDTO;
+import ch.heigvd.aalamo.chibre.network.objects.DTOs.TeamDTO;
 import ch.heigvd.aalamo.chibre.view.gui.GUIErrorFrame;
 import ch.heigvd.aalamo.chibre.view.gui.UserChoice;
 
@@ -36,13 +37,10 @@ public class User implements ChibreController {
     private ObjectOutputStream out;
     private ObjectInputStream in;
     private List<CardDTO> cards = new ArrayList<>(Game.NB_CARDS_PLAYER);
-    private Card lastCardPlayed;
     private PlayerDTO currentPlayer;
     private PlayerDTO hasTurnPlayer;
     private PlayerDTO trumpPlayer;
-    private int pointsTeam1;
-    private int pointsTeam2;
-    private int points;
+    private CardDTO lastCardPlayed;
     private Timer timer;
 
     /**
@@ -112,18 +110,9 @@ public class User implements ChibreController {
                         CardDTO cardPlayed = (CardDTO) request.getObject();
                         view.displayCardPlayed(cardPlayed, hasTurnPlayer);
                         break;
-                    case SEND_POINTS_TEAM1:
-                        points = (int) request.getObject();
-                        view.setPointsTeam1(points);
-                        pointsTeam1 = points;
-                        setWinningTeam();
-                        break;
-                    case SEND_POINTS_TEAM2:
-                        points = (int) request.getObject();
-                        view.setPointsTeam2(points);
-                        pointsTeam2 = points;
-                        setWinningTeam();
-                        break;
+                    case SEND_POINTS:
+                        teams = (List<TeamDTO>) request.getObject();
+                        view.setPoints(teams.get(0).getPoints(), teams.get(1).getPoints());
                     case SEND_RESET_CARDS:
                         // Attente de 5 secondes puis réinitalisation du tapis de jeu
                         timer = new Timer();
@@ -149,7 +138,6 @@ public class User implements ChibreController {
 
                         // Envoi du choix de l'utilisateur qui fait atout
                         chooseTrump((CardColor) choice.getValue());
-
                     case ASK_ANNOUNCEMENT:
                 }
             }
@@ -157,19 +145,6 @@ public class User implements ChibreController {
                 ClassNotFoundException e) {
             e.printStackTrace();
         }
-
-    }
-
-    /**
-     * Définir l'équipe qui gagne provisoirement
-     */
-    private void setWinningTeam() {
-        if (pointsTeam1 > pointsTeam2)
-            view.setWinningTeam("Equipe 1");
-        else if (pointsTeam1 < pointsTeam2)
-            view.setWinningTeam("Equipe 2");
-        else
-            view.setWinningTeam("");
     }
 
     /**
@@ -275,6 +250,7 @@ public class User implements ChibreController {
     @Override
     public void sendCreateUser(String username, String password) {
         sendResponse(new Response(UserAction.CREATE_USER, new AuthenticationDTO(username, toHexString(getSHA(password)))));
+        System.out.println("Création de l'utilisateur " + username);
     }
 
     /**
@@ -289,14 +265,6 @@ public class User implements ChibreController {
     }
 
     /**
-     * Fermeture de la GUI
-     */
-    @Override
-    public void quit() {
-        view.quit();
-    }
-
-    /**
      * Envoi d'une réponse au serveur
      *
      * @param response à envoyer
@@ -307,5 +275,13 @@ public class User implements ChibreController {
         } catch (IOException exception) {
             exception.printStackTrace();
         }
+    }
+
+    /**
+     * Fermeture de la GUI
+     */
+    @Override
+    public void quit() {
+        view.quit();
     }
 }

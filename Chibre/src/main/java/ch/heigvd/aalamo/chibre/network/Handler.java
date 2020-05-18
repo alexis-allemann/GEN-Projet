@@ -12,6 +12,8 @@ import ch.heigvd.aalamo.chibre.CardColor;
 import ch.heigvd.aalamo.chibre.engine.Card;
 import ch.heigvd.aalamo.chibre.engine.Player;
 import ch.heigvd.aalamo.chibre.network.objects.*;
+import ch.heigvd.aalamo.chibre.network.objects.DTOs.AuthenticationDTO;
+import ch.heigvd.aalamo.chibre.network.objects.DTOs.CardDTO;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -62,7 +64,6 @@ public class Handler implements Runnable {
         Response response;
         try {
             while ((response = (Response) in.readObject()) != null) {
-                // Selon le type d'action de la GUI
                 switch (response.getAction()) {
                     case AUTHENTICATION:
                         server.authenticate(this, (AuthenticationDTO) response.getObject());
