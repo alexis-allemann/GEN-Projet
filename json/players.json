@@ -1,1 +1,26 @@
-[{"password":"d6a7304069f99c5a5bfe62f1bf9134fb10e109eb5042210045ac422e90b61e6e","username":"Alexis"},{"password":"13e15721c9d4ad58d34983344dfba265a90d80f63db77c2eb3804379d9608889","username":"Alexandre"},{"password":"7e20a2f70065dacee9435209e3bba2f6d6b9e3d255bd57ffc20594fb06202f8a","username":"Hakim"},{"password":"a6b54c20a7b96eeac1a911e6da3124a560fe6dc042ebf270e3676e7095b95652","username":"David"},{"password":"67e0082893e848c8706431c32dea6c3ca86c488ae24ee6b0661489cb8b3bb78a","username":"Christian"},{"password":"db74c940d447e877d119df613edd2700c4a84cd1cf08beb7cbc319bcfaeab97a","username":"Alex"}]
+[
+  {
+    "password": "d6a7304069f99c5a5bfe62f1bf9134fb10e109eb5042210045ac422e90b61e6e",
+    "username": "Alexis"
+  },
+  {
+    "password": "13e15721c9d4ad58d34983344dfba265a90d80f63db77c2eb3804379d9608889",
+    "username": "Alexandre"
+  },
+  {
+    "password": "7e20a2f70065dacee9435209e3bba2f6d6b9e3d255bd57ffc20594fb06202f8a",
+    "username": "Hakim"
+  },
+  {
+    "password": "a6b54c20a7b96eeac1a911e6da3124a560fe6dc042ebf270e3676e7095b95652",
+    "username": "David"
+  },
+  {
+    "password": "67e0082893e848c8706431c32dea6c3ca86c488ae24ee6b0661489cb8b3bb78a",
+    "username": "Christian"
+  },
+  {
+    "password": "db74c940d447e877d119df613edd2700c4a84cd1cf08beb7cbc319bcfaeab97a",
+    "username": "Alex"
+  }
+]

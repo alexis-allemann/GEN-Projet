@@ -6,12 +6,8 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="Chibre" />
+        <module name="GEN-Projet" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="Chibre" target="1.8" />
-      <module name="lecteursredacteurs" target="1.8" />
-    </bytecodeTargetLevel>
   </component>
 </project>
