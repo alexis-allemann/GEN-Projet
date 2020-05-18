@@ -78,13 +78,6 @@ public interface ChibreView {
     void setTrumpColor(CardColor trumpColor);
 
     /**
-     * Affichage du joueur qui a le tour
-     *
-     * @param userName joueur qui a le tour
-     */
-    void setCurrentPlayer(String userName);
-
-    /**
      * Afficher la carte jouée par le joueur en cours
      *
      * @param card carte à afficher
@@ -137,6 +130,13 @@ public interface ChibreView {
      * @param pointsTeam2 points de l'équipe 2
      */
     void setPoints(int pointsTeam1, int pointsTeam2);
+
+    /**
+     * Définir le message d'information de l'état du jeu
+     *
+     * @param message à afficher
+     */
+    void setInfoMessage(String message);
 
     /**
      * Action à effectuer lorsque la fenêtre est fermée

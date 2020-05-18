@@ -11,9 +11,7 @@ package ch.heigvd.aalamo.chibre.engine;
 import ch.heigvd.aalamo.chibre.network.objects.Request;
 import ch.heigvd.aalamo.chibre.network.objects.ServerAction;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class Turn {
     // Attributs
@@ -23,6 +21,7 @@ public class Turn {
     private Player firstPlayer;
     private Player winner;
     private final Turn lastTurn;
+    private Timer timer;
 
     /**
      * Instanciation d'un tour de table
@@ -99,15 +98,26 @@ public class Turn {
         if (cards.size() == Game.NB_PLAYERS) {
             System.out.println("Le tour est fini.");
             defineWinner();
-            this.winner.getTeam().addPoints(getTotalPoints());
+            winner.getTeam().addPoints(getTotalPoints());
 
             // Envoi des équipes pour mise à jour des points sur la GUI
             round.getGame().sendToAllPlayers(new Request(ServerAction.SEND_POINTS, new ArrayList<>(Arrays.asList(
                     round.getGame().getTeams().get(0).serialize(),
                     round.getGame().getTeams().get(1).serialize()
             ))));
-            round.getGame().sendToAllPlayers(new Request(ServerAction.SEND_RESET_CARDS));
-            newTurn();
+
+            // Envoi de l'équipe qui a remporté la plie
+            round.getGame().sendToAllPlayers(new Request(ServerAction.SEND_WINNING_PLAYER, winner.serialize()));
+
+            // Attente d'un délais avant de lancer le prochain turn/round
+            timer = new Timer();
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    round.getGame().sendToAllPlayers(new Request(ServerAction.SEND_RESET_CARDS));
+                    newTurn();
+                }
+            }, 5000);
         } else {
             Player nextPlayer = round.getTable().getTrumpPlayer(firstPlayer, cards.size());
             System.out.println("Prochain joueur : " + nextPlayer.getUsername());
@@ -117,17 +127,18 @@ public class Turn {
     }
 
     /**
-     * Démarer un nouveau tour de table
+     * Démarrer un nouveau tour de table
      */
     private void newTurn() {
-        System.out.println("Nouveau tour dans le round id#" + round.getId());
         isPlayed = false;
-        if (round.getTurns().size() == Game.NB_CARDS_PLAYER)
+        if (round.getTurns().size() == Game.NB_CARDS_PLAYER){
+            round.getGame().sendToAllPlayers(new Request(ServerAction.END_ROUND));
             round.getGame().newRound();
+        }
         else {
+            System.out.println("Nouveau tour dans le round id#" + round.getId());
             Turn turn = new Turn(round, this);
             round.addTurn(turn);
-
             turn.initTurn();
         }
     }
@@ -159,19 +170,18 @@ public class Turn {
                             winningCard.getCardColor() != round.getTrumpColor())
                             ||
                             (card.getCardColor() == round.getTrumpColor() &&
-                                    winningCard.getCardColor() == round.getTrumpColor() &&
                                     card.getCardType().getOrderOfTrump() > winningCard.getCardType().getOrderOfTrump())
                             ||
-                            (card.getCardColor() == winningCard.getCardColor() &&
+                            (card.getCardColor() != round.getTrumpColor() &&
+                                    card.getCardColor() == winningCard.getCardColor() &&
                                     card.getCardType().getOrder() > winningCard.getCardType().getOrder())
-            ) {
+            )
                 winningCard = card;
-            }
         }
 
         this.winner = winningCard.getPlayer();
         System.out.print("Le gagnant du tour est : " + winner.getUsername());
-        System.out.println("Avec la carte <" + winningCard.getCardColor().toString() + "><" + winningCard.getCardType().toString() + ">");
+        System.out.println(" avec la carte <" + winningCard.getCardColor().toString() + "><" + winningCard.getCardType().toString() + ">");
     }
 }
 

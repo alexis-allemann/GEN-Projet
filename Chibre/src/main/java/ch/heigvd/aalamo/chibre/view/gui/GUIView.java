@@ -333,16 +333,6 @@ public class GUIView extends BaseView<ImageIcon> {
     }
 
     /**
-     * Affichage du joueur qui a le tour
-     *
-     * @param userName joueur qui a le tour
-     */
-    @Override
-    public void setCurrentPlayer(String userName) {
-        lblCurrentPlayer.setText("C'est au tour de " + userName + ", temps restant :");
-    }
-
-    /**
      * Afficher la carte jouée par le joueur en cours
      *
      * @param card carte à afficher
@@ -380,6 +370,16 @@ public class GUIView extends BaseView<ImageIcon> {
         lblCardPlayedPlayerRight.setIcon(dropIcon);
         lblCardPlayedPlayerBottom.setIcon(dropIcon);
         lblCardPlayedPlayerLeft.setIcon(dropIcon);
+    }
+
+    /**
+     * Définir le message d'information de l'état du jeu
+     *
+     * @param message à afficher
+     */
+    @Override
+    public void setInfoMessage(String message) {
+        lblCurrentPlayer.setText(message);
     }
 
     /**

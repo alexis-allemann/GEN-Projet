@@ -12,6 +12,7 @@ import ch.heigvd.aalamo.chibre.CardColor;
 import ch.heigvd.aalamo.chibre.ChibreController;
 import ch.heigvd.aalamo.chibre.ChibreView;
 import ch.heigvd.aalamo.chibre.engine.Game;
+import ch.heigvd.aalamo.chibre.engine.Player;
 import ch.heigvd.aalamo.chibre.network.objects.*;
 import ch.heigvd.aalamo.chibre.network.objects.DTOs.AuthenticationDTO;
 import ch.heigvd.aalamo.chibre.network.objects.DTOs.CardDTO;
@@ -41,7 +42,6 @@ public class User implements ChibreController {
     private PlayerDTO hasTurnPlayer;
     private PlayerDTO trumpPlayer;
     private CardDTO lastCardPlayed;
-    private Timer timer;
 
     /**
      * Instancier un utilisateur de l'application
@@ -98,13 +98,18 @@ public class User implements ChibreController {
                         PlayerDTO trumpPlayerName = (PlayerDTO) request.getObject();
                         view.setTrumpPlayer(trumpPlayerName.getUsername());
                         trumpPlayer = trumpPlayerName;
+                        view.setInfoMessage(trumpPlayerName.getUsername() + " choisi l'atout");
+                        break;
+                    case SEND_CHIBRE:
+                        PlayerDTO trumpPlayer = (PlayerDTO) request.getObject();
+                        view.setInfoMessage(this.trumpPlayer.getUsername() + " a chibré, " + trumpPlayer.getUsername() + " choisi l'atout");
                         break;
                     case SEND_TRUMP_COLOR:
                         view.setTrumpColor((CardColor) request.getObject());
                         break;
                     case SEND_CURRENT_PLAYER:
                         hasTurnPlayer = (PlayerDTO) request.getObject();
-                        view.setCurrentPlayer(hasTurnPlayer.getUsername());
+                        view.setInfoMessage("C'est au tour de " + hasTurnPlayer.getUsername());
                         break;
                     case SEND_CARD_PLAYED:
                         CardDTO cardPlayed = (CardDTO) request.getObject();
@@ -113,17 +118,18 @@ public class User implements ChibreController {
                     case SEND_POINTS:
                         teams = (List<TeamDTO>) request.getObject();
                         view.setPoints(teams.get(0).getPoints(), teams.get(1).getPoints());
+                        break;
                     case SEND_RESET_CARDS:
-                        // Attente de 5 secondes puis réinitalisation du tapis de jeu
-                        timer = new Timer();
-                        timer.schedule(new TimerTask() {
-                            @Override
-                            public void run() {
-                                view.resetPlayedCards();
-                            }
-                        }, 5000);
+                        view.resetPlayedCards();
+                        break;
+                    case SEND_WINNING_PLAYER:
+                        hasTurnPlayer = null;
+                        PlayerDTO winningPlayer = (PlayerDTO) request.getObject();
+                        view.setInfoMessage(winningPlayer.getUsername() + " remporte le tour de table");
                         break;
                     case ASK_TRUMP:
+                        view.setInfoMessage("Vous devez choisir l'atout");
+
                         List<UserChoice> choices = new ArrayList<>();
                         choices.add(new UserChoice("Carreau", CardColor.DIAMOND));
                         choices.add(new UserChoice("Coeur", CardColor.HEART));
@@ -131,14 +137,21 @@ public class User implements ChibreController {
                         choices.add(new UserChoice("Trèfle", CardColor.CLUB));
 
                         // Le choix de chibre n'est disponible que si on est le joueur qui fait atout
-                        if (trumpPlayer != null && trumpPlayer.equals(currentPlayer))
+                        if (this.trumpPlayer != null && this.trumpPlayer.equals(currentPlayer))
                             choices.add(new UserChoice("Chibrer", null));
+                        else
+                            view.setInfoMessage("Vous devez choisir l'atout car votre coéquipier a chibré");
 
                         UserChoice choice = view.askUser("Choix atout", "Quel couleur voulez-vous faire atout ?", choices);
 
                         // Envoi du choix de l'utilisateur qui fait atout
                         chooseTrump((CardColor) choice.getValue());
+                        break;
+                    case END_ROUND:
+                        cards.clear();
+                        break;
                     case ASK_ANNOUNCEMENT:
+                        break;
                 }
             }
         } catch (IOException |
@@ -208,8 +221,8 @@ public class User implements ChibreController {
         if (index >= cards.size())
             throw new IndexOutOfBoundsException("index plus grand que le nombre de cartes");
 
-        if (!hasTurnPlayer.equals(currentPlayer)) {
-            view.showMessage("Ce n'est pas votre tour", "C'est le tour de " + hasTurnPlayer.getUsername());
+        if (hasTurnPlayer == null || !hasTurnPlayer.equals(currentPlayer)) {
+            view.showMessage("Ce n'est pas votre tour", hasTurnPlayer != null ? "C'est le tour de " + hasTurnPlayer.getUsername() : "La carte ne peut pas être jouée maintenant");
             if (lastCardPlayed != null)
                 view.setBottomPlayerCard(cards.get(cards.indexOf(lastCardPlayed)));
             else

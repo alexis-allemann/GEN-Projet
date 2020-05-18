@@ -82,6 +82,7 @@ public class Handler implements Runnable {
                     case SEND_TRUMP:
                         CardColor color = (CardColor) response.getObject();
                         if (color == null) {
+                            player.getGame().sendToAllPlayers(new Request(ServerAction.SEND_CHIBRE, player.getTeam().getOtherPlayer(player).serialize()));
                             player.getTeam().getOtherPlayer(player).sendRequest(new Request(ServerAction.ASK_TRUMP));
                         } else {
                             player.getGame().getCurrentRound().setTrumpColor(color);

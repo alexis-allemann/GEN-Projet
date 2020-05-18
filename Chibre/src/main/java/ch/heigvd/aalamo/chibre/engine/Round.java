@@ -116,8 +116,6 @@ public class Round {
 
         game.sendToAllPlayers(new Request(ServerAction.SEND_TRUMP_PLAYER, trumpPlayer.serialize()));
 
-        game.sendToAllPlayers(new Request(ServerAction.SEND_CURRENT_PLAYER, trumpPlayer.serialize()));
-
         trumpPlayer.sendRequest(new Request(ServerAction.ASK_TRUMP));
     }
 
