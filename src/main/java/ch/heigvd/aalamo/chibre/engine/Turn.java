@@ -107,7 +107,12 @@ public class Turn {
                     winner.getTeam().addPoints(100);
             }
 
-            sendPoints();
+            if(winner.getTeam() == round.getGame().getTeams().get(0))
+                round.addPointsTeam1(getTotalPoints());
+            else
+                round.addPointsTeam2(getTotalPoints());
+
+            round.sendPoints();
 
             // Envoi de l'équipe qui a remporté la plie
             round.getGame().sendToAllPlayers(new Request(ServerAction.SEND_WINNING_PLAYER, winner.serialize()));
@@ -135,6 +140,7 @@ public class Turn {
         isPlayed = false;
         if (round.getTurns().size() == Game.NB_CARDS_PLAYER) {
             round.getGame().sendToAllPlayers(new Request(ServerAction.END_ROUND));
+            round.givePointsForAnnouncements();
             round.getGame().newRound();
         } else {
             System.out.println("Nouveau tour dans le round id#" + round.getId());
@@ -188,17 +194,6 @@ public class Turn {
 
         System.out.print("Le gagnant du tour est : " + winner.getUsername());
         System.out.println(" avec la carte <" + winningCard.getCardColor().toString() + "><" + winningCard.getCardType().toString() + ">");
-    }
-
-    /**
-     * Envoi des points aux équipes
-     */
-    private void sendPoints() {
-        // Envoi des équipes pour mise à jour des points sur la GUI
-        round.getGame().sendToAllPlayers(new Request(ServerAction.SEND_POINTS, new ArrayList<>(Arrays.asList(
-                round.getGame().getTeams().get(0).serialize(),
-                round.getGame().getTeams().get(1).serialize()
-        ))));
     }
 }
 

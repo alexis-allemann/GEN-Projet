@@ -9,9 +9,11 @@ Compilateur : javac 11.0.4
 package ch.heigvd.aalamo.chibre.network;
 
 import ch.heigvd.aalamo.chibre.CardColor;
+import ch.heigvd.aalamo.chibre.engine.Announcement;
 import ch.heigvd.aalamo.chibre.engine.Card;
 import ch.heigvd.aalamo.chibre.engine.Player;
 import ch.heigvd.aalamo.chibre.network.objects.*;
+import ch.heigvd.aalamo.chibre.network.objects.DTOs.AnnouncementDTO;
 import ch.heigvd.aalamo.chibre.network.objects.DTOs.AuthenticationDTO;
 import ch.heigvd.aalamo.chibre.network.objects.DTOs.CardDTO;
 
@@ -72,6 +74,12 @@ public class Handler implements Runnable {
                         server.createPlayer(this, (AuthenticationDTO) response.getObject());
                         break;
                     case SEND_ANNOUCEMENT:
+                        AnnouncementDTO announcementDTO = (AnnouncementDTO) response.getObject();
+                        Announcement announcement = player.getGame().getCurrentRound().getAnnouncementByID(announcementDTO.getId());
+                        player.getGame().getCurrentRound().addAnnouncement(announcement);
+                        // TODO
+                        //  1. Trouver un moyen pour lancer le tour quand tous les joueurs ont fait leur annonce
+                        //  2. Mettre un message "En attente des annonces" tant que ce n'est pas fini
                         break;
                     case PLAY_CARD:
                         CardDTO card = (CardDTO) response.getObject();

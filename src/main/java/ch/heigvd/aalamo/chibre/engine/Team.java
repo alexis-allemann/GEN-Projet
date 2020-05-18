@@ -16,9 +16,9 @@ import java.util.List;
 
 public class Team {
     // Attributs
-    private List<Player> players;
+    private final List<Player> players;
     private int points;
-    private int id;
+    private final int id;
     private static int count = 1;
 
     /**
@@ -51,8 +51,14 @@ public class Team {
         return points;
     }
 
+    /**
+     * @return l'id de l'équipe
+     */
+    public int getId() {
+        return id;
+    }
 
-    // Méthodes
+// Méthodes
 
     /**
      * Ajouter des points l'équipe

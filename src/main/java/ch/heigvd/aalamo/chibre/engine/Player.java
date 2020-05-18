@@ -22,7 +22,7 @@ import java.util.List;
 
 public class Player {
     // Attributs
-    private List<Card> cards = new ArrayList<>(Game.NB_CARDS_PLAYER);
+    private final List<Card> cards = new ArrayList<>(Game.NB_CARDS_PLAYER);
     private Handler handler;
     private Team team; // TODO : a supprimer
     private Game game;
@@ -150,11 +150,16 @@ public class Player {
         return new PlayerDTO(username, cardsDto);
     }
 
+    /**
+     * Envoie toutes les annonces sur le réseau
+     */
     public void sendAnnoucements() {
         List<Announcement> announcements = threeCardsAnnouncement();
         if(!announcements.isEmpty())
-            for(Announcement announcement : announcements)
+            for(Announcement announcement : announcements){
                 sendRequest(new Request(ServerAction.SEND_ANNOUCEMENTS, announcement.serialize()));
+                game.getCurrentRound().addPossibleAnnouncement(announcement);
+            }
 
         announcements = fourCardsAnnouncement();
         if(!announcements.isEmpty())
@@ -178,14 +183,37 @@ public class Player {
             sendRequest(new Request(ServerAction.SEND_ANNOUCEMENTS, squareJackAnnouncement().serialize()));
     }
 
+    /**
+     * @return L'annonce d'un carré de valet
+     */
     private Announcement squareJackAnnouncement() {
         return squareCards(CardType.JACK);
     }
 
+    /**
+     * @return L'annonce d'un carré de neufs
+     */
     private Announcement squareNineAnnouncement() {
         return squareCards(CardType.NINE);
     }
 
+    /**
+     * @return une liste avec toutes les annonces avec des carrés
+     */
+    private List<Announcement> squareCardsAnnouncement() {
+        List<Announcement> announcements = new ArrayList<>();
+        for(CardType type : CardType.values())
+            if(type != CardType.JACK && type != CardType.NINE)
+                announcements.add(squareCards(type));
+
+        return announcements;
+    }
+
+    /**
+     *
+     * @param type Type de la carte
+     * @return L'annonce du carré du type de la carte si elle existe
+     */
     private Announcement squareCards(CardType type) {
         List<Card> square = new ArrayList<>();
         for(Card card : cards)
@@ -193,11 +221,14 @@ public class Player {
                 square.add(card);
 
         if(square.size() == 4)
-            return new Announcement(this, BonusType.SQUARE_CARDS, game.getCurrentRound(), null);
+            return new Announcement(this, BonusType.SQUARE_CARDS, null);
         else
             return null;
     }
 
+    /**
+     * @return une liste avec toutes les annonces à plus que quatre cartes
+     */
     private List<Announcement> suiteAnnouncement() {
         List<Announcement> announcements = new ArrayList<>();
         for(int i = cards.size() - 1; i > 4; --i){
@@ -210,21 +241,15 @@ public class Player {
                     cards.get(i - 2).getCardType().getOrder() == cards.get(i - 3).getCardType().getOrder() - 1 &&
                     cards.get(i - 3).getCardType().getOrder() == cards.get(i - 4).getCardType().getOrder() - 1)
                 announcements.add(new Announcement(
-                        this,BonusType.SUITE, game.getCurrentRound(), cards.get(i)
+                        this,BonusType.SUITE, cards.get(i)
                 ));
         }
         return announcements;
     }
 
-    private List<Announcement> squareCardsAnnouncement() {
-        List<Announcement> announcements = new ArrayList<>();
-        for(CardType type : CardType.values())
-            if(type != CardType.JACK && type != CardType.NINE)
-                announcements.add(squareCards(type));
-
-        return announcements;
-    }
-
+    /**
+     * @return une liste avec toutes les annonces à quatre cartes
+     */
     private List<Announcement> fourCardsAnnouncement() {
         List<Announcement> announcements = new ArrayList<>();
         for(int i = cards.size() - 1; i > 3; --i){
@@ -235,12 +260,15 @@ public class Player {
                     cards.get(i - 1).getCardType().getOrder() == cards.get(i - 2).getCardType().getOrder() - 1 &&
                     cards.get(i - 2).getCardType().getOrder() == cards.get(i - 3).getCardType().getOrder() - 1)
                 announcements.add(new Announcement(
-                        this,BonusType.FOUR_CARDS, game.getCurrentRound(), cards.get(i)
+                        this,BonusType.FOUR_CARDS, cards.get(i)
                 ));
         }
         return announcements;
     }
 
+    /**
+     * @return une liste avec toutes les annonces à trois cartes
+     */
     private List<Announcement> threeCardsAnnouncement() {
         List<Announcement> announcements = new ArrayList<>();
         for(int i = cards.size() - 1; i > 2; --i){
@@ -249,7 +277,7 @@ public class Player {
                     cards.get(i).getCardType().getOrder() == cards.get(i - 1).getCardType().getOrder() - 1 &&
                     cards.get(i - 1).getCardType().getOrder() == cards.get(i - 2).getCardType().getOrder() - 1)
                 announcements.add(new Announcement(
-                        this,BonusType.THREE_CARDS, game.getCurrentRound(), cards.get(i)
+                        this,BonusType.THREE_CARDS, cards.get(i)
                 ));
         }
         return announcements;

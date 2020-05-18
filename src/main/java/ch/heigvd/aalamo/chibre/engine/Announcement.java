@@ -12,27 +12,43 @@ import ch.heigvd.aalamo.chibre.network.objects.DTOs.AnnouncementDTO;
 
 public class Announcement {
     // Attributs
-    private Round round;
     private Player player;
     private BonusType bonusType;
     private Card bestCard;
+    private static int count = 1;
+    private int id;
 
     /**
      * Instanciation d'une annonce
      *
      * @param player    Joueur qui annonce
      * @param bonusType Type de l'annonce
-     * @param round     Tour durant lequel a lieu l'annonce
+     * @param bestCard  Meilleure carte de l'annonce
      */
-    public Announcement(Player player, BonusType bonusType, Round round, Card bestCard) {
+    public Announcement(Player player, BonusType bonusType, Card bestCard) {
         this.player = player;
         this.bonusType = bonusType;
-        this.round = round;
         this.bestCard = bestCard;
+        this.id = count++;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public BonusType getBonusType() {
+        return bonusType;
+    }
+
+    public Card getBestCard() {
+        return bestCard;
+    }
 
     public AnnouncementDTO serialize() {
-        return new AnnouncementDTO();
+        return new AnnouncementDTO(id, player.serialize(), bonusType, bestCard.serialize());
     }
 }

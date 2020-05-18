@@ -14,6 +14,7 @@ import ch.heigvd.aalamo.chibre.network.objects.Request;
 import ch.heigvd.aalamo.chibre.network.objects.ServerAction;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Round {
@@ -22,10 +23,14 @@ public class Round {
     private static int count = 1;
     private CardColor trumpColor;
     private final List<Turn> turns = new ArrayList<>(Game.NB_CARDS_PLAYER);
+    private List<Announcement> possibleAnnouncements = new ArrayList<>();
+    private List<Announcement> announcements = new ArrayList<>(Game.NB_PLAYERS);
     private final CardCollection cardCollection = new CardCollection();
     private final Game game;
     private boolean isPlayed;
     private Player trumpPlayer;
+    //TODO mettre à jour dans les tours
+    private int pointsTeam1, pointsTeam2;
 
     /**
      * Instancier un tour de jeu
@@ -159,5 +164,71 @@ public class Round {
     public void initAnnoucement(){
         for(Player player : game.getPlayers())
             player.sendAnnoucements();
+    }
+
+    public Announcement getAnnouncementByID(int id){
+        for(Announcement announcement : possibleAnnouncements)
+            if(announcement.getId() == id)
+                return announcement;
+
+        return null;
+    }
+
+    public void addAnnouncement(Announcement announcement){
+        announcements.add(announcement);
+    }
+
+    public void addPossibleAnnouncement(Announcement announcement){
+        possibleAnnouncements.add(announcement);
+    }
+
+    public void givePointsForAnnouncements() {
+        Announcement bestAnnouncement = null;
+
+        for(Announcement announcement : announcements){
+            if(
+                    bestAnnouncement == null ||
+                    bestAnnouncement.getBonusType().getPoints() > announcement.getBonusType().getPoints() ||
+                    (bestAnnouncement.getBonusType().getPoints() == announcement.getBonusType().getPoints() &&
+                            announcement.getBestCard().getCardType().getOrder() > bestAnnouncement.getBestCard().getCardType().getOrder()) ||
+                    (bestAnnouncement.getBonusType().getPoints() == announcement.getBonusType().getPoints() &&
+                            announcement.getBestCard().getCardType().getOrder() == bestAnnouncement.getBestCard().getCardType().getOrder() &&
+                            announcement.getBestCard().getCardColor() == trumpColor &&
+                            bestAnnouncement.getBestCard().getCardColor() != trumpColor)
+            )
+                bestAnnouncement = announcement;
+        }
+
+        if(bestAnnouncement != null){
+            if(bestAnnouncement.getPlayer().getTeam() == game.getTeams().get(0)){
+                if(pointsTeam1 != 0)
+                    bestAnnouncement.getPlayer().getTeam().addPoints(bestAnnouncement.getBonusType().getPoints());
+            }
+            else{
+                if(pointsTeam2 != 0)
+                    bestAnnouncement.getPlayer().getTeam().addPoints(bestAnnouncement.getBonusType().getPoints());
+            }
+        }
+
+        sendPoints();
+    }
+
+    /**
+     * Envoi des points aux équipes
+     */
+    void sendPoints() {
+        // Envoi des équipes pour mise à jour des points sur la GUI
+        game.sendToAllPlayers(new Request(ServerAction.SEND_POINTS, new ArrayList<>(Arrays.asList(
+                game.getTeams().get(0).serialize(),
+                game.getTeams().get(1).serialize()
+        ))));
+    }
+
+    public void addPointsTeam1(int totalPoints) {
+        pointsTeam1 += totalPoints;
+    }
+
+    public void addPointsTeam2(int totalPoints) {
+        pointsTeam2 += totalPoints;
     }
 }
