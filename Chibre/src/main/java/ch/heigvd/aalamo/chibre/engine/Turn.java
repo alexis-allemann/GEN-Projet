@@ -22,6 +22,7 @@ public class Turn {
     private Player winner;
     private final Turn lastTurn;
     private Timer timer;
+    private boolean playMatch = true;
 
     /**
      * Instanciation d'un tour de table
@@ -100,6 +101,13 @@ public class Turn {
             defineWinner();
             winner.getTeam().addPoints(getTotalPoints());
 
+            // Ajout de points de fin de round
+            if (round.getTurns().size() == Game.NB_CARDS_PLAYER) {
+                winner.getTeam().addPoints(5);
+                if (playMatch)
+                    winner.getTeam().addPoints(100);
+            }
+
             sendPoints();
 
             // Envoi de l'équipe qui a remporté la plie
@@ -128,8 +136,6 @@ public class Turn {
     private void newTurn() {
         isPlayed = false;
         if (round.getTurns().size() == Game.NB_CARDS_PLAYER) {
-            winner.getTeam().addPoints(5);
-            sendPoints();
             round.getGame().sendToAllPlayers(new Request(ServerAction.END_ROUND));
             round.getGame().newRound();
         } else {
@@ -176,7 +182,12 @@ public class Turn {
                 winningCard = card;
         }
 
-        this.winner = winningCard.getPlayer();
+        winner = winningCard.getPlayer();
+
+        // Savoir si le match peut toujours être joué (remporter toutes les cartes du round)
+        if (winner.getTeam() != firstPlayer.getTeam())
+            playMatch = false;
+
         System.out.print("Le gagnant du tour est : " + winner.getUsername());
         System.out.println(" avec la carte <" + winningCard.getCardColor().toString() + "><" + winningCard.getCardType().toString() + ">");
     }
