@@ -139,6 +139,13 @@ public interface ChibreView {
     void setInfoMessage(String message);
 
     /**
+     * Affichage de l'équipe gagnante
+     *
+     * @param team équipe gagnante
+     */
+    void setWinner(TeamDTO team);
+
+    /**
      * Action à effectuer lorsque la fenêtre est fermée
      */
     void quit();

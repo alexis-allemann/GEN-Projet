@@ -27,5 +27,6 @@ public enum ServerAction implements Serializable {
     SEND_RESET_CARDS,
     SEND_WINNING_PLAYER,
     END_ROUND,
-    SEND_CHIBRE
+    SEND_CHIBRE,
+    SEND_WINNER
 }

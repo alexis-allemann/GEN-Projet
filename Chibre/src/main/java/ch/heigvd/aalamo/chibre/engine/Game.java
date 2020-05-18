@@ -163,6 +163,11 @@ public class Game implements Runnable {
             Round round = new Round(this);
             rounds.add(round);
             round.initRound();
+        } else {
+            if (teams.get(0).getPoints() >= WIN_POINTS)
+                sendToAllPlayers(new Request(ServerAction.SEND_WINNER, teams.get(0).serialize()));
+            else
+                sendToAllPlayers(new Request(ServerAction.SEND_WINNER, teams.get(1).serialize()));
         }
     }
 

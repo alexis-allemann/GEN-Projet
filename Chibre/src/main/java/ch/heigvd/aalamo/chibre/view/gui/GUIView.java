@@ -68,6 +68,7 @@ public class GUIView extends BaseView<ImageIcon> {
     private JLabel lblTeam1Points;
     private JLabel lblTeam2Points;
     private JLabel lblWinningTeam;
+    private JLabel lblWinner;
 
     // Attributs
     JFrame gui = new JFrame("Chibre");
@@ -247,12 +248,19 @@ public class GUIView extends BaseView<ImageIcon> {
     public void setPoints(int pointsTeam1, int pointsTeam2) {
         lblTeam1Points.setText(Integer.toString(pointsTeam1));
         lblTeam2Points.setText(Integer.toString(pointsTeam2));
-        if (pointsTeam1 > pointsTeam2)
+        if (pointsTeam1 > pointsTeam2) {
             lblWinningTeam.setText("Equipe 1");
-        else if (pointsTeam2 > pointsTeam1)
+            lblTeam1Points.setForeground(Color.decode("#5E864C"));
+            lblTeam2Points.setForeground(Color.decode("#9B3F3E"));
+        } else if (pointsTeam2 > pointsTeam1) {
             lblWinningTeam.setText("Equipe 2");
-        else
+            lblTeam1Points.setForeground(Color.decode("#9B3F3E"));
+            lblTeam2Points.setForeground(Color.decode("#5E864C"));
+        } else {
             lblWinningTeam.setText("Egalité");
+            lblTeam1Points.setForeground(Color.BLACK);
+            lblTeam2Points.setForeground(Color.BLACK);
+        }
     }
 
     /**
@@ -380,6 +388,20 @@ public class GUIView extends BaseView<ImageIcon> {
     @Override
     public void setInfoMessage(String message) {
         lblCurrentPlayer.setText(message);
+    }
+
+    /**
+     * Affichage de l'équipe gagnante
+     *
+     * @param team équipe gagnante
+     */
+    @Override
+    public void setWinner(TeamDTO team) {
+        if (team.getId() == 0)
+            lblWinner.setText("Equipe 1");
+        else
+            lblWinner.setText("Equipe 2");
+        lblWinningTeam.setText("");
     }
 
     /**

@@ -160,6 +160,10 @@ public class User implements ChibreController {
                         cards.clear();
                         markedCards = new ArrayList<>(Arrays.asList(false, false, false, false, false, false, false, false, false));
                         break;
+                    case SEND_WINNER:
+                        view.setInfoMessage("Partie terminée");
+                        view.setWinner((TeamDTO) request.getObject());
+                        break;
                     case ASK_ANNOUNCEMENT:
                         break;
                 }
