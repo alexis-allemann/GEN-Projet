@@ -125,36 +125,16 @@ public class Announcement {
     // Méthodes
 
     /**
-     * Détecter un carré de valet
-     *
-     * @return L'annonce d'un carré de valet
-     */
-    public static Announcement squareJackAnnouncement(List<Card> cards) {
-        return squareCards(cards, CardType.JACK);
-    }
-
-    /**
-     * Détecter un carré de neufs
-     *
-     * @return L'annonce d'un carré de neufs
-     */
-    public static Announcement squareNineAnnouncement(List<Card> cards) {
-        return squareCards(cards, CardType.NINE);
-    }
-
-    /**
      * Détecter un carré de cartes
      *
      * @return une liste avec toutes les annonces avec des carrés
      */
     public static List<Announcement> squareCardsAnnouncement(List<Card> cards) {
         List<Announcement> announcements = new ArrayList<>();
-        for (CardType type : CardType.values())
-            if (type != CardType.JACK && type != CardType.NINE) {
-                Announcement announcement = squareCards(cards, type);
-                if (announcement != null)
-                    announcements.add(announcement);
-            }
+        for (CardType type : CardType.values()){
+            Announcement announcement = squareCards(cards, type);
+            announcements.add(announcement);
+        }
 
         return announcements;
     }
@@ -171,10 +151,12 @@ public class Announcement {
             if (card.getCardType() == type)
                 count++;
 
-        if (count == 4)
+        if (count == 4 && type != CardType.JACK && type != CardType.NINE)
             return new Announcement(BonusType.SQUARE_CARDS, null);
+        else if(count == 4 && type == CardType.JACK)
+            return new Announcement(BonusType.SQUARE_JACKS, null);
         else
-            return null;
+            return new Announcement(BonusType.SQUARE_NINE, null);
     }
 
     /**

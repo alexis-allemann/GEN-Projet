@@ -137,7 +137,13 @@ public class Turn {
      */
     private void newTurn() {
         isPlayed = false;
+        // Si le round est fini
         if (round.getTurns().size() == Game.NB_CARDS_PLAYER) {
+            
+            // On defausse toutes les cartes aux joueurs pour pouvoir les redistribuer
+            for(Player player : round.getPlayers())
+                player.getCards().clear();
+
             round.getGame().sendToAllPlayers(new Request(ServerAction.END_ROUND));
             round.getGame().newRound();
         } else {
