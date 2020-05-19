@@ -53,7 +53,7 @@ Le système va rechercher si un joueur à une annonce dans son jeu, si oui il l'
 | 3 cartes          | 20     | Suite de 3 cartes dans la même couleur                       |
 | 4 cartes          | 50     | Suite de 4 cartes dans la même couleur                       |
 | Carré de 4 cartes | 100    | Quatre carte de couleurs différentes mais de valeur identique |
-| 4 cartes          | 100    | Suite de plus de 4 cartes dans la même couleur               |
+| Suite             | 100    | Suite de plus de 4 cartes dans la même couleur               |
 | Carré de neufs    | 150    | Ce sont les 4 neufs                                          |
 | Carré de valets   | 200    | Ce sont les 4 valets                                         |
 
