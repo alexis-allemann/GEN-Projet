@@ -57,7 +57,8 @@ Le système va rechercher si un joueur à une annonce dans son jeu, si oui il l'
 | Carré de neufs    | 150    | Ce sont les 4 neufs                                          |
 | Carré de valets   | 200    | Ce sont les 4 valets                                         |
 
-Si les 2 équipes ont des annonces lors du premier tour, seul les points des joueurs de l'équipe ayant la meilleure annonce sont enregistrés.
+Si les 2 équipes ont des annonces lors du premier tour, seul les points des joueurs de l'équipe ayant la meilleure annonce sont enregistrés. En cas d'égalité entre les annonces, c'est l'annonce avec le plus de cartes qui prime, suivie de celle avec la plus haute carte (le bourg et le nell d'atout comptant comme une autre couleur, et correspond donc à un valet ou un neuf normaux), suivie de 
+2 celle en atout. En cas d'égalité, l'équipe du joueur ayant annoncé l'annonce la plus haute en premier note ses annonces.
 
 ### Décompte des points
 
