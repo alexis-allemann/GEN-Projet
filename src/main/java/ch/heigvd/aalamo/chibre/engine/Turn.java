@@ -93,12 +93,16 @@ public class Turn {
      * Méthode appelée pour continuer le tour de table lorsqu'une carte est jouée par un joueur
      */
     public void pursueTurn() {
-
         // Si le tour est fini car chaque joueur à poser une carte
         if (cards.size() == Game.NB_PLAYERS) {
             System.out.println("Le tour est fini.");
             defineWinner();
             winner.getTeam().addPoints(getTotalPoints());
+
+            // Traitement des annonces lors du premier tour
+            if (round.getTurns().size() == 1) {
+                round.givePointsForAnnouncements();
+            }
 
             // Ajout de points de fin de round
             if (round.getTurns().size() == Game.NB_CARDS_PLAYER) {
@@ -106,11 +110,6 @@ public class Turn {
                 if (playMatch)
                     winner.getTeam().addPoints(100);
             }
-
-            if(winner.getTeam() == round.getGame().getTeams().get(0))
-                round.addPointsTeam1(getTotalPoints());
-            else
-                round.addPointsTeam2(getTotalPoints());
 
             round.sendPoints();
 
@@ -140,7 +139,6 @@ public class Turn {
         isPlayed = false;
         if (round.getTurns().size() == Game.NB_CARDS_PLAYER) {
             round.getGame().sendToAllPlayers(new Request(ServerAction.END_ROUND));
-            round.givePointsForAnnouncements();
             round.getGame().newRound();
         } else {
             System.out.println("Nouveau tour dans le round id#" + round.getId());

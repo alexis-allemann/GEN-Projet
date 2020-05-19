@@ -12,6 +12,7 @@ import ch.heigvd.aalamo.chibre.CardColor;
 import ch.heigvd.aalamo.chibre.CardType;
 import ch.heigvd.aalamo.chibre.ChibreController;
 import ch.heigvd.aalamo.chibre.assets.GuiAssets;
+import ch.heigvd.aalamo.chibre.network.objects.DTOs.AnnouncementDTO;
 import ch.heigvd.aalamo.chibre.network.objects.DTOs.CardDTO;
 import ch.heigvd.aalamo.chibre.network.objects.DTOs.PlayerDTO;
 import ch.heigvd.aalamo.chibre.network.objects.DTOs.TeamDTO;
@@ -43,7 +44,6 @@ public class GUIView extends BaseView<ImageIcon> {
     private JPanel pnlInfoTeam1;
     private JPanel pnlInfoTeam2;
     private JPanel pnlInfoBonus;
-    private JButton btnBonus;
     private JPanel pnlInfoUser;
     private JLabel lblCard1;
     private JLabel lblCard2;
@@ -69,6 +69,8 @@ public class GUIView extends BaseView<ImageIcon> {
     private JLabel lblTeam2Points;
     private JLabel lblWinningTeam;
     private JLabel lblWinner;
+    private JPanel pnlAnnouncements;
+    private JPanel pnlAnnouncementsDisplay;
 
     // Attributs
     JFrame gui = new JFrame("Chibre");
@@ -80,6 +82,7 @@ public class GUIView extends BaseView<ImageIcon> {
     private JLabel dragSource;
     private ChibreController controller;
     private ImageIcon dropIcon;
+    private List<AnnouncementDTO> announcements = new ArrayList<>();
 
     // Initialisation des attributs statiques
     static {
@@ -150,6 +153,10 @@ public class GUIView extends BaseView<ImageIcon> {
             e.printStackTrace();
         }
 
+        // Panel d'annonces
+        pnlAnnouncements.setLayout(new BoxLayout(pnlAnnouncements, BoxLayout.PAGE_AXIS));
+        pnlAnnouncementsDisplay.setLayout(new BoxLayout(pnlAnnouncementsDisplay, BoxLayout.PAGE_AXIS));
+
         // Ajout du listeneur pour envoyer une carte jouée
         lblCardPlayedPlayerBottom.addPropertyChangeListener(e -> {
             // Identification de la carte jouée si la propriété icon a changée
@@ -157,8 +164,12 @@ public class GUIView extends BaseView<ImageIcon> {
                 dragSource.setIcon(null);
 
             // Envoi de la carte par le controlleur
-            if (e.getNewValue() != dropIcon)
+            if (e.getNewValue() != dropIcon) {
+                for (int i = 0; i < announcements.size(); ++i)
+                    if (((JCheckBox) pnlAnnouncements.getComponent(i)).isSelected())
+                        controller.sendAnnouncement(announcements.get(i));
                 controller.sendCard(cards.indexOf(dragSource));
+            }
         });
     }
 
@@ -402,6 +413,51 @@ public class GUIView extends BaseView<ImageIcon> {
         else
             lblWinner.setText("Equipe 2");
         lblWinningTeam.setText("");
+    }
+
+    /**
+     * Affichage d'une annonce sur la GUI
+     *
+     * @param announcement l'annonce à afficher
+     */
+    @Override
+    public void displayAnnouncement(AnnouncementDTO announcement) {
+        JCheckBox checkBox = new JCheckBox();
+        checkBox.setText(announcement.getBonusType().toString());
+        pnlAnnouncements.add(checkBox, BorderLayout.CENTER);
+        checkBox.setVisible(true);
+        pnlAnnouncements.setVisible(true);
+        announcements.add(announcement);
+    }
+
+    /**
+     * Effacer les annonces disponibles
+     */
+    @Override
+    public void resetAnnouncements() {
+        pnlAnnouncements.removeAll();
+        announcements.clear();
+    }
+
+    /**
+     * Effacer les annonces affichées
+     */
+    @Override
+    public void resetAnnouncementsDisplayed() {
+        pnlAnnouncementsDisplay.removeAll();
+        announcements.clear();
+    }
+
+    /**
+     * Afficher une annonce jouée
+     */
+    @Override
+    public void displayAnnouncementPlayed(AnnouncementDTO announcement, PlayerDTO player) {
+        JLabel label = new JLabel();
+        label.setText(player.getUsername() + " > " + announcement.getBonusType().toString());
+        pnlAnnouncementsDisplay.add(label, BorderLayout.CENTER);
+        label.setVisible(true);
+        pnlAnnouncementsDisplay.setVisible(true);
     }
 
     /**

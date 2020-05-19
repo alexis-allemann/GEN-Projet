@@ -12,14 +12,9 @@ import ch.heigvd.aalamo.chibre.CardColor;
 import ch.heigvd.aalamo.chibre.CardType;
 import ch.heigvd.aalamo.chibre.ChibreController;
 import ch.heigvd.aalamo.chibre.ChibreView;
-import ch.heigvd.aalamo.chibre.engine.Card;
 import ch.heigvd.aalamo.chibre.engine.Game;
-import ch.heigvd.aalamo.chibre.engine.Player;
 import ch.heigvd.aalamo.chibre.network.objects.*;
-import ch.heigvd.aalamo.chibre.network.objects.DTOs.AuthenticationDTO;
-import ch.heigvd.aalamo.chibre.network.objects.DTOs.CardDTO;
-import ch.heigvd.aalamo.chibre.network.objects.DTOs.PlayerDTO;
-import ch.heigvd.aalamo.chibre.network.objects.DTOs.TeamDTO;
+import ch.heigvd.aalamo.chibre.network.objects.DTOs.*;
 import ch.heigvd.aalamo.chibre.view.gui.GUIErrorFrame;
 import ch.heigvd.aalamo.chibre.view.gui.UserChoice;
 
@@ -47,6 +42,7 @@ public class User implements ChibreController {
     private CardColor trumpColor;
     private CardColor firstCardColor = null;
     private CardDTO lastCardPlayed;
+    private List<AnnouncementDTO> announcements = new ArrayList<AnnouncementDTO>();
 
     /**
      * Instancier un utilisateur de l'application
@@ -159,12 +155,21 @@ public class User implements ChibreController {
                     case END_ROUND:
                         cards.clear();
                         markedCards = new ArrayList<>(Arrays.asList(false, false, false, false, false, false, false, false, false));
+                        announcements.clear();
+                        view.resetAnnouncementsDisplayed();
                         break;
                     case SEND_WINNER:
                         view.setInfoMessage("Partie terminée");
                         view.setWinner((TeamDTO) request.getObject());
                         break;
-                    case ASK_ANNOUNCEMENT:
+                    case SEND_ANNOUCEMENTS:
+                        AnnouncementDTO announcement = (AnnouncementDTO) request.getObject();
+                        announcements.add(announcement);
+                        view.displayAnnouncement(announcement);
+                        break;
+                    case DISPLAY_ANNOUNCEMENT:
+                        announcement = (AnnouncementDTO) request.getObject();
+                        view.displayAnnouncementPlayed(announcement, hasTurnPlayer);
                         break;
                 }
             }
@@ -258,6 +263,7 @@ public class User implements ChibreController {
                 sendResponse(new Response(UserAction.PLAY_CARD, cards.get(index)));
                 markedCards.set(index, true);
                 System.out.println("Carte envoyée");
+                view.resetAnnouncements();
             }
         }
     }
@@ -329,6 +335,16 @@ public class User implements ChibreController {
         } catch (IOException exception) {
             exception.printStackTrace();
         }
+    }
+
+    /**
+     * Envoyer une annonce
+     *
+     * @param announcement l'annonce à envoyer
+     */
+    @Override
+    public void sendAnnouncement(AnnouncementDTO announcement) {
+        sendResponse(new Response(UserAction.SEND_ANNOUCEMENT, announcement));
     }
 
     /**

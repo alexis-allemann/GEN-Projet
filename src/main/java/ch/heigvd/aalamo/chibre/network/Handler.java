@@ -77,10 +77,6 @@ public class Handler implements Runnable {
                         AnnouncementDTO announcementDTO = (AnnouncementDTO) response.getObject();
                         Announcement announcement = player.getGame().getCurrentRound().getAnnouncementByID(announcementDTO.getId());
                         player.getGame().getCurrentRound().addAnnouncement(announcement);
-                        // TODO
-                        //  1. Trouver un moyen pour lancer le tour quand tous les joueurs ont fait leur annonce
-                        //  2. Mettre un message "En attente des annonces" tant que ce n'est pas fini
-                        //player.getGame().getCurrentRound().initTurn();
                         break;
                     case PLAY_CARD:
                         CardDTO card = (CardDTO) response.getObject();
@@ -96,7 +92,7 @@ public class Handler implements Runnable {
                         } else {
                             player.getGame().getCurrentRound().setTrumpColor(color);
                             player.getGame().getCurrentRound().initAnnoucement();
-
+                            player.getGame().getCurrentRound().initTurn();
                         }
                         break;
                 }

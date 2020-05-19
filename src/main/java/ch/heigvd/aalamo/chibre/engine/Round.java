@@ -24,7 +24,7 @@ public class Round {
     private CardColor trumpColor;
     private final List<Turn> turns = new ArrayList<>(Game.NB_CARDS_PLAYER);
     private List<Announcement> possibleAnnouncements = new ArrayList<>();
-    private List<Announcement> announcements = new ArrayList<>(Game.NB_PLAYERS);
+    private List<Announcement> announcements = new ArrayList<>();
     private final CardCollection cardCollection = new CardCollection();
     private final Game game;
     private boolean isPlayed;
@@ -161,54 +161,90 @@ public class Round {
         turns.add(turn);
     }
 
-    public void initAnnoucement(){
-        for(Player player : game.getPlayers())
-            player.sendAnnoucements();
+    /**
+     * Identification des annonces des joueurs et envoi de celle-ci
+     */
+    public void initAnnoucement() {
+        for (Player player : game.getPlayers())
+            player.sendAnnoucements(trumpColor);
     }
 
-    public Announcement getAnnouncementByID(int id){
-        for(Announcement announcement : possibleAnnouncements)
-            if(announcement.getId() == id)
+    /**
+     * Retrouver un annonce à partir de son identifiant
+     *
+     * @param id l'identifiant de l'annonce
+     * @return l'annonce correspondant à l'id donné
+     */
+    public Announcement getAnnouncementByID(int id) {
+        for (Announcement announcement : possibleAnnouncements)
+            if (announcement.getId() == id)
                 return announcement;
 
         return null;
     }
 
-    public void addAnnouncement(Announcement announcement){
+    /**
+     * Ajout d'une annonce jouée par l'utilisateur
+     *
+     * @param announcement l'annonce
+     */
+    public void addAnnouncement(Announcement announcement) {
         announcements.add(announcement);
+        if (announcement.getBonusType() != BonusType.SCHTOCKR) {
+            System.out.println(announcement.getPlayer() + "annonce " + announcement.getBonusType().toString());
+            game.sendToAllPlayers(new Request(ServerAction.DISPLAY_ANNOUNCEMENT, announcement.serialize()));
+        }
     }
 
-    public void addPossibleAnnouncement(Announcement announcement){
+    /**
+     * Ajout d'une annonce possible d'être jouée par un utilisateur
+     *
+     * @param announcement l'annonce
+     */
+    public void addPossibleAnnouncement(Announcement announcement) {
         possibleAnnouncements.add(announcement);
     }
 
+    /**
+     * Ajout des points des annonces
+     */
     public void givePointsForAnnouncements() {
+        // Détection de la meilleure annonce
         Announcement bestAnnouncement = null;
+        for (Announcement announcement : announcements) {
+            if (announcement.getBonusType() != BonusType.SCHTOCKR) {
+                if (
+                        bestAnnouncement == null ||
 
-        for(Announcement announcement : announcements){
-            if(
-                    bestAnnouncement == null ||
-                    bestAnnouncement.getBonusType().getPoints() > announcement.getBonusType().getPoints() ||
-                    (bestAnnouncement.getBonusType().getPoints() == announcement.getBonusType().getPoints() &&
-                            announcement.getBestCard().getCardType().getOrder() > bestAnnouncement.getBestCard().getCardType().getOrder()) ||
-                    (bestAnnouncement.getBonusType().getPoints() == announcement.getBonusType().getPoints() &&
-                            announcement.getBestCard().getCardType().getOrder() == bestAnnouncement.getBestCard().getCardType().getOrder() &&
-                            announcement.getBestCard().getCardColor() == trumpColor &&
-                            bestAnnouncement.getBestCard().getCardColor() != trumpColor)
-            )
-                bestAnnouncement = announcement;
+                                // Comparaison des points de l'annonce
+                                bestAnnouncement.getPoints() > announcement.getPoints() ||
+
+                                // Comparaison du nombre de carte à la suite
+                                (bestAnnouncement.getPoints() == announcement.getPoints() &&
+                                        announcement.getNbSuiteCards() > bestAnnouncement.getNbSuiteCards()) ||
+
+                                // Comparaison de la hauteur de la plus haute carte
+                                (bestAnnouncement.getPoints() == announcement.getPoints() &&
+                                        announcement.getOrder() > bestAnnouncement.getOrder()) ||
+
+                                // Comparaison de la couleur avec l'atout
+                                (bestAnnouncement.getPoints() == announcement.getPoints() &&
+                                        announcement.getOrder() == bestAnnouncement.getOrder() &&
+                                        announcement.getCardColor() == trumpColor &&
+                                        bestAnnouncement.getCardColor() != trumpColor)
+                )
+                    bestAnnouncement = announcement;
+            }
         }
 
-        // TODO A check si on doit vraiment faire comme ça
-        if(bestAnnouncement != null){
-            if(bestAnnouncement.getPlayer().getTeam() == game.getTeams().get(0)){
-                if(pointsTeam1 != 0)
-                    bestAnnouncement.getPlayer().getTeam().addPoints(bestAnnouncement.getBonusType().getPoints());
-            }
-            else{
-                if(pointsTeam2 != 0)
-                    bestAnnouncement.getPlayer().getTeam().addPoints(bestAnnouncement.getBonusType().getPoints());
-            }
+        // S'il y a une annonce
+        if (bestAnnouncement != null) {
+            // Ajout de toutes les annonces de l'équipe ayant la meilleure annonce
+            for (Announcement announcement : announcements)
+                // On n'ajoute pas le Schötckr (ajouté lorsque la seconde carte est posée)
+                if (announcement.getBonusType() != BonusType.SCHTOCKR)
+                    if (announcement.getTeam() == bestAnnouncement.getTeam())
+                        announcement.getTeam().addPoints(announcement.getPoints());
         }
 
         sendPoints();
@@ -223,13 +259,5 @@ public class Round {
                 game.getTeams().get(0).serialize(),
                 game.getTeams().get(1).serialize()
         ))));
-    }
-
-    public void addPointsTeam1(int totalPoints) {
-        pointsTeam1 += totalPoints;
-    }
-
-    public void addPointsTeam2(int totalPoints) {
-        pointsTeam2 += totalPoints;
     }
 }

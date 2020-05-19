@@ -8,6 +8,7 @@ Compilateur : javac 11.0.4
 --------------------------- */
 package ch.heigvd.aalamo.chibre.engine;
 
+import ch.heigvd.aalamo.chibre.CardColor;
 import ch.heigvd.aalamo.chibre.CardType;
 import ch.heigvd.aalamo.chibre.network.Handler;
 import ch.heigvd.aalamo.chibre.network.objects.DTOs.CardDTO;
@@ -142,6 +143,11 @@ public class Player {
         handler.sendRequest(request);
     }
 
+    /**
+     * Séralisation d'un joueur en DTO
+     *
+     * @return le DTO du joueur
+     */
     public PlayerDTO serialize() {
         List<CardDTO> cardsDto = new ArrayList<>(Game.NB_CARDS_PLAYER);
         for (Card card : cards)
@@ -151,135 +157,44 @@ public class Player {
     }
 
     /**
-     * Envoie toutes les annonces sur le réseau
+     * Envoi de toutes les annonces sur le réseau
      */
-    public void sendAnnoucements() {
-        List<Announcement> announcements = threeCardsAnnouncement();
-        if(!announcements.isEmpty())
-            for(Announcement announcement : announcements){
+    public void sendAnnoucements(CardColor trumpColor) {
+        // Suite de cartes (3 à 5 ou plus)
+        List<Announcement> announcements = Announcement.suiteAnnouncement(cards);
+        if (!announcements.isEmpty())
+            for (Announcement announcement : announcements) {
                 sendRequest(new Request(ServerAction.SEND_ANNOUCEMENTS, announcement.serialize()));
-                game.getCurrentRound().addPossibleAnnouncement(announcement);
+                getGame().getCurrentRound().addPossibleAnnouncement(announcement);
             }
 
-        announcements = fourCardsAnnouncement();
-        if(!announcements.isEmpty())
-            for(Announcement announcement : announcements)
+        // Carré de cartes
+        announcements = Announcement.squareCardsAnnouncement(cards);
+        if (!announcements.isEmpty())
+            for (Announcement announcement : announcements) {
                 sendRequest(new Request(ServerAction.SEND_ANNOUCEMENTS, announcement.serialize()));
+                getGame().getCurrentRound().addPossibleAnnouncement(announcement);
+            }
 
-        announcements = squareCardsAnnouncement();
-        if(!announcements.isEmpty())
-            for(Announcement announcement : announcements)
-                sendRequest(new Request(ServerAction.SEND_ANNOUCEMENTS, announcement.serialize()));
-
-        announcements = suiteAnnouncement();
-        if(!announcements.isEmpty())
-            for(Announcement announcement : announcements)
-                sendRequest(new Request(ServerAction.SEND_ANNOUCEMENTS, announcement.serialize()));
-
-        if(squareNineAnnouncement() != null)
-            sendRequest(new Request(ServerAction.SEND_ANNOUCEMENTS, squareNineAnnouncement().serialize()));
-
-        if(squareJackAnnouncement() != null)
-            sendRequest(new Request(ServerAction.SEND_ANNOUCEMENTS, squareJackAnnouncement().serialize()));
-    }
-
-    /**
-     * @return L'annonce d'un carré de valet
-     */
-    private Announcement squareJackAnnouncement() {
-        return squareCards(CardType.JACK);
-    }
-
-    /**
-     * @return L'annonce d'un carré de neufs
-     */
-    private Announcement squareNineAnnouncement() {
-        return squareCards(CardType.NINE);
-    }
-
-    /**
-     * @return une liste avec toutes les annonces avec des carrés
-     */
-    private List<Announcement> squareCardsAnnouncement() {
-        List<Announcement> announcements = new ArrayList<>();
-        for(CardType type : CardType.values())
-            if(type != CardType.JACK && type != CardType.NINE)
-                announcements.add(squareCards(type));
-
-        return announcements;
-    }
-
-    /**
-     *
-     * @param type Type de la carte
-     * @return L'annonce du carré du type de la carte si elle existe
-     */
-    private Announcement squareCards(CardType type) {
-        List<Card> square = new ArrayList<>();
-        for(Card card : cards)
-            if(card.getCardType() == type)
-                square.add(card);
-
-        if(square.size() == 4)
-            return new Announcement(this, BonusType.SQUARE_CARDS, null);
-        else
-            return null;
-    }
-
-    /**
-     * @return une liste avec toutes les annonces à plus que quatre cartes
-     */
-    private List<Announcement> suiteAnnouncement() {
-        List<Announcement> announcements = new ArrayList<>();
-        for(int i = cards.size() - 1; i > 4; --i){
-            if(cards.get(i).getCardColor() == cards.get(i - 1).getCardColor() &&
-                    cards.get(i - 1).getCardColor() == cards.get(i - 2).getCardColor() &&
-                    cards.get(i - 2).getCardColor() == cards.get(i - 3).getCardColor() &&
-                    cards.get(i - 3).getCardColor() == cards.get(i - 4).getCardColor() &&
-                    cards.get(i).getCardType().getOrder() == cards.get(i - 1).getCardType().getOrder() - 1 &&
-                    cards.get(i - 1).getCardType().getOrder() == cards.get(i - 2).getCardType().getOrder() - 1 &&
-                    cards.get(i - 2).getCardType().getOrder() == cards.get(i - 3).getCardType().getOrder() - 1 &&
-                    cards.get(i - 3).getCardType().getOrder() == cards.get(i - 4).getCardType().getOrder() - 1)
-                announcements.add(new Announcement(
-                        this,BonusType.SUITE, cards.get(i)
-                ));
+        // Carré de neufs
+        Announcement squareNineAnnouncement = Announcement.squareNineAnnouncement(cards);
+        if (squareNineAnnouncement != null) {
+            sendRequest(new Request(ServerAction.SEND_ANNOUCEMENTS, squareNineAnnouncement.serialize()));
+            getGame().getCurrentRound().addPossibleAnnouncement(squareNineAnnouncement);
         }
-        return announcements;
-    }
 
-    /**
-     * @return une liste avec toutes les annonces à quatre cartes
-     */
-    private List<Announcement> fourCardsAnnouncement() {
-        List<Announcement> announcements = new ArrayList<>();
-        for(int i = cards.size() - 1; i > 3; --i){
-            if(cards.get(i).getCardColor() == cards.get(i - 1).getCardColor() &&
-                    cards.get(i - 1).getCardColor() == cards.get(i - 2).getCardColor() &&
-                    cards.get(i - 2).getCardColor() == cards.get(i - 3).getCardColor() &&
-                    cards.get(i).getCardType().getOrder() == cards.get(i - 1).getCardType().getOrder() - 1 &&
-                    cards.get(i - 1).getCardType().getOrder() == cards.get(i - 2).getCardType().getOrder() - 1 &&
-                    cards.get(i - 2).getCardType().getOrder() == cards.get(i - 3).getCardType().getOrder() - 1)
-                announcements.add(new Announcement(
-                        this,BonusType.FOUR_CARDS, cards.get(i)
-                ));
+        // Carré de valets
+        Announcement squareJackAnnouncement = Announcement.squareJackAnnouncement(cards);
+        if (squareJackAnnouncement != null) {
+            sendRequest(new Request(ServerAction.SEND_ANNOUCEMENTS, squareJackAnnouncement.serialize()));
+            getGame().getCurrentRound().addPossibleAnnouncement(squareJackAnnouncement);
         }
-        return announcements;
-    }
 
-    /**
-     * @return une liste avec toutes les annonces à trois cartes
-     */
-    private List<Announcement> threeCardsAnnouncement() {
-        List<Announcement> announcements = new ArrayList<>();
-        for(int i = cards.size() - 1; i > 2; --i){
-            if(cards.get(i).getCardColor() == cards.get(i - 1).getCardColor() &&
-                    cards.get(i - 1).getCardColor() == cards.get(i - 2).getCardColor() &&
-                    cards.get(i).getCardType().getOrder() == cards.get(i - 1).getCardType().getOrder() - 1 &&
-                    cards.get(i - 1).getCardType().getOrder() == cards.get(i - 2).getCardType().getOrder() - 1)
-                announcements.add(new Announcement(
-                        this,BonusType.THREE_CARDS, cards.get(i)
-                ));
+        // Schtöckr
+        Announcement schtockrAnnouncement = Announcement.schtockrAnnouncement(cards, trumpColor);
+        if (schtockrAnnouncement != null) {
+            sendRequest(new Request(ServerAction.SEND_ANNOUCEMENTS, schtockrAnnouncement.serialize()));
+            getGame().getCurrentRound().addPossibleAnnouncement(schtockrAnnouncement);
         }
-        return announcements;
     }
 }

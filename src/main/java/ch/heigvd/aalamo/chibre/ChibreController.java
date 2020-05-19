@@ -8,6 +8,8 @@ Compilateur : javac 11.0.4
 --------------------------- */
 package ch.heigvd.aalamo.chibre;
 
+import ch.heigvd.aalamo.chibre.network.objects.DTOs.AnnouncementDTO;
+
 public interface ChibreController {
 
     /**
@@ -27,7 +29,7 @@ public interface ChibreController {
      * Méthode pour créer un utilisateur
      *
      * @param username nom de l'utilisateur
-     * @param password     mot de passe
+     * @param password mot de passe
      */
     void sendCreateUser(String username, String password);
 
@@ -49,6 +51,13 @@ public interface ChibreController {
      * @param color couleur de l'atout
      */
     void chooseTrump(CardColor color);
+
+    /**
+     * Envoyer une annonce
+     *
+     * @param announcement l'annonce à envoyer
+     */
+    void sendAnnouncement(AnnouncementDTO announcement);
 
     /**
      * Fermeture de la GUI
