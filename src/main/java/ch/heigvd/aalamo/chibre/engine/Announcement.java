@@ -172,6 +172,7 @@ public class Announcement {
                 count++;
 
         if (count == 4)
+            // TODO : SQUARE_NINE OU JACK selon type
             return new Announcement(BonusType.SQUARE_CARDS, null);
         else
             return null;
