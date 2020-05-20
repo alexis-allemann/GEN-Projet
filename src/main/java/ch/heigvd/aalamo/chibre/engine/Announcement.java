@@ -128,14 +128,29 @@ public class Announcement {
 
     // Setters
 
+    /**
+     * Définir le type de carré
+     *
+     * @param typeOfSquare type de carré
+     */
     public void setTypeOfSquare(CardType typeOfSquare) {
         this.typeOfSquare = typeOfSquare;
     }
 
+    /**
+     * Définir la couleur de Schtöckr
+     *
+     * @param colorOfSchtockr couleur de l'atout
+     */
     public void setColorOfSchtockr(CardColor colorOfSchtockr) {
         this.colorOfSchtockr = colorOfSchtockr;
     }
 
+    /**
+     * Définir la suite de cartes
+     *
+     * @param suiteCards la liste de cartes de la suite
+     */
     public void setSuiteCards(List<CardDTO> suiteCards) {
         this.suiteCards = suiteCards;
     }

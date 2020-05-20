@@ -13,6 +13,6 @@ import ch.heigvd.aalamo.chibre.network.Server;
 public class ChibreServer {
     public static void main(String[] args) {
         // Démarrage du serveur
-        new Server().start();
+        new Server("").start();
     }
 }

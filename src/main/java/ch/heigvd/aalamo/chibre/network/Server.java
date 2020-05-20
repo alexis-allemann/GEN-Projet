@@ -28,7 +28,7 @@ import java.util.*;
 
 public class Server extends Thread {
     // Attributs
-    private static final String PLAYERS_FILE = "json/players.json";
+    private String playersFileName;
     private List<Player> players = new ArrayList<>();
     private List<Game> games = new ArrayList<>();
     private List<Player> waitingPlayers = new ArrayList<>();
@@ -37,7 +37,12 @@ public class Server extends Thread {
     /**
      * Instanciation du serveur
      */
-    public Server() {
+    public Server(String playersFileName) {
+        if (playersFileName.equals(""))
+            this.playersFileName = "json/players.json";
+        else
+            this.playersFileName = playersFileName;
+
         // Chargement des joueurs depuis le fichier JSON
         loadPlayers();
     }
@@ -99,7 +104,8 @@ public class Server extends Thread {
      * @param player le joueur
      */
     public void remove(Player player) {
-        waitingPlayers.remove(player);
+        if(waitingPlayers.contains(player))
+            waitingPlayers.remove(player);
     }
 
     /**
@@ -112,11 +118,11 @@ public class Server extends Thread {
         JSONParser jsonParser = new JSONParser();
 
         // Lecture du fichier
-        try (FileReader reader = new FileReader(PLAYERS_FILE)) {
-            System.out.println("Lecture du fichier " + PLAYERS_FILE);
+        try (FileReader reader = new FileReader(playersFileName)) {
+            System.out.println("Lecture du fichier " + playersFileName);
 
             // Si le fichier n'est pas vide
-            File file = new File(PLAYERS_FILE);
+            File file = new File(playersFileName);
             if (file.length() != 0) {
                 // Lecture de l'objet JSON global
                 Object obj = jsonParser.parse(reader);
@@ -156,8 +162,8 @@ public class Server extends Thread {
         players.add(newPlayer);
 
         // Ecriture du fichier JSON
-        try (FileWriter file = new FileWriter(PLAYERS_FILE)) {
-            System.out.println("Ecriture du fichier " + PLAYERS_FILE);
+        try (FileWriter file = new FileWriter(playersFileName)) {
+            System.out.println("Ecriture du fichier " + playersFileName);
 
             // Recupération de la liste des continents et écriture
             file.write(players.toJSONString());
@@ -192,6 +198,7 @@ public class Server extends Thread {
             if (player.getUsername().equals(authenticationDTO.getUserName()) && player.getPassword().equals(authenticationDTO.getPassword())) {
                 player.setHandler(handler);
                 addPlayerToWaitingList(player);
+                authenticatingHandlers.remove(handler);
                 return;
             }
         }
@@ -247,9 +254,9 @@ public class Server extends Thread {
         // TODO : voir si créer thread pour éviter que un utilisateur se déconnecte pendant que on crée la partie et que du coup on ait un out_of_bound
         List<Player> players = new ArrayList<>(Game.NB_PLAYERS);
         for (int i = 0; i < Game.NB_PLAYERS; ++i) {
-            players.add(waitingPlayers.get(0));
-            waitingPlayers.remove(0);
+            players.add(waitingPlayers.get(i));
         }
+        waitingPlayers.clear();
         Game game = new Game(players);
         games.add(game);
         game.run();
