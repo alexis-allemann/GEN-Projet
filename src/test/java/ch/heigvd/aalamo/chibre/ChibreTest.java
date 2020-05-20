@@ -11,10 +11,15 @@ package ch.heigvd.aalamo.chibre;
 import ch.heigvd.aalamo.chibre.engine.*;
 import ch.heigvd.aalamo.chibre.network.Server;
 import ch.heigvd.aalamo.chibre.network.User;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -22,53 +27,83 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ChibreTest {
-    private static Server server = new Server();
+    // Serveur pour les tests
+    private static Server server = new Server("json/testplayers.json");
+
+    @BeforeAll
+    public static void resetJsonFile() {
+        JSONArray players = new JSONArray();
+
+        // Création du nouvel objet avec le joueur à ajouter
+        for (int i = 1; i <= 4; ++i) {
+            JSONObject newPlayer = new JSONObject();
+            newPlayer.put("username", Integer.toString(i));
+            newPlayer.put("password", User.toHexString(User.getSHA(Integer.toString(i))));
+            players.add(newPlayer);
+        }
+
+        // Ecriture du fichier JSON
+        try (FileWriter file = new FileWriter("json/testplayers.json", false)) {
+
+            file.write(players.toJSONString());
+            file.flush();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     @BeforeAll
     public static void setupTest() throws InterruptedException {
         server.start();
+        for (int i = 1; i <= 4; ++i) {
+            User user = new User();
+            user.sendAuthentication(Integer.toString(i), Integer.toString(i));
+        }
+        Thread.sleep(1000);
     }
 
     @AfterAll
-    public static void finishTest() {
+    public static void closeServer() {
         server.stop();
     }
 
+    // Tests
+
     @Test
     public void waitingUserTest() throws InterruptedException {
-        for (int i = 0; i < 3; ++i)
-            new User();
+        synchronized (server) {
+            int nbWaitingPlayers = server.getWaitingPlayers().size();
+            int nbPlayers = server.getPlayers().size();
+            for (int i = 1; i <= 3; ++i) {
+                User user = new User();
+                user.sendCreateUser(Integer.toString(nbPlayers + i), Integer.toString(nbPlayers + i));
+            }
 
-        Thread.sleep(100);
-        assertEquals(server.getWaitingPlayers().size(), 3);
+            Thread.sleep(100);
 
-        new User();
-        assertEquals(server.getWaitingPlayers().size(), 0);
+            assertEquals(server.getWaitingPlayers().size(), (nbWaitingPlayers + 3) % 4);
+
+            User user = new User();
+            user.sendAuthentication(Integer.toString(nbPlayers + 4), Integer.toString(nbPlayers + 4));
+            Thread.sleep(100);
+            assertEquals(server.getWaitingPlayers().size(), nbWaitingPlayers);
+        }
+        notify();
     }
 
     @Test
-    public void gameCreationTest() throws InterruptedException {
-
-        for (int i = 0; i < 4; ++i)
-            new User();
-
-        Thread.sleep(100);
+    public void gameCreationTest() {
         assertFalse(server.getGames().isEmpty());
     }
 
     @Test
-    public void checkFourPlayersInGameTest() throws InterruptedException {
-        for (int i = 0; i < 4; ++i)
-            new User();
-        Thread.sleep(100);
+    public void checkFourPlayersInGameTest() {
         assertEquals(server.getGames().get(0).getPlayers().size(), 4);
     }
 
     @Test
-    public void checkTwoPlayerInEachTeam() throws InterruptedException {
-        for (int i = 0; i < 4; ++i)
-            new User();
-        Thread.sleep(100);
+    public void checkTwoPlayerInEachTeam() {
         boolean bothTeamHasTwoPlayers = true;
         for (Team team : server.getGames().get(0).getTeams())
             if (team.getPlayers().size() != 2) {
@@ -80,10 +115,7 @@ public class ChibreTest {
     }
 
     @Test
-    public void checkAutoIDTest() throws InterruptedException {
-        for (int i = 0; i < 8; ++i)
-            new User();
-        Thread.sleep(100);
+    public void checkAutoIDTest() {
         boolean nextGameIsHigher = true;
         for (int i = 0; i < server.getGames().size() - 1; ++i)
             if (server.getGames().get(i).getId() >= server.getGames().get(i + 1).getId()) {
@@ -95,20 +127,9 @@ public class ChibreTest {
     }
 
     @Test
-    public void checkEachPlayerHasNineCards() throws InterruptedException {
-        List<User> users = new ArrayList<>(4);
-        for (int i = 0; i < 4; ++i) {
-            User currentUser = new User();
-            users.add(currentUser);
-            Thread.sleep(100);
-            //currentUser.sendPlayerName("toto" + i);
-        }
-
-        Thread.sleep(100);
-        System.out.println("test");
+    public void checkEachPlayerHasNineCards() {
         boolean everyBodyHasNineCards = true;
-        // TODO : voir pourquoi plusieurs games
-        for (Player player : server.getGames().get(1).getPlayers())
+        for (Player player : server.getGames().get(0).getPlayers())
             if (player.getCards().size() != Game.NB_CARDS_PLAYER) {
                 everyBodyHasNineCards = false;
                 break;
@@ -118,25 +139,12 @@ public class ChibreTest {
     }
 
     @Test
-    public void checkRoundStart() throws InterruptedException {
-        List<User> users = new ArrayList<>(4);
-        for (int i = 0; i < 4; ++i) {
-            User currentUser = new User();
-            users.add(currentUser);
-            Thread.sleep(100);
-            //currentUser.sendPlayerName("toto" + i);
-        }
-
-        // TODO : voir pourquoi plusieurs games
-        assertNotNull(server.getGames().get(1).getCurrentRound());
+    public void checkRoundStart() {
+        assertNotNull(server.getGames().get(0).getCurrentRound());
     }
 
     @Test
-    public void checkTableCreation() throws InterruptedException {
-        for (int i = 0; i < 4; ++i)
-            new User();
-
-        Thread.sleep(100);
+    public void checkTableCreation() {
         List<TablePosition> tablePositions = new ArrayList<>(TablePosition.values().length);
         tablePositions.addAll(Arrays.asList(TablePosition.values()));
 
@@ -146,5 +154,22 @@ public class ChibreTest {
         }
 
         assertTrue(tablePositions.isEmpty());
+    }
+
+    @Test
+    public void loadJSONFile() {
+        List<Player> players = server.getPlayers();
+        assertNotEquals(players, null);
+        assertNotEquals(players.size(), 0);
+    }
+
+    @Test
+    void createUser() throws InterruptedException {
+        synchronized (server) {
+            int nbUsers = server.getPlayers().size();
+            User newUser = new User();
+            newUser.sendCreateUser("99", "99");
+            assertEquals(server.getPlayers().size(), nbUsers + 1);
+        }
     }
 }
