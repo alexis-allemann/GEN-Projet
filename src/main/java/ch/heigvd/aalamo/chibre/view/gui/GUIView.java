@@ -12,6 +12,7 @@ import ch.heigvd.aalamo.chibre.CardColor;
 import ch.heigvd.aalamo.chibre.CardType;
 import ch.heigvd.aalamo.chibre.ChibreController;
 import ch.heigvd.aalamo.chibre.assets.GuiAssets;
+import ch.heigvd.aalamo.chibre.engine.BonusType;
 import ch.heigvd.aalamo.chibre.network.objects.DTOs.AnnouncementDTO;
 import ch.heigvd.aalamo.chibre.network.objects.DTOs.CardDTO;
 import ch.heigvd.aalamo.chibre.network.objects.DTOs.PlayerDTO;
@@ -71,6 +72,7 @@ public class GUIView extends BaseView<ImageIcon> {
     private JLabel lblWinner;
     private JPanel pnlAnnouncements;
     private JPanel pnlAnnouncementsDisplay;
+    private JPanel pnlWinningAnnouncements;
 
     // Attributs
     JFrame gui = new JFrame("Chibre");
@@ -156,6 +158,9 @@ public class GUIView extends BaseView<ImageIcon> {
         // Panel d'annonces
         pnlAnnouncements.setLayout(new BoxLayout(pnlAnnouncements, BoxLayout.PAGE_AXIS));
         pnlAnnouncementsDisplay.setLayout(new BoxLayout(pnlAnnouncementsDisplay, BoxLayout.PAGE_AXIS));
+        pnlWinningAnnouncements.setLayout(new BoxLayout(pnlWinningAnnouncements, BoxLayout.PAGE_AXIS));
+        pnlAnnouncementsDisplay.setVisible(false);
+        pnlWinningAnnouncements.setVisible(false);
 
         // Ajout du listeneur pour envoyer une carte jouée
         lblCardPlayedPlayerBottom.addPropertyChangeListener(e -> {
@@ -437,6 +442,7 @@ public class GUIView extends BaseView<ImageIcon> {
     public void resetAnnouncements() {
         pnlAnnouncements.removeAll();
         announcements.clear();
+        pnlAnnouncements.setVisible(false);
     }
 
     /**
@@ -446,6 +452,7 @@ public class GUIView extends BaseView<ImageIcon> {
     public void resetAnnouncementsDisplayed() {
         pnlAnnouncementsDisplay.removeAll();
         announcements.clear();
+        pnlAnnouncementsDisplay.setVisible(false);
     }
 
     /**
@@ -458,6 +465,59 @@ public class GUIView extends BaseView<ImageIcon> {
         pnlAnnouncementsDisplay.add(label, BorderLayout.CENTER);
         label.setVisible(true);
         pnlAnnouncementsDisplay.setVisible(true);
+    }
+
+    /**
+     * Afficher l'annonce gagnante
+     *
+     * @param announcement l'annonce à afficher
+     */
+    @Override
+    public void displayWinningAnnouncement(AnnouncementDTO announcement) {
+        // Affichage des annonces gagnantes sur la GUI
+        GridLayout grid = new GridLayout(0, 10);
+        JPanel panel = new JPanel();
+        panel.setLayout(grid);
+        switch (announcement.getBonusType()) {
+            case SCHTOCKR:
+                panel.add(getAnnouncementLabel(CardType.QUEEN, announcement.getColorOfSchtockr()));
+                panel.add(getAnnouncementLabel(CardType.KING, announcement.getColorOfSchtockr()));
+                break;
+            case THREE_CARDS:
+            case FOUR_CARDS:
+            case SUITE:
+                for (CardDTO card : announcement.getSuiteCards())
+                    panel.add(getAnnouncementLabel(card.getCardType(), card.getCardColor()));
+                break;
+            case SQUARE_CARDS:
+            case SQUARE_JACKS:
+            case SQUARE_NINE:
+                panel.add(getAnnouncementLabel(announcement.getTypeOfSquare(), CardColor.HEART));
+                panel.add(getAnnouncementLabel(announcement.getTypeOfSquare(), CardColor.SPADE));
+                panel.add(getAnnouncementLabel(announcement.getTypeOfSquare(), CardColor.DIAMOND));
+                panel.add(getAnnouncementLabel(announcement.getTypeOfSquare(), CardColor.CLUB));
+                break;
+        }
+
+        // Afficher nom du joueur
+        JPanel panelName = new JPanel();
+        JLabel name = new JLabel();
+        name.setText(announcement.getPlayer().getUsername() + " - " + announcement.getBonusType().toString());
+        panelName.add(name, BorderLayout.CENTER);
+        pnlWinningAnnouncements.add(panelName);
+
+        pnlWinningAnnouncements.add(panel);
+        pnlWinningAnnouncements.setVisible(true);
+
+    }
+
+    /**
+     * Effacer les annonces gagnantes affichées
+     */
+    @Override
+    public void resetWinningAnnouncement() {
+        pnlWinningAnnouncements.removeAll();
+        pnlWinningAnnouncements.setVisible(false);
     }
 
     /**
@@ -496,6 +556,41 @@ public class GUIView extends BaseView<ImageIcon> {
      */
     public static DrawableRessource<ImageIcon> createResource(BufferedImage image) {
         return new GUIView.CardResource(image);
+    }
+
+    /**
+     * Obtenir un label d'affichage d'annonce
+     *
+     * @param type  type de la carte
+     * @param color couleur de la carte
+     * @return le label d'affichage de l'annonce
+     */
+    private JLabel getAnnouncementLabel(CardType type, CardColor color) {
+        JLabel label = new JLabel();
+        ImageIcon icon = new ImageIcon();
+        icon.setImage(resizeImage(loadResourceFor(type, color, UNKNOWN_ICON).getImage(), 40, 60));
+        label.setIcon(icon);
+        label.setVisible(true);
+        return label;
+    }
+
+    /**
+     * Méthode pour redimensionner une image de la GUI
+     *
+     * @param srcImg image source
+     * @param w      nouvelle largeur
+     * @param h      nouvelle hauteur
+     * @return l'image redimensionnée
+     */
+    private Image resizeImage(Image srcImg, int w, int h) {
+        BufferedImage resizedImg = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2 = resizedImg.createGraphics();
+
+        g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        g2.drawImage(srcImg, 0, 0, w, h, null);
+        g2.dispose();
+
+        return resizedImg;
     }
 }
 

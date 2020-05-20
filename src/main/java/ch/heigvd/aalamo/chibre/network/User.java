@@ -111,7 +111,10 @@ public class User implements ChibreController {
                         break;
                     case SEND_CURRENT_PLAYER:
                         hasTurnPlayer = (PlayerDTO) request.getObject();
-                        view.setInfoMessage("C'est au tour de " + hasTurnPlayer.getUsername());
+                        if (hasTurnPlayer.getUsername() == currentPlayer.getUsername())
+                            view.setInfoMessage("C'est votre tour, jouez une carte");
+                        else
+                            view.setInfoMessage("C'est au tour de " + hasTurnPlayer.getUsername());
                         break;
                     case SEND_CARD_PLAYED:
                         CardDTO cardPlayed = (CardDTO) request.getObject();
@@ -156,7 +159,7 @@ public class User implements ChibreController {
                         cards.clear();
                         markedCards = new ArrayList<>(Arrays.asList(false, false, false, false, false, false, false, false, false));
                         announcements.clear();
-                        view.resetAnnouncementsDisplayed();
+                        view.resetWinningAnnouncement();
                         break;
                     case SEND_WINNER:
                         view.setInfoMessage("Partie terminée");
@@ -170,6 +173,11 @@ public class User implements ChibreController {
                     case DISPLAY_ANNOUNCEMENT:
                         announcement = (AnnouncementDTO) request.getObject();
                         view.displayAnnouncementPlayed(announcement, hasTurnPlayer);
+                        break;
+                    case WINNING_ANNOUNCEMENT:
+                        view.resetAnnouncementsDisplayed();
+                        announcement = (AnnouncementDTO) request.getObject();
+                        view.displayWinningAnnouncement(announcement);
                         break;
                 }
             }

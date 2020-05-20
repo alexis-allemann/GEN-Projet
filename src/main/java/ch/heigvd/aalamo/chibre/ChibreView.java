@@ -8,6 +8,7 @@ Compilateur : javac 11.0.4
 --------------------------- */
 package ch.heigvd.aalamo.chibre;
 
+import ch.heigvd.aalamo.chibre.engine.Announcement;
 import ch.heigvd.aalamo.chibre.network.objects.DTOs.AnnouncementDTO;
 import ch.heigvd.aalamo.chibre.network.objects.DTOs.CardDTO;
 import ch.heigvd.aalamo.chibre.network.objects.DTOs.PlayerDTO;
@@ -165,8 +166,23 @@ public interface ChibreView {
 
     /**
      * Afficher une annonce jouée
+     *
+     * @param announcement l'annonce à afficher
+     * @param player       le joueur qui fait l'annonce
      */
     void displayAnnouncementPlayed(AnnouncementDTO announcement, PlayerDTO player);
+
+    /**
+     * Afficher l'annonce gagnante
+     *
+     * @param announcement l'annonce à afficher
+     */
+    void displayWinningAnnouncement(AnnouncementDTO announcement);
+
+    /**
+     * Effacer les annonces gagnantes affichées
+     */
+    void resetWinningAnnouncement();
 
     /**
      * Action à effectuer lorsque la fenêtre est fermée

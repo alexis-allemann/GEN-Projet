@@ -58,7 +58,7 @@ public class Team {
         return id;
     }
 
-// Méthodes
+    // Méthodes
 
     /**
      * Ajouter des points l'équipe
