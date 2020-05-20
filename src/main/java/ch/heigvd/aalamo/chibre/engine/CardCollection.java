@@ -46,13 +46,16 @@ public class CardCollection {
 
             player.distributeCard(currentCard);
             currentCard.setPlayer(player);
-            player.sendRequest(new Request(ServerAction.SEND_CARDS, currentCard.serialize()));
 
             collection.remove(cardIndex);
         }
 
         // Permet un affichage plus harmonieux et facilite le calcul des annonces
         Collections.sort(player.getCards());
+
+        // Envoi des cartes après tri
+        for (Card card : player.getCards())
+            player.sendRequest(new Request(ServerAction.SEND_CARDS, card.serialize()));
 
         return hasDiamondSeven;
     }

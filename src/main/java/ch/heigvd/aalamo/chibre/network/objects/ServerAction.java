@@ -29,4 +29,5 @@ public enum ServerAction implements Serializable {
     SEND_CHIBRE,
     SEND_WINNER,
     DISPLAY_ANNOUNCEMENT,
+    WINNING_ANNOUNCEMENT
 }

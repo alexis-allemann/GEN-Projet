@@ -11,8 +11,8 @@ package ch.heigvd.aalamo.chibre;
 import java.io.Serializable;
 
 public enum CardColor implements Serializable {
+    HEART,
     CLUB,
     DIAMOND,
-    HEART,
     SPADE;
 }

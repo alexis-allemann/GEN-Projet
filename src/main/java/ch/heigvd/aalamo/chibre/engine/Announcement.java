@@ -11,6 +11,7 @@ package ch.heigvd.aalamo.chibre.engine;
 import ch.heigvd.aalamo.chibre.CardColor;
 import ch.heigvd.aalamo.chibre.CardType;
 import ch.heigvd.aalamo.chibre.network.objects.DTOs.AnnouncementDTO;
+import ch.heigvd.aalamo.chibre.network.objects.DTOs.CardDTO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,14 +23,18 @@ public class Announcement {
     private int nbSuiteCards;
     private static int count = 1;
     private int id;
+    private CardType typeOfSquare;
+    private CardColor colorOfSchtockr;
+    private List<CardDTO> suiteCards;
+    private Player player;
 
     /**
      * Instanciation d'une annonce
      *
      * @param bonusType Type de l'annonce
      */
-    public Announcement(BonusType bonusType) {
-        this(bonusType, null);
+    public Announcement(Player player, BonusType bonusType) {
+        this(player, bonusType, null);
     }
 
     /**
@@ -38,8 +43,8 @@ public class Announcement {
      * @param bonusType Type de l'annonce
      * @param bestCard  Meilleure carte de l'annonce
      */
-    public Announcement(BonusType bonusType, Card bestCard) {
-        this(bonusType, bestCard, 0);
+    public Announcement(Player player, BonusType bonusType, Card bestCard) {
+        this(player, bonusType, bestCard, 0);
     }
 
     /**
@@ -49,11 +54,12 @@ public class Announcement {
      * @param bestCard     Meilleure carte de l'annonce
      * @param nbSuiteCards nombre de cartes à la suite
      */
-    public Announcement(BonusType bonusType, Card bestCard, int nbSuiteCards) {
+    public Announcement(Player player, BonusType bonusType, Card bestCard, int nbSuiteCards) {
         this.bonusType = bonusType;
         this.bestCard = bestCard;
         this.nbSuiteCards = nbSuiteCards;
         this.id = count++;
+        this.player = player;
     }
 
     // Getters
@@ -83,9 +89,7 @@ public class Announcement {
      * @return le joueur qui a fait l'annonce
      */
     public Player getPlayer() {
-        if (bestCard != null)
-            return bestCard.getPlayer();
-        return null;
+        return player;
     }
 
     /**
@@ -122,6 +126,20 @@ public class Announcement {
         return null;
     }
 
+    // Setters
+
+    public void setTypeOfSquare(CardType typeOfSquare) {
+        this.typeOfSquare = typeOfSquare;
+    }
+
+    public void setColorOfSchtockr(CardColor colorOfSchtockr) {
+        this.colorOfSchtockr = colorOfSchtockr;
+    }
+
+    public void setSuiteCards(List<CardDTO> suiteCards) {
+        this.suiteCards = suiteCards;
+    }
+
     // Méthodes
 
     /**
@@ -131,9 +149,11 @@ public class Announcement {
      */
     public static List<Announcement> squareCardsAnnouncement(List<Card> cards) {
         List<Announcement> announcements = new ArrayList<>();
-        for (CardType type : CardType.values()){
+
+        for (CardType type : CardType.values()) {
             Announcement announcement = squareCards(cards, type);
-            announcements.add(announcement);
+            if (announcement != null)
+                announcements.add(announcement);
         }
 
         return announcements;
@@ -151,12 +171,21 @@ public class Announcement {
             if (card.getCardType() == type)
                 count++;
 
-        if (count == 4 && type != CardType.JACK && type != CardType.NINE)
-            return new Announcement(BonusType.SQUARE_CARDS, null);
-        else if(count == 4 && type == CardType.JACK)
-            return new Announcement(BonusType.SQUARE_JACKS, null);
-        else if(count == 4)
-            return new Announcement(BonusType.SQUARE_NINE, null);
+        Announcement announcement = null;
+
+        Player player = cards.get(0).getPlayer();
+        if (count == 4 && type != CardType.JACK && type != CardType.NINE) {
+            announcement = new Announcement(player, BonusType.SQUARE_CARDS, null);
+            announcement.setTypeOfSquare(type);
+        } else if (count == 4 && type == CardType.JACK) {
+            announcement = new Announcement(player, BonusType.SQUARE_JACKS, null);
+            announcement.setTypeOfSquare(CardType.JACK);
+        } else if (count == 4) {
+            announcement = new Announcement(player, BonusType.SQUARE_NINE, null);
+            announcement.setTypeOfSquare(CardType.NINE);
+        }
+
+        return announcement;
     }
 
     /**
@@ -173,7 +202,7 @@ public class Announcement {
             if (card.getId() - 1 == lastCard.getId() && card.getCardColor() == lastCard.getCardColor())
                 count++;
             else if (count >= 3) { // Si on a un série d'au moins 3 cartes
-                announcements.add(addSuite(cards.get(cards.indexOf(lastCard) - count + 1), count));
+                announcements.add(addSuite(cards, cards.get(cards.indexOf(lastCard) - count + 1), count));
                 count = 1; // Réinitialiser le compteur
             } else
                 count = 1; // Réinitialiser le compteur
@@ -182,7 +211,7 @@ public class Announcement {
         }
 
         if (count >= 3)
-            announcements.add(addSuite(cards.get(cards.indexOf(lastCard) - count + 1), count));
+            announcements.add(addSuite(cards, cards.get(cards.indexOf(lastCard) - count + 1), count));
 
         return announcements;
     }
@@ -194,15 +223,29 @@ public class Announcement {
      * @param count    le compteur
      * @return l'annonce
      */
-    private static Announcement addSuite(Card lastCard, int count) {
+    private static Announcement addSuite(List<Card> cards, Card lastCard, int count) {
+        Announcement announcement;
+        Player player = cards.get(0).getPlayer();
         switch (count) {
             case 3:
-                return new Announcement(BonusType.THREE_CARDS, lastCard);
+                announcement = new Announcement(player, BonusType.THREE_CARDS, lastCard);
+                break;
             case 4:
-                return new Announcement(BonusType.FOUR_CARDS, lastCard);
+                announcement = new Announcement(player, BonusType.FOUR_CARDS, lastCard);
+                break;
             default: // 5 cartes ou plus à la suite
-                return new Announcement(BonusType.SUITE, lastCard, count);
+                announcement = new Announcement(player, BonusType.SUITE, lastCard, count);
+                break;
         }
+
+        // Ajout des cartes de la suite
+        List<CardDTO> suiteCards = new ArrayList<>(count);
+        for (int i = 1; i <= count; ++i)
+            suiteCards.add(cards.get(cards.indexOf(lastCard) + count - i).serialize());
+
+        announcement.setSuiteCards(suiteCards);
+
+        return announcement;
     }
 
     /**
@@ -220,9 +263,16 @@ public class Announcement {
                 else if (card.getCardType() == CardType.QUEEN)
                     hasTrumpQueen = true;
 
-        if (hasTrumpKing && hasTrumpQueen)
-            return new Announcement(BonusType.SCHTOCKR);
-        return null;
+        Announcement announcement = null;
+        Player player = cards.get(0).getPlayer();
+        if (hasTrumpKing && hasTrumpQueen) {
+            announcement = new Announcement(player, BonusType.SCHTOCKR);
+            announcement.setColorOfSchtockr(trumpColor);
+            player.setHasSchtockr(true);
+        } else
+            player.setHasSchtockr(false);
+
+        return announcement;
     }
 
     /**
@@ -231,9 +281,24 @@ public class Announcement {
      * @return la DTO de l'annonce
      */
     public AnnouncementDTO serialize() {
-        if (bestCard != null)
-            return new AnnouncementDTO(id, bonusType, bestCard.serialize());
-        else
-            return new AnnouncementDTO(id, bonusType);
+        AnnouncementDTO announcementDTO = new AnnouncementDTO(player.serialize(), id, bonusType);
+
+        // Ajout des informations nécessaires en fonction du type d'annonce
+        switch (announcementDTO.getBonusType()) {
+            case SCHTOCKR:
+                announcementDTO.setColorOfSchtockr(colorOfSchtockr);
+                break;
+            case THREE_CARDS:
+            case FOUR_CARDS:
+            case SUITE:
+                announcementDTO.setSuiteCards(suiteCards);
+                break;
+            case SQUARE_CARDS:
+            case SQUARE_NINE:
+            case SQUARE_JACKS:
+                announcementDTO.setTypeOfSquare(typeOfSquare);
+                break;
+        }
+        return announcementDTO;
     }
 }

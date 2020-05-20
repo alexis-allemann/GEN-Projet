@@ -29,6 +29,7 @@ public class Player {
     private Game game;
     private String username;
     private String password;
+    private boolean hasSchtockr;
 
     /**
      * Instancier un joueur
@@ -78,11 +79,24 @@ public class Player {
         return team;
     }
 
+    /**
+     * Retrouver la carte avec l'ID
+     *
+     * @param id de la carte
+     * @return la carte correspondante à l'id donné
+     */
     public Card getCardWithId(int id) {
         for (Card card : cards)
             if (card.getId() == id)
                 return card;
         return null;
+    }
+
+    /**
+     * @return si le joueur a Schtockr
+     */
+    public boolean hasSchtockr() {
+        return hasSchtockr;
     }
 
     // Setters
@@ -115,6 +129,14 @@ public class Player {
         this.team = team;
     }
 
+    /**
+     * Définir si le joueur a Schtockr
+     *
+     * @param hasSchtockr s'il a l'annonce Schtockr
+     */
+    public void setHasSchtockr(boolean hasSchtockr) {
+        this.hasSchtockr = hasSchtockr;
+    }
 
     // Méthodes
 

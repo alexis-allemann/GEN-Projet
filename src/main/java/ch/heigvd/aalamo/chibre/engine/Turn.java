@@ -8,6 +8,8 @@ Compilateur : javac 11.0.4
 --------------------------- */
 package ch.heigvd.aalamo.chibre.engine;
 
+import ch.heigvd.aalamo.chibre.CardType;
+import ch.heigvd.aalamo.chibre.network.objects.DTOs.AnnouncementDTO;
 import ch.heigvd.aalamo.chibre.network.objects.Request;
 import ch.heigvd.aalamo.chibre.network.objects.ServerAction;
 
@@ -139,9 +141,8 @@ public class Turn {
         isPlayed = false;
         // Si le round est fini
         if (round.getTurns().size() == Game.NB_CARDS_PLAYER) {
-            
             // On defausse toutes les cartes aux joueurs pour pouvoir les redistribuer
-            for(Player player : round.getPlayers())
+            for (Player player : round.getPlayers())
                 player.getCards().clear();
 
             round.getGame().sendToAllPlayers(new Request(ServerAction.END_ROUND));
@@ -167,6 +168,18 @@ public class Turn {
         System.out.println(" joué par " + card.getPlayer().getUsername());
 
         round.getGame().sendToAllPlayers(new Request(ServerAction.SEND_CARD_PLAYED, card.serialize()));
+
+        // Annoncer le schtöcker que lorsque la deuxième carte de la paire est posée
+        if (card.getCardColor() == round.getTrumpColor() && (card.getCardType() == CardType.QUEEN || card.getCardType() == CardType.KING)) {
+            round.addSchtockerCard();
+            if (card.getPlayer().hasSchtockr() && round.getSchtockrCounter() == 2) {
+                card.getPlayer().getTeam().addPoints(BonusType.SCHTOCKR.getPoints());
+                round.sendPoints();
+                AnnouncementDTO announcement = new AnnouncementDTO(card.getPlayer().serialize(), 1, BonusType.SCHTOCKR);
+                announcement.setColorOfSchtockr(round.getTrumpColor());
+                round.getGame().sendToAllPlayers(new Request(ServerAction.WINNING_ANNOUNCEMENT, announcement));
+            }
+        }
     }
 
     /**

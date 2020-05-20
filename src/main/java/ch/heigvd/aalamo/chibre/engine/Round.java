@@ -29,6 +29,7 @@ public class Round {
     private final Game game;
     private boolean isPlayed;
     private Player trumpPlayer;
+    private int schtockrCounter = 0;
 
     /**
      * Instancier un tour de jeu
@@ -87,13 +88,25 @@ public class Round {
         return id;
     }
 
+    /**
+     * @return liste des tours
+     */
     public List<Turn> getTurns() {
         return turns;
     }
 
-
-    public List<Player> getPlayers(){
+    /**
+     * @return liste des joueurs
+     */
+    public List<Player> getPlayers() {
         return game.getPlayers();
+    }
+
+    /**
+     * @return le compteur pour le schtocker
+     */
+    public int getSchtockrCounter() {
+        return schtockrCounter;
     }
 
     // Setters
@@ -162,6 +175,13 @@ public class Round {
      */
     public void addTurn(Turn turn) {
         turns.add(turn);
+    }
+
+    /**
+     * Incrémenter le compteur de cartes pour le schtocker
+     */
+    public void addSchtockerCard() {
+        schtockrCounter++;
     }
 
     /**
@@ -246,8 +266,10 @@ public class Round {
             for (Announcement announcement : announcements)
                 // On n'ajoute pas le Schötckr (ajouté lorsque la seconde carte est posée)
                 if (announcement.getBonusType() != BonusType.SCHTOCKR)
-                    if (announcement.getTeam() == bestAnnouncement.getTeam())
+                    if (announcement.getTeam() == bestAnnouncement.getTeam()) {
                         announcement.getTeam().addPoints(announcement.getPoints());
+                        game.sendToAllPlayers(new Request(ServerAction.WINNING_ANNOUNCEMENT, announcement.serialize()));
+                    }
         }
 
         sendPoints();
