@@ -176,20 +176,6 @@ public class Player {
                 getGame().getCurrentRound().addPossibleAnnouncement(announcement);
             }
 
-        // Carré de neufs
-        Announcement squareNineAnnouncement = Announcement.squareNineAnnouncement(cards);
-        if (squareNineAnnouncement != null) {
-            sendRequest(new Request(ServerAction.SEND_ANNOUCEMENTS, squareNineAnnouncement.serialize()));
-            getGame().getCurrentRound().addPossibleAnnouncement(squareNineAnnouncement);
-        }
-
-        // Carré de valets
-        Announcement squareJackAnnouncement = Announcement.squareJackAnnouncement(cards);
-        if (squareJackAnnouncement != null) {
-            sendRequest(new Request(ServerAction.SEND_ANNOUCEMENTS, squareJackAnnouncement.serialize()));
-            getGame().getCurrentRound().addPossibleAnnouncement(squareJackAnnouncement);
-        }
-
         // Schtöckr
         Announcement schtockrAnnouncement = Announcement.schtockrAnnouncement(cards, trumpColor);
         if (schtockrAnnouncement != null) {

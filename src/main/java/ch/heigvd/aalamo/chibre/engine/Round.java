@@ -29,8 +29,6 @@ public class Round {
     private final Game game;
     private boolean isPlayed;
     private Player trumpPlayer;
-    //TODO mettre à jour dans les tours
-    private int pointsTeam1, pointsTeam2;
 
     /**
      * Instancier un tour de jeu
@@ -91,6 +89,11 @@ public class Round {
 
     public List<Turn> getTurns() {
         return turns;
+    }
+
+
+    public List<Player> getPlayers(){
+        return game.getPlayers();
     }
 
     // Setters
