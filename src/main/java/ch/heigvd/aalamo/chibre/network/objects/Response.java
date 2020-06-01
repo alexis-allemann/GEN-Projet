@@ -13,17 +13,8 @@ import java.io.Serializable;
 public class Response implements Serializable {
 
     // Attributs
-    private UserAction action;
-    private Object object;
-
-    /**
-     * Instanciation d'une réponse au serveur
-     *
-     * @param action de la réponse
-     */
-    public Response(UserAction action) {
-        this(action, null);
-    }
+    private final UserAction action;
+    private final Object object;
 
     /**
      * Instanciation d'une réponse au serveur

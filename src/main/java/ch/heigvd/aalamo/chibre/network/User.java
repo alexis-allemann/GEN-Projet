@@ -31,10 +31,10 @@ import java.util.*;
 public class User implements ChibreController {
     // Attributs
     private ChibreView view;
-    private Socket socket;
-    private ObjectOutputStream out;
-    private ObjectInputStream in;
-    private List<CardDTO> cards = new ArrayList<>(Game.NB_CARDS_PLAYER);
+    private final Socket socket;
+    private final ObjectOutputStream out;
+    private final ObjectInputStream in;
+    private final List<CardDTO> cards = new ArrayList<>(Game.NB_CARDS_PLAYER);
     private List<Boolean> markedCards = new ArrayList<>(Arrays.asList(false, false, false, false, false, false, false, false, false));
     private PlayerDTO currentPlayer;
     private PlayerDTO hasTurnPlayer;
@@ -42,7 +42,7 @@ public class User implements ChibreController {
     private CardColor trumpColor;
     private CardColor firstCardColor = null;
     private CardDTO lastCardPlayed;
-    private List<AnnouncementDTO> announcements = new ArrayList<AnnouncementDTO>();
+    private final List<AnnouncementDTO> announcements = new ArrayList<>();
 
     /**
      * Instancier un utilisateur de l'application
@@ -111,7 +111,7 @@ public class User implements ChibreController {
                         break;
                     case SEND_CURRENT_PLAYER:
                         hasTurnPlayer = (PlayerDTO) request.getObject();
-                        if (hasTurnPlayer.getUsername() == currentPlayer.getUsername())
+                        if (hasTurnPlayer.getUsername().equals(currentPlayer.getUsername()))
                             view.setInfoMessage("C'est votre tour, jouez une carte");
                         else
                             view.setInfoMessage("C'est au tour de " + hasTurnPlayer.getUsername());

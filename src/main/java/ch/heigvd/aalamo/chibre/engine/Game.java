@@ -25,10 +25,10 @@ public class Game implements Runnable {
     // Attributs
     private final int id;
     private static int count = 1;
-    private List<Player> players;
+    private final List<Player> players;
     private final Table table;
     private List<Team> teams = new ArrayList<>(NB_TEAMS);
-    private List<Round> rounds = new ArrayList<>();
+    private final List<Round> rounds = new ArrayList<>();
     private Player firstPlayerTrump;
 
     /**

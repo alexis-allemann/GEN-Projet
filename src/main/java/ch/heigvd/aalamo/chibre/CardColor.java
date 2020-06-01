@@ -14,5 +14,5 @@ public enum CardColor implements Serializable {
     HEART,
     CLUB,
     DIAMOND,
-    SPADE;
+    SPADE
 }

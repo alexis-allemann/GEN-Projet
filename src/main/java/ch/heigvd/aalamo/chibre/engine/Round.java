@@ -9,7 +9,6 @@ Compilateur : javac 11.0.4
 package ch.heigvd.aalamo.chibre.engine;
 
 import ch.heigvd.aalamo.chibre.CardColor;
-import ch.heigvd.aalamo.chibre.network.objects.DTOs.AnnouncementDTO;
 import ch.heigvd.aalamo.chibre.network.objects.Request;
 import ch.heigvd.aalamo.chibre.network.objects.ServerAction;
 
@@ -23,11 +22,11 @@ public class Round {
     private static int count = 1;
     private CardColor trumpColor;
     private final List<Turn> turns = new ArrayList<>(Game.NB_CARDS_PLAYER);
-    private List<Announcement> possibleAnnouncements = new ArrayList<>();
-    private List<Announcement> announcements = new ArrayList<>();
+    private final List<Announcement> possibleAnnouncements = new ArrayList<>();
+    private final List<Announcement> announcements = new ArrayList<>();
     private final CardCollection cardCollection = new CardCollection();
     private final Game game;
-    private boolean isPlayed;
+    private final boolean isPlayed;
     private Player trumpPlayer;
     private int schtockrCounter = 0;
 

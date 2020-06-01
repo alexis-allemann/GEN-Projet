@@ -79,12 +79,12 @@ public class GUIView extends BaseView<ImageIcon> {
     GUIAuthentication guiAuthentication;
     private static final int WINDOW_WIDTH = 1260;
     private static final int WINDOW_HEIGHT = 850;
-    private List<JLabel> cards = new ArrayList<>(9);
+    private final List<JLabel> cards = new ArrayList<>(9);
     private final static ImageIcon UNKNOWN_ICON;
     private JLabel dragSource;
-    private ChibreController controller;
+    private final ChibreController controller;
     private ImageIcon dropIcon;
-    private List<AnnouncementDTO> announcements = new ArrayList<>();
+    private final List<AnnouncementDTO> announcements = new ArrayList<>();
 
     // Initialisation des attributs statiques
     static {
@@ -536,7 +536,7 @@ public class GUIView extends BaseView<ImageIcon> {
      * Instanciation des cartes
      */
     private static class CardResource implements DrawableRessource<ImageIcon> {
-        private ImageIcon icon;
+        private final ImageIcon icon;
 
         CardResource(BufferedImage bufferedImage) {
             icon = new ImageIcon(bufferedImage);

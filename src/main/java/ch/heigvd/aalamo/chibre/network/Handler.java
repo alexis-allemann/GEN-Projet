@@ -24,11 +24,11 @@ import java.net.Socket;
 
 public class Handler implements Runnable {
     // Attributs
-    private ObjectOutputStream out;
-    private ObjectInputStream in;
-    private Server server;
+    private final ObjectOutputStream out;
+    private final ObjectInputStream in;
+    private final Server server;
     private Player player;
-    private Socket socket;
+    private final Socket socket;
 
     /**
      * Instanciation d'un handler

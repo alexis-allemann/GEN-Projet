@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class ChibreTest {
     // Serveur pour les tests
-    private static Server server = new Server("json/testplayers.json");
+    private static final Server server = new Server("json/testplayers.json");
 
     @BeforeAll
     public static void resetJsonFile() {

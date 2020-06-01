@@ -5,14 +5,11 @@ import ch.heigvd.aalamo.chibre.CardType;
 import ch.heigvd.aalamo.chibre.network.objects.Request;
 import ch.heigvd.aalamo.chibre.network.objects.ServerAction;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class CardCollection {
     // Attributs
-    private final List<Card> collection = new ArrayList(Game.NB_CARDS);
+    private final List<Card> collection = new ArrayList<>(Game.NB_CARDS);
     private final Random random = new Random();
 
     /**
@@ -51,7 +48,7 @@ public class CardCollection {
         }
 
         // Permet un affichage plus harmonieux et facilite le calcul des annonces
-        Collections.sort(player.getCards());
+        player.getCards().sort(Comparator.comparing(Card::getId));
 
         // Envoi des cartes après tri
         for (Card card : player.getCards())

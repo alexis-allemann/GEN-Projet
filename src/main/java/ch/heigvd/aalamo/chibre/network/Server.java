@@ -28,11 +28,11 @@ import java.util.*;
 
 public class Server extends Thread {
     // Attributs
-    private String playersFileName;
-    private List<Player> players = new ArrayList<>();
-    private List<Game> games = new ArrayList<>();
-    private List<Player> waitingPlayers = new ArrayList<>();
-    private List<Handler> authenticatingHandlers = new ArrayList<>();
+    private final String playersFileName;
+    private final List<Player> players = new ArrayList<>();
+    private final List<Game> games = new ArrayList<>();
+    private final List<Player> waitingPlayers = new ArrayList<>();
+    private final List<Handler> authenticatingHandlers = new ArrayList<>();
 
     /**
      * Instanciation du serveur
@@ -104,8 +104,7 @@ public class Server extends Thread {
      * @param player le joueur
      */
     public void remove(Player player) {
-        if(waitingPlayers.contains(player))
-            waitingPlayers.remove(player);
+        waitingPlayers.remove(player);
     }
 
     /**
