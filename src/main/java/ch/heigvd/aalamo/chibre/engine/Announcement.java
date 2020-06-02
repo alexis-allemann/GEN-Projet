@@ -18,15 +18,15 @@ import java.util.List;
 
 public class Announcement {
     // Attributs
-    private BonusType bonusType;
-    private Card bestCard;
-    private int nbSuiteCards;
+    private final BonusType bonusType;
+    private final Card bestCard;
+    private final int nbSuiteCards;
     private static int count = 1;
-    private int id;
+    private final int id;
     private CardType typeOfSquare;
     private CardColor colorOfSchtockr;
     private List<CardDTO> suiteCards;
-    private Player player;
+    private final Player player;
 
     /**
      * Instanciation d'une annonce

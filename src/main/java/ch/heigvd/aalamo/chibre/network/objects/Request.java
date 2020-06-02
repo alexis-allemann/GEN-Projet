@@ -13,8 +13,8 @@ import java.io.Serializable;
 public class Request implements Serializable {
 
     // Attributs
-    private ServerAction action;
-    private Object object;
+    private final ServerAction action;
+    private final Object object;
 
     /**
      * Instancier une nouvelle requête à la GUI

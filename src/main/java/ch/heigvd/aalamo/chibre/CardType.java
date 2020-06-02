@@ -20,10 +20,10 @@ public enum CardType {
     SIX(0, 0, 0, 0);
 
     // Attributs
-    private int value;
-    private int valueOfTrump;
-    private int order;
-    private int orderOfTrump;
+    private final int value;
+    private final int valueOfTrump;
+    private final int order;
+    private final int orderOfTrump;
 
     /**
      * Instanciation d'un type de carte

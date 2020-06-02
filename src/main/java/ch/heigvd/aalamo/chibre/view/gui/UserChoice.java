@@ -13,8 +13,8 @@ package ch.heigvd.aalamo.chibre.view.gui;
  */
 public class UserChoice {
     // Attributs
-    private String name;
-    private Object value;
+    private final String name;
+    private final Object value;
 
     /**
      * Instancier une choix utilisateur

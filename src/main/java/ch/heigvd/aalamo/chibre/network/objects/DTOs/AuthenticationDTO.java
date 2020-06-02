@@ -12,8 +12,8 @@ import java.io.Serializable;
 
 public class AuthenticationDTO implements Serializable {
     // Attributs
-    private String userName;
-    private String password;
+    private final String userName;
+    private final String password;
 
     /**
      * Instaciation d'un DTO d'authentification
