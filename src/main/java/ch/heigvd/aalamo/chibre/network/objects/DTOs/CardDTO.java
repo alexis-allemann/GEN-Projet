@@ -13,9 +13,9 @@ import ch.heigvd.aalamo.chibre.CardType;
 
 public class CardDTO implements DTO {
     // Attributs
-    private CardColor cardColor;
-    private CardType cardType;
-    private int id;
+    private final CardColor cardColor;
+    private final CardType cardType;
+    private final int id;
 
     /**
      * Instancier un DTO pour une carte

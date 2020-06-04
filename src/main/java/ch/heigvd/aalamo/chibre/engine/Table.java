@@ -19,7 +19,7 @@ public class Table {
     class Pair {
         // Attributs
         private Player player;
-        private TablePosition tablePosition;
+        private final TablePosition tablePosition;
 
         /**
          * Instancier une paire
@@ -61,7 +61,7 @@ public class Table {
     }
 
     // Attributs
-    private List<Pair> table = new ArrayList<>();
+    private final List<Pair> table = new ArrayList<>();
 
     /**
      * Instancier une parte

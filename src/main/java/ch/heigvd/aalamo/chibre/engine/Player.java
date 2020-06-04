@@ -9,7 +9,6 @@ Compilateur : javac 11.0.4
 package ch.heigvd.aalamo.chibre.engine;
 
 import ch.heigvd.aalamo.chibre.CardColor;
-import ch.heigvd.aalamo.chibre.CardType;
 import ch.heigvd.aalamo.chibre.network.Handler;
 import ch.heigvd.aalamo.chibre.network.objects.DTOs.CardDTO;
 import ch.heigvd.aalamo.chibre.network.objects.DTOs.PlayerDTO;
@@ -17,8 +16,6 @@ import ch.heigvd.aalamo.chibre.network.objects.Request;
 import ch.heigvd.aalamo.chibre.network.objects.ServerAction;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 public class Player {
@@ -27,8 +24,8 @@ public class Player {
     private Handler handler;
     private Team team; // TODO : a supprimer
     private Game game;
-    private String username;
-    private String password;
+    private final String username;
+    private final String password;
     private boolean hasSchtockr;
 
     /**

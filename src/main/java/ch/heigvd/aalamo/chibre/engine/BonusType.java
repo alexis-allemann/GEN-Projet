@@ -18,8 +18,8 @@ public enum BonusType {
     SQUARE_JACKS(200, "Carré de valets");
 
     // Attributs
-    private int points;
-    private String name;
+    private final int points;
+    private final String name;
 
     /**
      * Instanciation d'un bonus

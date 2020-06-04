@@ -13,8 +13,8 @@ import java.util.Objects;
 
 public class PlayerDTO implements DTO {
     // Attributs
-    private String username;
-    private List<CardDTO> cards;
+    private final String username;
+    private final List<CardDTO> cards;
 
     /**
      * Instanciation d'un DTO pour un joueur

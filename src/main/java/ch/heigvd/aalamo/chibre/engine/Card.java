@@ -12,12 +12,12 @@ import ch.heigvd.aalamo.chibre.CardColor;
 import ch.heigvd.aalamo.chibre.CardType;
 import ch.heigvd.aalamo.chibre.network.objects.DTOs.CardDTO;
 
-public class Card implements Comparable<Card> {
+public class Card{
     // Attributs
-    private CardType cardType;
-    private CardColor cardColor;
+    private final CardType cardType;
+    private final CardColor cardColor;
     private Player player;
-    private int id;
+    private final int id;
 
     /**
      * Instanciation d'une carte
@@ -79,16 +79,5 @@ public class Card implements Comparable<Card> {
      */
     public CardDTO serialize() {
         return new CardDTO(cardColor, cardType, id);
-    }
-
-    /**
-     * Comparaison de la carte pour trier
-     *
-     * @param card la carte
-     * @return si la carte est inférieur ou supérieur
-     */
-    @Override
-    public int compareTo(Card card) {
-        return id - card.getId();
     }
 }

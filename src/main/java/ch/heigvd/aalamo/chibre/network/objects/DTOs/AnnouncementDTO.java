@@ -16,12 +16,12 @@ import java.util.List;
 
 public class AnnouncementDTO implements DTO {
     // Attributs
-    private int id;
-    private BonusType bonusType;
+    private final int id;
+    private final BonusType bonusType;
     private CardType typeOfSquare;
     private CardColor colorOfSchtockr;
     private List<CardDTO> suiteCards;
-    private PlayerDTO player;
+    private final PlayerDTO player;
 
     /**
      * Instanciation d'un DTO pour une annonce

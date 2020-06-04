@@ -12,9 +12,9 @@ import java.util.List;
 
 public class TeamDTO implements DTO {
     // Attributs
-    private int points;
-    private List<PlayerDTO> players;
-    private int id;
+    private final int points;
+    private final List<PlayerDTO> players;
+    private final int id;
 
     /**
      * Instancier un DTO pour une équipe
