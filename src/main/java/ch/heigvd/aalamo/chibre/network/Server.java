@@ -33,15 +33,17 @@ public class Server extends Thread {
     private final List<Game> games = new ArrayList<>();
     private final List<Player> waitingPlayers = new ArrayList<>();
     private final List<Handler> authenticatingHandlers = new ArrayList<>();
+    private final boolean isTestingServer;
 
     /**
      * Instanciation du serveur
      */
-    public Server(String playersFileName) {
+    public Server(String playersFileName, boolean isTestingServer) {
         if (playersFileName.equals(""))
             this.playersFileName = "json/players.json";
         else
             this.playersFileName = playersFileName;
+        this.isTestingServer = isTestingServer;
 
         // Chargement des joueurs depuis le fichier JSON
         loadPlayers();
@@ -256,7 +258,7 @@ public class Server extends Thread {
             players.add(waitingPlayers.get(i));
 
         waitingPlayers.clear();
-        Game game = new Game(players);
+        Game game = new Game(players, !isTestingServer);
         games.add(game);
         game.run();
     }

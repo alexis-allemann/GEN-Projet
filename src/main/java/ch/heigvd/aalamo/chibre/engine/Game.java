@@ -30,18 +30,20 @@ public class Game {
     private List<Team> teams = new ArrayList<>(NB_TEAMS);
     private final List<Round> rounds = new ArrayList<>();
     private Player firstPlayerTrump;
+    private boolean randomizeDistribution;
 
     /**
      * Instancier une parte
      *
      * @param players liste des joueurs
      */
-    public Game(List<Player> players) {
+    public Game(List<Player> players, boolean randomizeDistribution) {
         if (players == null || players.contains(null))
             throw new IllegalArgumentException("Liste de joueurs illégale (nulle ou joueur nul)");
 
         this.id = count++;
         this.players = players;
+        this.randomizeDistribution = randomizeDistribution;
 
         for (Player player : this.players)
             player.setGame(this);
@@ -104,6 +106,13 @@ public class Game {
      */
     public Player getFirstPlayerTrump() {
         return firstPlayerTrump;
+    }
+
+    /**
+     * @return si les cartes doivent être mélangées ou non
+     */
+    public boolean isRandomDistribution() {
+        return randomizeDistribution;
     }
 
     // Setters

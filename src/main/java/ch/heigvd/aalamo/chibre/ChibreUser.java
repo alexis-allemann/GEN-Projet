@@ -22,7 +22,6 @@ public class ChibreUser {
 
             // 3. Lancement du programme
             controller.start(view);
-
         } catch (Exception e) {
             e.printStackTrace();
         }
