@@ -104,7 +104,8 @@ public class Server extends Thread {
      * @param player le joueur
      */
     public void remove(Player player) {
-        waitingPlayers.remove(player);
+        if (waitingPlayers.contains(player))
+            waitingPlayers.remove(player);
     }
 
     /**
@@ -164,7 +165,7 @@ public class Server extends Thread {
         try (FileWriter file = new FileWriter(playersFileName)) {
             System.out.println("Ecriture du fichier " + playersFileName);
 
-            // Recupération de la liste des continents et écriture
+            // Recupération de la liste des joueurs et écriture
             file.write(players.toJSONString());
             file.flush();
 
@@ -250,11 +251,10 @@ public class Server extends Thread {
      * Création d'une partie avec les joueurs en attente
      */
     private void createNewGame() {
-        // TODO : voir si créer thread pour éviter que un utilisateur se déconnecte pendant que on crée la partie et que du coup on ait un out_of_bound
         List<Player> players = new ArrayList<>(Game.NB_PLAYERS);
-        for (int i = 0; i < Game.NB_PLAYERS; ++i) {
+        for (int i = 0; i < Game.NB_PLAYERS; ++i)
             players.add(waitingPlayers.get(i));
-        }
+
         waitingPlayers.clear();
         Game game = new Game(players);
         games.add(game);
