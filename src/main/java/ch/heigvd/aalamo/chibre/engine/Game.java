@@ -13,7 +13,7 @@ import ch.heigvd.aalamo.chibre.network.objects.ServerAction;
 
 import java.util.*;
 
-public class Game implements Runnable {
+public class Game {
     // Constantes globles du jeu
     public static final int NB_TEAMS = 2;
     public static final int NB_PLAYERS_TEAMS = 2;
@@ -55,7 +55,7 @@ public class Game implements Runnable {
     /**
      * @return l'id de la partie
      */
-    public int getId() {
+    public int getGameId() {
         return id;
     }
 
@@ -120,9 +120,8 @@ public class Game implements Runnable {
     // Méthodes
 
     /**
-     * Démarrage du thread de la partie et instanciation du premier tour
+     * Démarrage de la partie
      */
-    @Override
     public void run() {
         System.out.println("Début de la partie id#" + id);
 
