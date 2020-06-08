@@ -137,10 +137,6 @@ public class GUIView extends BaseView<ImageIcon> {
         cards.add(lblCard8);
         cards.add(lblCard9);
 
-        // Autoriser le drag and drop entre les cartes
-        for (JLabel card : cards)
-            card.setTransferHandler(new TransferHandler("icon"));
-
         // Création de la zone pour déposer les cartes jouées
         BufferedImage dropImage;
         try {
@@ -313,10 +309,9 @@ public class GUIView extends BaseView<ImageIcon> {
     @Override
     public UserChoice askUser(String title, String question, List<UserChoice> possibilities) {
         UserChoice result = possibilities.size() > 0 ? possibilities.get(0) : null;
-        if (possibilities.size() > 1) {
+        if (possibilities.size() > 1)
             result = (UserChoice) JOptionPane.showInputDialog(null,
                     question, title, JOptionPane.QUESTION_MESSAGE, null, possibilities.toArray(), result);
-        }
         return result;
     }
 

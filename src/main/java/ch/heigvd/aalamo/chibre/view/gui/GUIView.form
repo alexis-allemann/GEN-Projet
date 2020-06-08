@@ -102,7 +102,9 @@
         <constraints>
           <grid row="1" column="0" row-span="2" col-span="2" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
         </constraints>
-        <properties/>
+        <properties>
+          <enabled value="false"/>
+        </properties>
         <border type="none"/>
         <children>
           <component id="bac30" class="javax.swing.JLabel" binding="lblCard1">
@@ -110,6 +112,7 @@
               <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
+              <enabled value="true"/>
               <text value=""/>
             </properties>
           </component>
@@ -472,20 +475,11 @@
           </grid>
           <component id="4644c" class="javax.swing.JLabel">
             <constraints>
-              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+              <grid row="0" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
               <font size="20"/>
-              <text value="Partie de Chibre n° : "/>
-            </properties>
-          </component>
-          <component id="468a6" class="javax.swing.JLabel">
-            <constraints>
-              <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-            </constraints>
-            <properties>
-              <font size="20" style="1"/>
-              <text value="#124"/>
+              <text value="Partie de Chibre"/>
             </properties>
           </component>
         </children>

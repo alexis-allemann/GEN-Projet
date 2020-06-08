@@ -13,7 +13,7 @@ import ch.heigvd.aalamo.chibre.network.objects.ServerAction;
 
 import java.util.*;
 
-public class Game implements Runnable {
+public class Game {
     // Constantes globles du jeu
     public static final int NB_TEAMS = 2;
     public static final int NB_PLAYERS_TEAMS = 2;
@@ -30,18 +30,20 @@ public class Game implements Runnable {
     private List<Team> teams = new ArrayList<>(NB_TEAMS);
     private final List<Round> rounds = new ArrayList<>();
     private Player firstPlayerTrump;
+    private boolean randomizeDistribution;
 
     /**
      * Instancier une parte
      *
      * @param players liste des joueurs
      */
-    public Game(List<Player> players) {
+    public Game(List<Player> players, boolean randomizeDistribution) {
         if (players == null || players.contains(null))
             throw new IllegalArgumentException("Liste de joueurs illégale (nulle ou joueur nul)");
 
         this.id = count++;
         this.players = players;
+        this.randomizeDistribution = randomizeDistribution;
 
         for (Player player : this.players)
             player.setGame(this);
@@ -55,7 +57,7 @@ public class Game implements Runnable {
     /**
      * @return l'id de la partie
      */
-    public int getId() {
+    public int getGameId() {
         return id;
     }
 
@@ -106,6 +108,13 @@ public class Game implements Runnable {
         return firstPlayerTrump;
     }
 
+    /**
+     * @return si les cartes doivent être mélangées ou non
+     */
+    public boolean isRandomDistribution() {
+        return randomizeDistribution;
+    }
+
     // Setters
 
     /**
@@ -137,9 +146,8 @@ public class Game implements Runnable {
     // Méthodes
 
     /**
-     * Démarrage du thread de la partie et instanciation du premier tour
+     * Démarrage de la partie
      */
-    @Override
     public void run() {
         System.out.println("Début de la partie id#" + id);
 

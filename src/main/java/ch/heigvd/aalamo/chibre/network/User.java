@@ -55,6 +55,22 @@ public class User implements ChibreController {
         }
     }
 
+    // Getters
+
+    /**
+     * @return le joueur de la GUI
+     */
+    public PlayerDTO getCurrentPlayer() {
+        return currentPlayer;
+    }
+
+    /**
+     * @return la couleur atout
+     */
+    public CardColor getTrumpColor() {
+        return trumpColor;
+    }
+
     // Méthodes
 
     /**

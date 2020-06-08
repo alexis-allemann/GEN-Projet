@@ -32,15 +32,18 @@ public class Server extends Thread {
     private final List<Player> players = new ArrayList<>();
     private final List<Game> games = new ArrayList<>();
     private final List<Player> waitingPlayers = new ArrayList<>();
+    private final List<Handler> authenticatingHandlers = new ArrayList<>();
+    private final boolean isTestingServer;
 
     /**
      * Instanciation du serveur
      */
-    public Server(String playersFileName) {
+    public Server(String playersFileName, boolean isTestingServer) {
         if (playersFileName.equals(""))
             this.playersFileName = "json/players.json";
         else
             this.playersFileName = playersFileName;
+        this.isTestingServer = isTestingServer;
 
         // Chargement des joueurs depuis le fichier JSON
         loadPlayers();
@@ -102,7 +105,8 @@ public class Server extends Thread {
      * @param player le joueur
      */
     public void remove(Player player) {
-        waitingPlayers.remove(player);
+        if (waitingPlayers.contains(player))
+            waitingPlayers.remove(player);
     }
 
     /**
@@ -162,7 +166,7 @@ public class Server extends Thread {
         try (FileWriter file = new FileWriter(playersFileName)) {
             System.out.println("Ecriture du fichier " + playersFileName);
 
-            // Recupération de la liste des continents et écriture
+            // Recupération de la liste des joueurs et écriture
             file.write(players.toJSONString());
             file.flush();
 
@@ -248,11 +252,11 @@ public class Server extends Thread {
      */
     private void createNewGame() {
         List<Player> players = new ArrayList<>(Game.NB_PLAYERS);
-        for (int i = 0; i < Game.NB_PLAYERS; ++i) {
+        for (int i = 0; i < Game.NB_PLAYERS; ++i)
             players.add(waitingPlayers.get(i));
-        }
+
         waitingPlayers.clear();
-        Game game = new Game(players);
+        Game game = new Game(players, !isTestingServer);
         games.add(game);
         game.run();
     }
