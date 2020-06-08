@@ -109,6 +109,23 @@ public class Game implements Runnable {
     // Setters
 
     /**
+     * Définition des équipes à partir d'une liste de joueurs
+     */
+    private void setTeams() {
+        if (players.size() != NB_PLAYERS)
+            throw new RuntimeException("Une partie ne peut pas être jouée à moins de " + NB_PLAYERS + " joueurs");
+
+        // Mélange des joueurs pour choix aléatoire des équipes
+        Collections.shuffle(players);
+
+        // Ajout des équipes
+        this.teams = Arrays.asList(
+                new Team(players.subList(0, NB_PLAYERS_TEAMS)),
+                new Team(players.subList(NB_PLAYERS_TEAMS, NB_PLAYERS))
+        );
+    }
+
+    /**
      * Définir le joueur qui fait atout en premier
      *
      * @param firstPlayerTrump joueur
@@ -136,23 +153,6 @@ public class Game implements Runnable {
         Round round = new Round(this);
         rounds.add(round);
         round.initRound();
-    }
-
-    /**
-     * Définition des équipes à partir d'une liste de joueurs
-     */
-    private void setTeams() {
-        if (players.size() != NB_PLAYERS)
-            throw new RuntimeException("Une partie ne peut pas être jouée à moins de " + NB_PLAYERS + " joueurs");
-
-        // Mélange des joueurs pour choix aléatoire des équipes
-        Collections.shuffle(players);
-
-        // Ajout des équipes
-        this.teams = Arrays.asList(
-                new Team(players.subList(0, NB_PLAYERS_TEAMS)),
-                new Team(players.subList(NB_PLAYERS_TEAMS, NB_PLAYERS))
-        );
     }
 
     /**

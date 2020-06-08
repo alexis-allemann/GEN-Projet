@@ -22,7 +22,7 @@ public class Player {
     // Attributs
     private final List<Card> cards = new ArrayList<>(Game.NB_CARDS_PLAYER);
     private Handler handler;
-    private Team team; // TODO : a supprimer
+    private Team team;
     private Game game;
     private final String username;
     private final String password;

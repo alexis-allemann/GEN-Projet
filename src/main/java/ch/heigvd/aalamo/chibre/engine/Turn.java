@@ -23,7 +23,6 @@ public class Turn {
     private Player firstPlayer;
     private Player winner;
     private final Turn lastTurn;
-    private Timer timer;
     private boolean playMatch = true;
 
     /**
@@ -119,7 +118,7 @@ public class Turn {
             round.getGame().sendToAllPlayers(new Request(ServerAction.SEND_WINNING_PLAYER, winner.serialize()));
 
             // Attente d'un délais avant de lancer le prochain turn/round
-            timer = new Timer();
+            Timer timer = new Timer();
             timer.schedule(new TimerTask() {
                 @Override
                 public void run() {
@@ -213,4 +212,3 @@ public class Turn {
         System.out.println(" avec la carte <" + winningCard.getCardColor().toString() + "><" + winningCard.getCardType().toString() + ">");
     }
 }
-

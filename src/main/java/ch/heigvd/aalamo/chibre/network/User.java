@@ -31,7 +31,6 @@ import java.util.*;
 public class User implements ChibreController {
     // Attributs
     private ChibreView view;
-    private final Socket socket;
     private final ObjectOutputStream out;
     private final ObjectInputStream in;
     private final List<CardDTO> cards = new ArrayList<>(Game.NB_CARDS_PLAYER);
@@ -41,15 +40,13 @@ public class User implements ChibreController {
     private PlayerDTO trumpPlayer;
     private CardColor trumpColor;
     private CardColor firstCardColor = null;
-    private CardDTO lastCardPlayed;
-    private final List<AnnouncementDTO> announcements = new ArrayList<>();
 
     /**
      * Instancier un utilisateur de l'application
      */
     public User() {
         try {
-            socket = new Socket("localhost", 6666);
+            Socket socket = new Socket("localhost", 6666);
             out = new ObjectOutputStream(socket.getOutputStream());
             in = new ObjectInputStream(socket.getInputStream());
         } catch (IOException e) {
@@ -158,7 +155,6 @@ public class User implements ChibreController {
                     case END_ROUND:
                         cards.clear();
                         markedCards = new ArrayList<>(Arrays.asList(false, false, false, false, false, false, false, false, false));
-                        announcements.clear();
                         view.resetWinningAnnouncement();
                         break;
                     case SEND_WINNER:
@@ -167,7 +163,6 @@ public class User implements ChibreController {
                         break;
                     case SEND_ANNOUCEMENTS:
                         AnnouncementDTO announcement = (AnnouncementDTO) request.getObject();
-                        announcements.add(announcement);
                         view.displayAnnouncement(announcement);
                         break;
                     case DISPLAY_ANNOUNCEMENT:
@@ -282,10 +277,7 @@ public class User implements ChibreController {
      * @param index de la carte jouée
      */
     private void resetCard(int index) {
-        if (lastCardPlayed != null)
-            view.setBottomPlayerCard(cards.get(cards.indexOf(lastCardPlayed)));
-        else
-            view.resetBottomPlayerCard();
+        view.resetBottomPlayerCard();
         view.addCard(cards.get(index).getCardType(), cards.get(index).getCardColor(), index);
     }
 

@@ -27,7 +27,7 @@ public class Table {
          * @param player        joueur
          * @param tablePosition position à la table
          */
-        public Pair(Player player, TablePosition tablePosition) {
+        Pair(Player player, TablePosition tablePosition) {
             this.player = player;
             this.tablePosition = tablePosition;
         }
@@ -37,26 +37,15 @@ public class Table {
         /**
          * @return le joueur
          */
-        public Player getPlayer() {
+        Player getPlayer() {
             return player;
         }
 
         /**
          * @return la position à la table
          */
-        public TablePosition getTablePosition() {
+        TablePosition getTablePosition() {
             return tablePosition;
-        }
-
-        // Setters
-
-        /**
-         * Définir le joueur à la position
-         *
-         * @param player joueur
-         */
-        public void setPlayer(Player player) {
-            this.player = player;
         }
     }
 

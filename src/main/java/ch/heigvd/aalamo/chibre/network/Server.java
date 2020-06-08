@@ -32,7 +32,6 @@ public class Server extends Thread {
     private final List<Player> players = new ArrayList<>();
     private final List<Game> games = new ArrayList<>();
     private final List<Player> waitingPlayers = new ArrayList<>();
-    private final List<Handler> authenticatingHandlers = new ArrayList<>();
 
     /**
      * Instanciation du serveur
@@ -94,7 +93,6 @@ public class Server extends Thread {
         while (true) {
             Socket socket = serverSocket.accept();
             Handler newHandler = new Handler(socket, this);
-            authenticatingHandlers.add(newHandler);
         }
     }
 
@@ -197,7 +195,6 @@ public class Server extends Thread {
             if (player.getUsername().equals(authenticationDTO.getUserName()) && player.getPassword().equals(authenticationDTO.getPassword())) {
                 player.setHandler(handler);
                 addPlayerToWaitingList(player);
-                authenticatingHandlers.remove(handler);
                 return;
             }
         }
@@ -250,7 +247,6 @@ public class Server extends Thread {
      * Création d'une partie avec les joueurs en attente
      */
     private void createNewGame() {
-        // TODO : voir si créer thread pour éviter que un utilisateur se déconnecte pendant que on crée la partie et que du coup on ait un out_of_bound
         List<Player> players = new ArrayList<>(Game.NB_PLAYERS);
         for (int i = 0; i < Game.NB_PLAYERS; ++i) {
             players.add(waitingPlayers.get(i));
