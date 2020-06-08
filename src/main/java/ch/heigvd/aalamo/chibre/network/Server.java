@@ -32,7 +32,6 @@ public class Server extends Thread {
     private final List<Player> players = new ArrayList<>();
     private final List<Game> games = new ArrayList<>();
     private final List<Player> waitingPlayers = new ArrayList<>();
-    private final List<Handler> authenticatingHandlers = new ArrayList<>();
     private final boolean isTestingServer;
 
     /**
@@ -105,8 +104,7 @@ public class Server extends Thread {
      * @param player le joueur
      */
     public void remove(Player player) {
-        if (waitingPlayers.contains(player))
-            waitingPlayers.remove(player);
+        waitingPlayers.remove(player);
     }
 
     /**
@@ -144,7 +142,7 @@ public class Server extends Thread {
         JSONArray players = readPlayersFromJSON();
 
         // Parcours du tableau de joueurs pour parsing
-        players.forEach(country -> parsePlayerObject((JSONObject) country));
+        players.forEach(player -> parsePlayerObject((JSONObject) player));
     }
 
     /**
