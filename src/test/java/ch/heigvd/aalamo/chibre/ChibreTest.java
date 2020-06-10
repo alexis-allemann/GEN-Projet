@@ -28,6 +28,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ChibreTest {
     // Serveur pour les tests
     private static Server server;
+    private static List<User> users = new ArrayList<>();
 
     /**
      * Initialisation du serveur et des joueurs avant les tests unitaires
@@ -40,13 +41,14 @@ public class ChibreTest {
         resetJSONFile();
 
         // Démarrer serveur
-        server = new Server("json/testplayers.json");
+        server = new Server("json/testplayers.json", true);
         server.start();
 
         // Authentification de 4 utilisateurs
         for (int i = 1; i <= 4; ++i) {
             User user = new User();
             user.sendAuthentication(Integer.toString(i), Integer.toString(i));
+            users.add(user);
 
             // Attente que le serveur reçoive l'authentification par le réseau pour éviter des problèmes de concurence
             TimeUnit.MILLISECONDS.sleep(100);
@@ -77,6 +79,30 @@ public class ChibreTest {
     }
 
     // Tests
+
+    /**
+     * Lecture du fichier JSON contenant les joueurs
+     */
+    @Test
+    public void loadJSONFile() {
+        List<Player> players = server.getPlayers();
+        assertNotEquals(players, null);
+        assertNotEquals(players.size(), 0);
+    }
+
+    /**
+     * Création d'un utilisateur
+     *
+     * @throws InterruptedException lors de la pause du thread si celui-ci est interrompu
+     */
+    @Test
+    void createUser() throws InterruptedException {
+        int nbUsers = server.getPlayers().size();
+        User newUser = new User();
+        newUser.sendCreateUser("99", "99");
+        Thread.sleep(100);
+        assertEquals(server.getPlayers().size(), nbUsers + 1);
+    }
 
     /**
      * Utilisateurs en attente et création d'une partie
@@ -188,29 +214,5 @@ public class ChibreTest {
         }
 
         assertTrue(tablePositions.isEmpty());
-    }
-
-    /**
-     * Lecture du fichier JSON contenant les joueurs
-     */
-    @Test
-    public void loadJSONFile() {
-        List<Player> players = server.getPlayers();
-        assertNotEquals(players, null);
-        assertNotEquals(players.size(), 0);
-    }
-
-    /**
-     * Création d'un utilisateur
-     *
-     * @throws InterruptedException lors de la pause du thread si celui-ci est interrompu
-     */
-    @Test
-    void createUser() throws InterruptedException {
-        int nbUsers = server.getPlayers().size();
-        User newUser = new User();
-        newUser.sendCreateUser("99", "99");
-        Thread.sleep(100);
-        assertEquals(server.getPlayers().size(), nbUsers + 1);
     }
 }

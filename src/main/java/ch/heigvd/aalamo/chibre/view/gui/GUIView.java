@@ -137,10 +137,6 @@ public class GUIView extends BaseView<ImageIcon> {
         cards.add(lblCard8);
         cards.add(lblCard9);
 
-        // Autoriser le drag and drop entre les cartes
-        for (JLabel card : cards)
-            card.setTransferHandler(new TransferHandler("icon"));
-
         // Création de la zone pour déposer les cartes jouées
         BufferedImage dropImage;
         try {

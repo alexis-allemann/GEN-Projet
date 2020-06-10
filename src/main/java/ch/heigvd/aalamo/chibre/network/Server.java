@@ -32,16 +32,17 @@ public class Server extends Thread {
     private final List<Player> players = new ArrayList<>();
     private final List<Game> games = new ArrayList<>();
     private final List<Player> waitingPlayers = new ArrayList<>();
-    private final List<Handler> authenticatingHandlers = new ArrayList<>();
+    private final boolean isTestingServer;
 
     /**
      * Instanciation du serveur
      */
-    public Server(String playersFileName) {
+    public Server(String playersFileName, boolean isTestingServer) {
         if (playersFileName.equals(""))
             this.playersFileName = "json/players.json";
         else
             this.playersFileName = playersFileName;
+        this.isTestingServer = isTestingServer;
 
         // Chargement des joueurs depuis le fichier JSON
         loadPlayers();
@@ -94,7 +95,6 @@ public class Server extends Thread {
         while (true) {
             Socket socket = serverSocket.accept();
             Handler newHandler = new Handler(socket, this);
-            authenticatingHandlers.add(newHandler);
         }
     }
 
@@ -104,8 +104,7 @@ public class Server extends Thread {
      * @param player le joueur
      */
     public void remove(Player player) {
-        if (waitingPlayers.contains(player))
-            waitingPlayers.remove(player);
+        waitingPlayers.remove(player);
     }
 
     /**
@@ -143,7 +142,7 @@ public class Server extends Thread {
         JSONArray players = readPlayersFromJSON();
 
         // Parcours du tableau de joueurs pour parsing
-        players.forEach(country -> parsePlayerObject((JSONObject) country));
+        players.forEach(player -> parsePlayerObject((JSONObject) player));
     }
 
     /**
@@ -198,7 +197,6 @@ public class Server extends Thread {
             if (player.getUsername().equals(authenticationDTO.getUserName()) && player.getPassword().equals(authenticationDTO.getPassword())) {
                 player.setHandler(handler);
                 addPlayerToWaitingList(player);
-                authenticatingHandlers.remove(handler);
                 return;
             }
         }
@@ -256,7 +254,7 @@ public class Server extends Thread {
             players.add(waitingPlayers.get(i));
 
         waitingPlayers.clear();
-        Game game = new Game(players);
+        Game game = new Game(players, !isTestingServer);
         games.add(game);
         game.run();
     }

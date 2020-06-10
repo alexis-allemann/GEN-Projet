@@ -107,7 +107,6 @@ public class Handler implements Runnable {
             // Notifier le serveur que le joueur n'est plus disponible
             if (player != null)
                 server.remove(player);
-            // TODO : voir si on notifie le player que le handler n'est plus disponible ou si on met un timer (par exemple)
         } catch (IOException e) {
             e.printStackTrace();
         }

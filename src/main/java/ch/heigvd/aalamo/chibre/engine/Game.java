@@ -30,18 +30,20 @@ public class Game {
     private List<Team> teams = new ArrayList<>(NB_TEAMS);
     private final List<Round> rounds = new ArrayList<>();
     private Player firstPlayerTrump;
+    private boolean randomizeDistribution;
 
     /**
      * Instancier une parte
      *
      * @param players liste des joueurs
      */
-    public Game(List<Player> players) {
+    public Game(List<Player> players, boolean randomizeDistribution) {
         if (players == null || players.contains(null))
             throw new IllegalArgumentException("Liste de joueurs illégale (nulle ou joueur nul)");
 
         this.id = count++;
         this.players = players;
+        this.randomizeDistribution = randomizeDistribution;
 
         for (Player player : this.players)
             player.setGame(this);
@@ -106,7 +108,31 @@ public class Game {
         return firstPlayerTrump;
     }
 
+    /**
+     * @return si les cartes doivent être mélangées ou non
+     */
+    public boolean isRandomDistribution() {
+        return randomizeDistribution;
+    }
+
     // Setters
+
+    /**
+     * Définition des équipes à partir d'une liste de joueurs
+     */
+    private void setTeams() {
+        if (players.size() != NB_PLAYERS)
+            throw new RuntimeException("Une partie ne peut pas être jouée à moins de " + NB_PLAYERS + " joueurs");
+
+        // Mélange des joueurs pour choix aléatoire des équipes
+        Collections.shuffle(players);
+
+        // Ajout des équipes
+        this.teams = Arrays.asList(
+                new Team(players.subList(0, NB_PLAYERS_TEAMS)),
+                new Team(players.subList(NB_PLAYERS_TEAMS, NB_PLAYERS))
+        );
+    }
 
     /**
      * Définir le joueur qui fait atout en premier
@@ -135,23 +161,6 @@ public class Game {
         Round round = new Round(this);
         rounds.add(round);
         round.initRound();
-    }
-
-    /**
-     * Définition des équipes à partir d'une liste de joueurs
-     */
-    private void setTeams() {
-        if (players.size() != NB_PLAYERS)
-            throw new RuntimeException("Une partie ne peut pas être jouée à moins de " + NB_PLAYERS + " joueurs");
-
-        // Mélange des joueurs pour choix aléatoire des équipes
-        Collections.shuffle(players);
-
-        // Ajout des équipes
-        this.teams = Arrays.asList(
-                new Team(players.subList(0, NB_PLAYERS_TEAMS)),
-                new Team(players.subList(NB_PLAYERS_TEAMS, NB_PLAYERS))
-        );
     }
 
     /**
